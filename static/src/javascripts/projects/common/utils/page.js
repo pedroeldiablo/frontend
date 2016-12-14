@@ -78,4 +78,4 @@ export default {
     isFootballStatsPage,
     belowArticleVisible,
     keywordExists,
-}; // define
+};
