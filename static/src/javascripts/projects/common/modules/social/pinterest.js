@@ -19,7 +19,7 @@ define([
             });
         });
 
-        require(['js!https://assets.pinterest.com/js/pinmarklet.js?r=' + new Date().getTime()]);
+        xxxrequirexxx(['js!https://assets.pinterest.com/js/pinmarklet.js?r=' + new Date().getTime()]);
     }
 
     return function () {

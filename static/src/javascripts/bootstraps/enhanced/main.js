@@ -60,46 +60,46 @@ define([
 
         // Front
         if (config.page.isFront) {
-            require(['bootstraps/enhanced/facia'], function (facia) {
+            xxxrequirexxx(['bootstraps/enhanced/facia'], function (facia) {
                 bootstrapContext('facia', facia);
             });
         }
 
         if (config.page.section === 'lifeandstyle' && config.page.series === 'Sudoku') {
-            require(['bootstraps/enhanced/sudoku'], function (sudoku) {
+            xxxrequirexxx(['bootstraps/enhanced/sudoku'], function (sudoku) {
                 bootstrapContext('sudoku', sudoku);
             });
         }
 
         if (config.page.contentType === 'Article' && !config.page.isMinuteArticle) {
-            require(['bootstraps/enhanced/article', 'bootstraps/enhanced/image-content'], function (article, imageContent) {
+            xxxrequirexxx(['bootstraps/enhanced/article', 'bootstraps/enhanced/image-content'], function (article, imageContent) {
                 bootstrapContext('article', article);
                 bootstrapContext('article : image-content', imageContent);
             });
         }
 
         if (config.page.contentType === 'Crossword') {
-            require(['bootstraps/enhanced/crosswords'], function (crosswords) {
+            xxxrequirexxx(['bootstraps/enhanced/crosswords'], function (crosswords) {
                 bootstrapContext('crosswords', crosswords);
             });
         }
 
         if (config.page.contentType === 'LiveBlog') {
-            require(['bootstraps/enhanced/liveblog', 'bootstraps/enhanced/image-content'], function (liveBlog, imageContent) {
+            xxxrequirexxx(['bootstraps/enhanced/liveblog', 'bootstraps/enhanced/image-content'], function (liveBlog, imageContent) {
                 bootstrapContext('liveBlog', liveBlog);
                 bootstrapContext('liveBlog : image-content', imageContent);
             });
         }
 
         if (config.page.isMinuteArticle) {
-            require(['bootstraps/enhanced/article-minute', 'bootstraps/enhanced/image-content'], function (articleMinute, imageContent) {
+            xxxrequirexxx(['bootstraps/enhanced/article-minute', 'bootstraps/enhanced/image-content'], function (articleMinute, imageContent) {
                 bootstrapContext('articleMinute', articleMinute);
                 bootstrapContext('article : image-content', imageContent);
             });
         }
 
         if (config.isMedia || config.page.contentType === 'Interactive') {
-            require(['bootstraps/enhanced/trail'], function (trail) {
+            xxxrequirexxx(['bootstraps/enhanced/trail'], function (trail) {
                 bootstrapContext('media : trail', {
                     init: trail
                 });
@@ -107,20 +107,20 @@ define([
         }
 
         if ((config.isMedia || qwery('video, audio').length) && !config.page.isHosted) {
-            require(['bootstraps/enhanced/media/main'], function (media) {
+            xxxrequirexxx(['bootstraps/enhanced/media/main'], function (media) {
                 bootstrapContext('media', media);
             });
         }
 
         if (config.page.contentType === 'Gallery') {
-            require(['bootstraps/enhanced/gallery', 'bootstraps/enhanced/image-content'], function (gallery, imageContent) {
+            xxxrequirexxx(['bootstraps/enhanced/gallery', 'bootstraps/enhanced/image-content'], function (gallery, imageContent) {
                 bootstrapContext('gallery', gallery);
                 bootstrapContext('gallery : image-content', imageContent);
             });
         }
 
         if (config.page.contentType === 'ImageContent') {
-            require(['bootstraps/enhanced/image-content', 'bootstraps/enhanced/trail'], function (imageContent, trail) {
+            xxxrequirexxx(['bootstraps/enhanced/image-content', 'bootstraps/enhanced/trail'], function (imageContent, trail) {
                 bootstrapContext('image-content', imageContent);
                 bootstrapContext('image-content : trail', {
                     init: trail
@@ -129,7 +129,7 @@ define([
         }
 
         if (config.page.section === 'football') {
-            require(['bootstraps/enhanced/football'], function (football) {
+            xxxrequirexxx(['bootstraps/enhanced/football'], function (football) {
                 bootstrapContext('football', football);
             });
         }
@@ -140,19 +140,19 @@ define([
         }
 
         if (config.page.section === 'identity') {
-            require(['bootstraps/enhanced/profile'], function (profile) {
+            xxxrequirexxx(['bootstraps/enhanced/profile'], function (profile) {
                 bootstrapContext('profile', profile);
             });
         }
 
         if (config.page.isPreferencesPage) {
-            require(['bootstraps/enhanced/preferences'], function (preferences) {
+            xxxrequirexxx(['bootstraps/enhanced/preferences'], function (preferences) {
                 bootstrapContext('preferences', preferences);
             });
         }
 
         if (config.page.section === 'newsletter-signup-page') {
-            require(['bootstraps/enhanced/signup'], function (signup) {
+            xxxrequirexxx(['bootstraps/enhanced/signup'], function (signup) {
                 bootstrapContext('signup', signup);
             });
         }
@@ -166,14 +166,14 @@ define([
         }
 
         if (config.page.pageId === 'help/accessibility-help') {
-            require(['bootstraps/enhanced/accessibility'], function (accessibility) {
+            xxxrequirexxx(['bootstraps/enhanced/accessibility'], function (accessibility) {
                 bootstrapContext('accessibility', accessibility);
             });
         }
 
         fastdom.read(function() {
             if ( $('.youtube-media-atom').length > 0) {
-                require(['bootstraps/enhanced/youtube'], function (youtube) {
+                xxxrequirexxx(['bootstraps/enhanced/youtube'], function (youtube) {
                     bootstrapContext('youtube', youtube);
                 });
             }

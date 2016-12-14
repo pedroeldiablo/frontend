@@ -60,7 +60,7 @@ define([
                 categories: categories,
                 dataMode: 'data-display'
             };
-            require(['js!//static-au.plista.com/async/' + name + '.js']);
+            xxxrequirexxx(['js!//static-au.plista.com/async/' + name + '.js']);
         } else {
             lib.widgets.push({name: widgetName, pre: u});
         }

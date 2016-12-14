@@ -39,7 +39,7 @@ define([
     }
 
     function sendEvent() {
-        require(['ophan/ng'], function (ophan) {
+        xxxrequirexxx(['ophan/ng'], function (ophan) {
             ophan.record({
                 register: register
             });

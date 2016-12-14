@@ -88,7 +88,7 @@ define([
                     return;
                 }
 
-                require([mainJS], function (interactive) {
+                xxxrequirexxx([mainJS], function (interactive) {
                     fastdom.defer(function () {
                         robust.catchErrorsAndLog('interactive-bootstrap', function () {
                             interactive.boot(el, document, config, mediator);
@@ -96,7 +96,7 @@ define([
                     });
                 });
 
-                require(['ophan/ng'], function(ophan) {
+                xxxrequirexxx(['ophan/ng'], function(ophan) {
                     var a = el.querySelector('a');
                     var href = a && a.href;
 
@@ -179,7 +179,7 @@ define([
             onScroll
         );
 
-        require(['ophan/ng'], function(ophan) {
+        xxxrequirexxx(['ophan/ng'], function(ophan) {
             ophan.setEventEmitter(mediator);
         });
 

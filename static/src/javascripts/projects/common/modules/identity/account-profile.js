@@ -62,7 +62,7 @@ define([
 
                     var tabs = self.accountProfileForms.querySelector(self.classes.tabs);
 
-                    require(['bootstraps/enhanced/membership'], function (membershipTab) {
+                    xxxrequirexxx(['bootstraps/enhanced/membership'], function (membershipTab) {
                         membershipTab.init();
                     });
 

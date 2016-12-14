@@ -163,7 +163,7 @@ define([
             loadAnalytics: function () {
                 interactionTracking.init();
                 if (config.switches.ophan) {
-                    require(['ophan/ng'], function (ophan) {
+                    xxxrequirexxx(['ophan/ng'], function (ophan) {
                         if (config.switches.scrollDepth) {
                             mediator.on('scrolldepth:data', ophan.record);
 

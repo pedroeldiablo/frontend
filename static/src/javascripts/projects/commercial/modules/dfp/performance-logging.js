@@ -108,7 +108,7 @@ define([
 
     function reportTrackingData() {
         if (config.tests.commercialClientLogging) {
-            require(['ophan/ng'], function (ophan) {
+            xxxrequirexxx(['ophan/ng'], function (ophan) {
                 performanceLog.viewId = ophan.viewId;
 
                 beacon.postJson('/commercial-report', JSON.stringify(performanceLog), true);

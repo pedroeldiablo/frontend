@@ -1,1 +1,1 @@
-require(['ophan/ng'], function () {});
+xxxrequirexxx(['ophan/ng'], function () {});

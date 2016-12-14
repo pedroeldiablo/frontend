@@ -86,14 +86,14 @@ define([
                 $outbrain.css('display', 'block');
             }).then(function () {
                 module.tracking(widgetCodes.code || widgetCodes.image);
-                require(['js!' + outbrainUrl]);
+                xxxrequirexxx(['js!' + outbrainUrl]);
             });
         }
     }
 
     function tracking(widgetCode) {
         // Ophan
-        require(['ophan/ng'], function (ophan) {
+        xxxrequirexxx(['ophan/ng'], function (ophan) {
             ophan.record({
                 outbrain: {
                     widgetId: widgetCode

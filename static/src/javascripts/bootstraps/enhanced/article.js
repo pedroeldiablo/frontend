@@ -55,7 +55,7 @@ define([
 
         initQuizListeners: function () {
             // This event is for older-style quizzes implemented as interactives. See https://github.com/guardian/quiz-builder
-            require(['ophan/ng'], function (ophan) {
+            xxxrequirexxx(['ophan/ng'], function (ophan) {
                 mediator.on('quiz/ophan-event', ophan.record);
             });
         }

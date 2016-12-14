@@ -198,7 +198,7 @@ define([
     }
 
     function recordOphanAbEvent(data) {
-        require(['ophan/ng'], function (ophan) {
+        xxxrequirexxx(['ophan/ng'], function (ophan) {
             ophan.record({
                 abTestRegister: data
             });

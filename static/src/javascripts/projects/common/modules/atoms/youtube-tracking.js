@@ -54,7 +54,7 @@ define([
         });
 
         function ophanRecord(event) {
-            require(['ophan/ng'], function (ophan) {
+            xxxrequirexxx(['ophan/ng'], function (ophan) {
                 var eventObject = {
                     video: {
                         id: 'gu-video-youtube-' + event.mediaId,

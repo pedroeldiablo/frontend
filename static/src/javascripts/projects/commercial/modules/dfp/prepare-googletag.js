@@ -58,10 +58,10 @@ define([
 
                 if (dfpEnv.sonobiEnabled) {
                     // Just load googletag. Sonobi's wrapper will already be loaded, and googletag is already added to the window by sonobi.
-                    require(['js!googletag.js']);
+                    xxxrequirexxx(['js!googletag.js']);
                     performanceLogging.addTag('sonobi');
                 } else {
-                    require(['js!googletag.js']);
+                    xxxrequirexxx(['js!googletag.js']);
                     performanceLogging.addTag('waterfall');
                 }
 

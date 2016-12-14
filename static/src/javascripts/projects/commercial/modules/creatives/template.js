@@ -83,7 +83,7 @@ define([
                 this.params.classNames = ['legacy-inline', this.params.toneClass.replace('commercial--', ''), this.params.toneClass.replace('commercial--tone-', '')];
             }
 
-            require(['text!commercial/views/creatives/' + this.params.creative + '.html'], function (creativeTpl) {
+            xxxrequirexxx(['text!commercial/views/creatives/' + this.params.creative + '.html'], function (creativeTpl) {
                 if (templatePreprocessor[this.params.creative]) {
                     templatePreprocessor[this.params.creative](this);
                 }

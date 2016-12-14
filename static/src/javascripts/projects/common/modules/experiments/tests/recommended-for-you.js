@@ -135,7 +135,7 @@ define([
         }
 
         function setupComponentAttentionTracking(trackingCode) {
-            require(['ophan/ng'], function (ophan) {
+            xxxrequirexxx(['ophan/ng'], function (ophan) {
                 ophan.trackComponentAttention(trackingCode, $recommendedForYouSection[0]);
             });
         }

@@ -12,7 +12,7 @@ define([
     memoize
 ){
     var setupSonobi = memoize(function () {
-        return Promise.resolve(require(['js!sonobi.js'])).then(catchPolyfillErrors);
+        return Promise.resolve(xxxrequirexxx(['js!sonobi.js'])).then(catchPolyfillErrors);
     });
 
     // Wrap the native implementation of getOwnPropertyNames in a try-catch. If any polyfill attempts

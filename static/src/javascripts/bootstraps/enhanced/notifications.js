@@ -70,7 +70,7 @@ define([
 
         trackFollowButtonAttention: function (followElement) {
             if (followElement) {
-                require(['ophan/ng'], function (ophan) {
+                xxxrequirexxx(['ophan/ng'], function (ophan) {
                     ophan.trackComponentAttention('web-notifications--follow-button', followElement);
                 });
             }
