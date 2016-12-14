@@ -1,17 +1,10 @@
-define([
-    'projects/common/modules/crosswords/main',
-    'projects/common/modules/crosswords/comments',
-    'projects/common/modules/crosswords/series'
-], function (
-    init,
-    initComments,
-    initSeries
-) {
-    return {
-        init: function () {
-            init();
-            initComments();
-            initSeries();
-        }
-    };
-});
+import init from 'projects/common/modules/crosswords/main';
+import initComments from 'projects/common/modules/crosswords/comments';
+import initSeries from 'projects/common/modules/crosswords/series';
+export default {
+    init: function() {
+        init();
+        initComments();
+        initSeries();
+    }
+};

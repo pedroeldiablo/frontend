@@ -1,7 +1,4 @@
-define([
-    'common/modules/preferences/main'
-], function (init) {
-    return {
-        init: init
-    };
-});
+import init from 'common/modules/preferences/main';
+export default {
+    init: init
+};

@@ -1,9 +1,7 @@
-define(function () {
+// From https://github.com/edg2s/range-get-client-rects/blob/master/rangefix.js
+var isBroken,
 
-    // From https://github.com/edg2s/range-get-client-rects/blob/master/rangefix.js
-    var isBroken,
-
-    isGetClientRectsBroken = function () {
+    isGetClientRectsBroken = function() {
         // Check if the bug is present in the native function
         // Constructs two lines of text and creates a range between them.
         // Broken browsers will return three rectangles instead of two.
@@ -30,7 +28,7 @@ define(function () {
         return isBroken;
     },
 
-    getClientRects = function (range) {
+    getClientRects = function(range) {
         if (!isGetClientRectsBroken()) {
             return range.getClientRects();
         }
@@ -64,7 +62,7 @@ define(function () {
         return rects;
     },
 
-    getBoundingClientRect = function (range) {
+    getBoundingClientRect = function(range) {
         var i, l, boundingRect,
             rects = getClientRects(range),
             nativeBoundingRect = range.getBoundingClientRect();
@@ -112,9 +110,7 @@ define(function () {
         return boundingRect;
     };
 
-    return {
-        getClientRects: getClientRects,
-        getBoundingClientRect: getBoundingClientRect
-    };
-
-});
+export default {
+    getClientRects: getClientRects,
+    getBoundingClientRect: getBoundingClientRect
+};

@@ -1,37 +1,31 @@
-define([
-    'common/utils/config',
-    'common/utils/cookies',
-    'common/utils/detect'
-], function (
-    config,
-    Cookie,
-    detect
-    ) {
+import config from 'common/utils/config';
+import Cookie from 'common/utils/cookies';
+import detect from 'common/utils/detect';
 
-    function openForesee() {
-        xxxrequirexxx(['js!foresee.js']);
+function openForesee() {
+    xxxrequirexxx(['js!foresee.js']);
+}
+
+function load() {
+
+    var isNetworkFront = config.page.contentType === 'Network Front',
+        isProfilePage = config.page.contentType === 'userid',
+        sampleRate = detect.isBreakpoint({
+            max: 'mobile'
+        }) ? 0.008 : 0.006, // 0.8% mobile and 0.6% rest
+        sample = Math.random() <= sampleRate,
+        hasForcedOptIn = /forceForesee/.test(location.hash);
+
+    // the Foresee code is large, we only want to load it in when necessary.
+    if (!Cookie.get('GU_TEST') && !isNetworkFront && !isProfilePage && (window.openForeseeWhenReady || sample || hasForcedOptIn)) {
+        openForesee();
     }
 
-    function load() {
-
-        var isNetworkFront = config.page.contentType === 'Network Front',
-            isProfilePage = config.page.contentType === 'userid',
-            sampleRate = detect.isBreakpoint({max: 'mobile'}) ? 0.008 : 0.006, // 0.8% mobile and 0.6% rest
-            sample = Math.random() <= sampleRate,
-            hasForcedOptIn = /forceForesee/.test(location.hash);
-
-        // the Foresee code is large, we only want to load it in when necessary.
-        if (!Cookie.get('GU_TEST') && !isNetworkFront && !isProfilePage && (window.openForeseeWhenReady || sample || hasForcedOptIn)) {
-            openForesee();
-        }
-
-        if (window.guardian) {
-            window.guardian.openForesee = openForesee;
-        }
+    if (window.guardian) {
+        window.guardian.openForesee = openForesee;
     }
+}
 
-    return {
-        load: load
-    };
-
-});
+export default {
+    load: load
+};

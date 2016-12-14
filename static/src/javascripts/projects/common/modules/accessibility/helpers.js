@@ -1,26 +1,20 @@
-define([
-    'fastdom',
-    'common/modules/accessibility/main',
-    'common/utils/$'
-], function (
-    fastdom,
-    accessibility,
-    $
-) {
-    function shouldHideFlashingElements(callback) {
-        if (!accessibility.isOn('flashing-elements')) {
-            fastdom.write(function () {
-                $('body').addClass('disable-flashing-elements');
-                if (callback) {
-                    callback();
-                }
-            });
-        } else if (callback) {
-            callback();
-        }
-    }
+import fastdom from 'fastdom';
+import accessibility from 'common/modules/accessibility/main';
+import $ from 'common/utils/$';
 
-    return {
-        shouldHideFlashingElements: shouldHideFlashingElements
-    };
-});
+function shouldHideFlashingElements(callback) {
+    if (!accessibility.isOn('flashing-elements')) {
+        fastdom.write(function() {
+            $('body').addClass('disable-flashing-elements');
+            if (callback) {
+                callback();
+            }
+        });
+    } else if (callback) {
+        callback();
+    }
+}
+
+export default {
+    shouldHideFlashingElements: shouldHideFlashingElements
+};

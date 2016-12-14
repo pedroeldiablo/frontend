@@ -1,81 +1,70 @@
-define([
-    'qwery',
-    'Promise',
-    'common/utils/config',
-    'common/utils/detect',
-    'common/utils/mediator',
-    'common/utils/fastdom-promise',
-    'common/modules/commercial/dfp/create-slot',
-    'common/modules/commercial/dfp/add-slot',
-    'common/modules/user-prefs',
-    'common/modules/commercial/commercial-features'
-], function (
-    qwery,
-    Promise,
-    config,
-    detect,
-    mediator,
-    fastdom,
-    createSlot,
-    addSlot,
-    userPrefs,
-    commercialFeatures
-) {
-    var containerSelector = '.fc-container:not(.fc-container--commercial)';
-    var sliceSelector = '.js-fc-slice-mpu-candidate';
-    var isNetworkFront;
+import qwery from 'qwery';
+import Promise from 'Promise';
+import config from 'common/utils/config';
+import detect from 'common/utils/detect';
+import mediator from 'common/utils/mediator';
+import fastdom from 'common/utils/fastdom-promise';
+import createSlot from 'common/modules/commercial/dfp/create-slot';
+import addSlot from 'common/modules/commercial/dfp/add-slot';
+import userPrefs from 'common/modules/user-prefs';
+import commercialFeatures from 'common/modules/commercial/commercial-features';
+var containerSelector = '.fc-container:not(.fc-container--commercial)';
+var sliceSelector = '.js-fc-slice-mpu-candidate';
+var isNetworkFront;
 
-    return {
-        init: init
-    };
+export default {
+    init: init
+};
 
-    function init() {
-        if (!commercialFeatures.sliceAdverts) {
-            return Promise.resolve(false);
-        }
+function init() {
+    if (!commercialFeatures.sliceAdverts) {
+        return Promise.resolve(false);
+    }
 
-        init.whenRendered = new Promise(function (resolve) {
-            mediator.once('page:commercial:slice-adverts', resolve);
-        });
+    init.whenRendered = new Promise(function(resolve) {
+        mediator.once('page:commercial:slice-adverts', resolve);
+    });
 
-        var prefs = userPrefs.get('container-states') || {};
-        var isMobile = detect.isBreakpoint({ max : 'phablet' });
+    var prefs = userPrefs.get('container-states') || {};
+    var isMobile = detect.isBreakpoint({
+        max: 'phablet'
+    });
 
-        isNetworkFront = ['uk', 'us', 'au'].indexOf(config.page.pageId) !== -1;
+    isNetworkFront = ['uk', 'us', 'au'].indexOf(config.page.pageId) !== -1;
 
-        // Get all containers
-        var containers = qwery(containerSelector)
+    // Get all containers
+    var containers = qwery(containerSelector)
         // Filter out closed ones
-        .filter(function (container) {
+        .filter(function(container) {
             return prefs[container.getAttribute('data-id')] !== 'closed';
         });
 
-        if (containers.length === 0) {
-            return Promise.resolve(false);
-        } else if (isMobile) {
-            insertOnMobile(containers, getSlotNameOnMobile)
+    if (containers.length === 0) {
+        return Promise.resolve(false);
+    } else if (isMobile) {
+        insertOnMobile(containers, getSlotNameOnMobile)
             .then(addSlots)
             .then(done);
-        } else {
-            insertOnDesktop(containers, getSlotNameOnDesktop)
+    } else {
+        insertOnDesktop(containers, getSlotNameOnDesktop)
             .then(addSlots)
             .then(done);
-        }
-
-        return Promise.resolve(true);
     }
 
-    // On mobile, a slot is inserted after each container
-    function insertOnMobile(containers, getSlotName) {
-        var hasThrasher = containers[0].classList.contains('fc-container--thrasher');
-        var includeNext = false;
-        var slots;
+    return Promise.resolve(true);
+}
 
-        // Remove first container if it is a thrasher
-        containers = containers
+// On mobile, a slot is inserted after each container
+function insertOnMobile(containers, getSlotName) {
+    var hasThrasher = containers[0].classList.contains('fc-container--thrasher');
+    var includeNext = false;
+    var slots;
+
+    // Remove first container if it is a thrasher
+    containers = containers
         .slice(isNetworkFront && hasThrasher ? 1 : 0)
         // Filter every other container
-        .filter(function (container) {
+        .filter(function(container) {
             if (container.nextElementSibling && container.nextElementSibling.classList.contains('fc-container--commercial')) {
                 return false;
             }
@@ -86,8 +75,8 @@ define([
         // Keep as much as 10 of them
         .slice(0, 10);
 
-        slots = containers
-        .map(function (container, index) {
+    slots = containers
+        .map(function(container, index) {
             var adName = getSlotName(index);
             var classNames = ['container-inline', 'mobile'];
             var slot, section;
@@ -104,24 +93,26 @@ define([
             return section;
         });
 
-        return fastdom.write(function () {
-            slots.forEach(function (slot, index) {
-                containers[index].parentNode.insertBefore(slot, containers[index].nextSibling);
-            });
-            return slots.map(function (_) { return _.firstChild; });
+    return fastdom.write(function() {
+        slots.forEach(function(slot, index) {
+            containers[index].parentNode.insertBefore(slot, containers[index].nextSibling);
         });
-    }
+        return slots.map(function(_) {
+            return _.firstChild;
+        });
+    });
+}
 
-    // On destkop, a slot is inserted when there is a slice available
-    function insertOnDesktop(containers, getSlotName) {
-        var slots;
+// On destkop, a slot is inserted when there is a slice available
+function insertOnDesktop(containers, getSlotName) {
+    var slots;
 
-        // Remove first container on network fronts
-        containers = containers.slice(isNetworkFront ? 1 : 0);
+    // Remove first container on network fronts
+    containers = containers.slice(isNetworkFront ? 1 : 0);
 
-        slots = containers
+    slots = containers
         // get all ad slices
-        .reduce(function (result, container) {
+        .reduce(function(result, container) {
             var slice = container.querySelector(sliceSelector);
             if (slice) {
                 result.push(slice);
@@ -131,7 +122,7 @@ define([
         // Keep a maximum of 10 containers
         .slice(0, 10)
         // create ad slots for the selected slices
-        .map(function (slice, index) {
+        .map(function(slice, index) {
             var adName = getSlotName(index);
             var classNames = ['container-inline'];
             var slot;
@@ -142,32 +133,36 @@ define([
 
             slot = createSlot(adName, classNames);
 
-            return { slice: slice, slot: slot };
+            return {
+                slice: slice,
+                slot: slot
+            };
         });
 
-        return fastdom.write(function () {
-            slots.forEach(function(item) {
-                // add a tablet+ ad to the slice
-                item.slice.classList.remove('fc-slice__item--no-mpu');
-                item.slice.appendChild(item.slot);
-            });
-            return slots.map(function (_) { return _.slot; });
+    return fastdom.write(function() {
+        slots.forEach(function(item) {
+            // add a tablet+ ad to the slice
+            item.slice.classList.remove('fc-slice__item--no-mpu');
+            item.slice.appendChild(item.slot);
         });
-    }
+        return slots.map(function(_) {
+            return _.slot;
+        });
+    });
+}
 
-    function getSlotNameOnMobile(index) {
-        return index === 0 ? 'top-above-nav' : 'inline' + index;
-    }
+function getSlotNameOnMobile(index) {
+    return index === 0 ? 'top-above-nav' : 'inline' + index;
+}
 
-    function getSlotNameOnDesktop(index) {
-        return 'inline' + (index + 1);
-    }
+function getSlotNameOnDesktop(index) {
+    return 'inline' + (index + 1);
+}
 
-    function addSlots(slots) {
-        slots.forEach(addSlot);
-    }
+function addSlots(slots) {
+    slots.forEach(addSlot);
+}
 
-    function done() {
-        mediator.emit('page:commercial:slice-adverts');
-    }
-});
+function done() {
+    mediator.emit('page:commercial:slice-adverts');
+}

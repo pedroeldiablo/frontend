@@ -1,48 +1,40 @@
-define([
-    'fastdom',
-    'common/utils/$',
-    'common/utils/fetch-json',
-    'common/utils/report-error'
-], function (
-    fastdom,
-    $,
-    fetchJson,
-    reportError
-) {
+import fastdom from 'fastdom';
+import $ from 'common/utils/$';
+import fetchJson from 'common/utils/fetch-json';
+import reportError from 'common/utils/report-error';
 
-    var ELEMENT_INITIAL_CLASS = 'element-membership--not-upgraded',
-        ELEMENT_UPGRADED_CLASS = 'element-membership--upgraded';
+var ELEMENT_INITIAL_CLASS = 'element-membership--not-upgraded',
+    ELEMENT_UPGRADED_CLASS = 'element-membership--upgraded';
 
-    function upgradeEvent(el) {
-        var href = $('a', el).attr('href'),
-            matches = href.match(/https:\/\/membership.theguardian.com/);
+function upgradeEvent(el) {
+    var href = $('a', el).attr('href'),
+        matches = href.match(/https:\/\/membership.theguardian.com/);
 
-        if (matches) {
-            fetchJson(href + '/card', {
+    if (matches) {
+        fetchJson(href + '/card', {
                 mode: 'cors'
-            }).then(function (resp) {
+            }).then(function(resp) {
                 if (resp.html) {
-                    fastdom.write(function () {
+                    fastdom.write(function() {
                         $(el).html(resp.html)
                             .removeClass(ELEMENT_INITIAL_CLASS)
                             .addClass(ELEMENT_UPGRADED_CLASS);
                     });
                 }
             })
-            .catch(function (ex) {
+            .catch(function(ex) {
                 reportError(ex, {
                     feature: 'membership-events'
                 });
             });
-        }
     }
+}
 
-    function upgradeEvents() {
-        $('.' + ELEMENT_INITIAL_CLASS).each(upgradeEvent);
-    }
+function upgradeEvents() {
+    $('.' + ELEMENT_INITIAL_CLASS).each(upgradeEvent);
+}
 
-    return {
-        upgradeEvent: upgradeEvent,
-        upgradeEvents: upgradeEvents
-    };
-});
+export default {
+    upgradeEvent: upgradeEvent,
+    upgradeEvents: upgradeEvents
+};

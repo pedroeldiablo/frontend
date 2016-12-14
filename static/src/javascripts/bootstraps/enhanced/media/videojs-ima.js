@@ -1,3 +1,4 @@
 // This is only used when we're not using hashedBundles.
 // When using hashedBundles, we use requirejs's shim.
-define(['js!videojs-ads-lib', 'js!videojs-ima-lib'], function () {});
+import 'js!videojs-ads-lib';
+import 'js!videojs-ima-lib';

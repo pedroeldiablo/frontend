@@ -2,168 +2,112 @@
 // Include any images needed in templates here.
 // This file is only required by core, and so has a long cache time.
 
-define([
-    'inlineSvg!svgs/icon/comment-16',
-    'inlineSvg!svgs/icon/marque-36',
-    'inlineSvg!svgs/icon/marque-54',
-    'inlineSvg!svgs/icon/market-down',
-    'inlineSvg!svgs/icon/market-up',
-    'inlineSvg!svgs/icon/market-same',
-    'inlineSvg!svgs/icon/arrow',
-    'inlineSvg!svgs/icon/arrow-down',
-    'inlineSvg!svgs/icon/cross',
-    'inlineSvg!svgs/icon/quote',
-    'inlineSvg!svgs/logo/logo-guardian',
-    'inlineSvg!svgs/commercial/logo-soulmates',
-    'inlineSvg!svgs/commercial/soulmates-join',
-    'inlineSvg!svgs/commercial/logo-jobs',
-    'inlineSvg!svgs/commercial/logo-masterclasses',
-    'inlineSvg!svgs/commercial/logo-masterclasses-horizontal',
-    'inlineSvg!svgs/commercial/logo-membership-horizontal',
-    'inlineSvg!svgs/commercial/logo-jobs-horizontal',
-    'inlineSvg!svgs/commercial/logo-bookshop-horizontal',
-    'inlineSvg!svgs/commercial/icon-clock',
-    'inlineSvg!svgs/commercial/icon-location',
-    'inlineSvg!svgs/commercial/icon-basket',
-    'inlineSvg!svgs/commercial/paid-content',
-    'inlineSvg!svgs/icon/close-central',
-    'inlineSvg!svgs/icon/arrow-white-right',
-    'inlineSvg!svgs/icon/arrow-right',
-    'inlineSvg!svgs/icon/bookmark',
-    'inlineSvg!svgs/icon/dropdown-mask',
-    'inlineSvg!svgs/icon/comment-anchor',
-    'inlineSvg!svgs/icon/reply',
-    'inlineSvg!svgs/icon/expand-image',
-    'inlineSvg!svgs/icon/cursor',
-    'inlineSvg!svgs/icon/plus',
-    'inlineSvg!svgs/icon/share',
-    'inlineSvg!svgs/icon/share-twitter',
-    'inlineSvg!svgs/icon/share-email',
-    'inlineSvg!svgs/icon/share-facebook',
-    'inlineSvg!svgs/icon/share-pinterest',
-    'inlineSvg!svgs/icon/share-gplus',
-    'inlineSvg!svgs/icon/external-link',
-    'inlineSvg!svgs/icon/tick',
-    'inlineSvg!svgs/icon/notification-off',
-    'inlineSvg!svgs/icon/notification-on',
-    'inlineSvg!svgs/logo/glabs-logo-small',
-    'inlineSvg!svgs/logo/membership-logo',
-    'inlineSvg!svgs/commercial/logo-membership',
-    'inlineSvg!svgs/commercial/adblock-coins',
-    'inlineSvg!svgs/notifications-explainer-desktop',
-    'inlineSvg!svgs/notifications-explainer-mobile',
-    'inlineSvg!svgs/commercial/adblock-coins-us',
-    'inlineSvg!svgs/icon/star',
-    'common/views/svg'
-], function (
-    commentCount16icon,
-    marque36icon,
-    marque54icon,
-    marketDownIcon,
-    marketUpIcon,
-    marketSameIcon,
-    arrowicon,
-    arrowdownicon,
-    crossIcon,
-    quoteIcon,
-    logoguardian,
-    logosoulmates,
-    logosoulmatesjoin,
-    logojobs,
-    logomasterclasses,
-    logomasterclasseshorizontal,
-    logomembershiphorizontal,
-    logojobshorizontal,
-    logobookshophorizontal,
-    iconClock,
-    iconLocation,
-    iconBasket,
-    paidContent,
-    closeCentralIcon,
-    arrowWhiteRight,
-    arrowRight,
-    bookmark,
-    dropdownMask,
-    commentAnchor,
-    reply,
-    expandImage,
-    cursor,
-    plus,
-    share,
-    shareTwitter,
-    shareEmail,
-    shareFacebook,
-    sharePinterest,
-    shareGPlus,
-    externalLink,
-    tick,
-    notificationsOff,
-    notificationsOn,
-    glabsLogoSmall,
-    membershipLogoWhite,
-    membershipLogo,
-    adblockCoins,
-    notificationsExplainerDesktop,
-    notificationsExplainerMobile,
-    adblockCoinsUS,
-    star,
-    svg
-) {
-    var svgs = {
-        commentCount16icon: commentCount16icon,
-        marque36icon: marque36icon,
-        marque54icon: marque54icon,
-        marketDownIcon: marketDownIcon,
-        marketUpIcon: marketUpIcon,
-        marketSameIcon: marketSameIcon,
-        arrowicon: arrowicon,
-        arrowdownicon: arrowdownicon,
-        crossIcon: crossIcon,
-        quoteIcon: quoteIcon,
-        logoguardian: logoguardian,
-        logosoulmates: logosoulmates,
-        logosoulmatesjoin: logosoulmatesjoin,
-        logojobs: logojobs,
-        logomasterclasses: logomasterclasses,
-        logomasterclasseshorizontal: logomasterclasseshorizontal,
-        logomembershiphorizontal: logomembershiphorizontal,
-        logojobshorizontal: logojobshorizontal,
-        logobookshophorizontal: logobookshophorizontal,
-        iconClock: iconClock,
-        iconLocation: iconLocation,
-        iconBasket: iconBasket,
-        paidContent: paidContent,
-        closeCentralIcon: closeCentralIcon,
-        arrowWhiteRight: arrowWhiteRight,
-        arrowRight: arrowRight,
-        bookmark: bookmark,
-        dropdownMask: dropdownMask,
-        commentAnchor: commentAnchor,
-        reply: reply,
-        expandImage: expandImage,
-        cursor: cursor,
-        plus: plus,
-        share: share,
-        shareTwitter: shareTwitter,
-        shareEmail: shareEmail,
-        shareFacebook: shareFacebook,
-        sharePinterest: sharePinterest,
-        shareGPlus: shareGPlus,
-        externalLink: externalLink,
-        tick: tick,
-        notificationsOff: notificationsOff,
-        notificationsOn: notificationsOn,
-        glabsLogoSmall: glabsLogoSmall,
-        adblockCoinsUk: adblockCoins,
-        adblockCoinsUs: adblockCoinsUS,
-        logomembership: membershipLogo,
-        notificationsExplainerDesktop: notificationsExplainerDesktop,
-        notificationsExplainerMobile: notificationsExplainerMobile,
-        star: star,
-        logomembershipwhite: membershipLogoWhite
-    };
+import commentCount16icon from 'inlineSvg!svgs/icon/comment-16';
+import marque36icon from 'inlineSvg!svgs/icon/marque-36';
+import marque54icon from 'inlineSvg!svgs/icon/marque-54';
+import marketDownIcon from 'inlineSvg!svgs/icon/market-down';
+import marketUpIcon from 'inlineSvg!svgs/icon/market-up';
+import marketSameIcon from 'inlineSvg!svgs/icon/market-same';
+import arrowicon from 'inlineSvg!svgs/icon/arrow';
+import arrowdownicon from 'inlineSvg!svgs/icon/arrow-down';
+import crossIcon from 'inlineSvg!svgs/icon/cross';
+import quoteIcon from 'inlineSvg!svgs/icon/quote';
+import logoguardian from 'inlineSvg!svgs/logo/logo-guardian';
+import logosoulmates from 'inlineSvg!svgs/commercial/logo-soulmates';
+import logosoulmatesjoin from 'inlineSvg!svgs/commercial/soulmates-join';
+import logojobs from 'inlineSvg!svgs/commercial/logo-jobs';
+import logomasterclasses from 'inlineSvg!svgs/commercial/logo-masterclasses';
+import logomasterclasseshorizontal from 'inlineSvg!svgs/commercial/logo-masterclasses-horizontal';
+import logomembershiphorizontal from 'inlineSvg!svgs/commercial/logo-membership-horizontal';
+import logojobshorizontal from 'inlineSvg!svgs/commercial/logo-jobs-horizontal';
+import logobookshophorizontal from 'inlineSvg!svgs/commercial/logo-bookshop-horizontal';
+import iconClock from 'inlineSvg!svgs/commercial/icon-clock';
+import iconLocation from 'inlineSvg!svgs/commercial/icon-location';
+import iconBasket from 'inlineSvg!svgs/commercial/icon-basket';
+import paidContent from 'inlineSvg!svgs/commercial/paid-content';
+import closeCentralIcon from 'inlineSvg!svgs/icon/close-central';
+import arrowWhiteRight from 'inlineSvg!svgs/icon/arrow-white-right';
+import arrowRight from 'inlineSvg!svgs/icon/arrow-right';
+import bookmark from 'inlineSvg!svgs/icon/bookmark';
+import dropdownMask from 'inlineSvg!svgs/icon/dropdown-mask';
+import commentAnchor from 'inlineSvg!svgs/icon/comment-anchor';
+import reply from 'inlineSvg!svgs/icon/reply';
+import expandImage from 'inlineSvg!svgs/icon/expand-image';
+import cursor from 'inlineSvg!svgs/icon/cursor';
+import plus from 'inlineSvg!svgs/icon/plus';
+import share from 'inlineSvg!svgs/icon/share';
+import shareTwitter from 'inlineSvg!svgs/icon/share-twitter';
+import shareEmail from 'inlineSvg!svgs/icon/share-email';
+import shareFacebook from 'inlineSvg!svgs/icon/share-facebook';
+import sharePinterest from 'inlineSvg!svgs/icon/share-pinterest';
+import shareGPlus from 'inlineSvg!svgs/icon/share-gplus';
+import externalLink from 'inlineSvg!svgs/icon/external-link';
+import tick from 'inlineSvg!svgs/icon/tick';
+import notificationsOff from 'inlineSvg!svgs/icon/notification-off';
+import notificationsOn from 'inlineSvg!svgs/icon/notification-on';
+import glabsLogoSmall from 'inlineSvg!svgs/logo/glabs-logo-small';
+import membershipLogoWhite from 'inlineSvg!svgs/logo/membership-logo';
+import membershipLogo from 'inlineSvg!svgs/commercial/logo-membership';
+import adblockCoins from 'inlineSvg!svgs/commercial/adblock-coins';
+import notificationsExplainerDesktop from 'inlineSvg!svgs/notifications-explainer-desktop';
+import notificationsExplainerMobile from 'inlineSvg!svgs/notifications-explainer-mobile';
+import adblockCoinsUS from 'inlineSvg!svgs/commercial/adblock-coins-us';
+import star from 'inlineSvg!svgs/icon/star';
+import svg from 'common/views/svg';
+var svgs = {
+    commentCount16icon: commentCount16icon,
+    marque36icon: marque36icon,
+    marque54icon: marque54icon,
+    marketDownIcon: marketDownIcon,
+    marketUpIcon: marketUpIcon,
+    marketSameIcon: marketSameIcon,
+    arrowicon: arrowicon,
+    arrowdownicon: arrowdownicon,
+    crossIcon: crossIcon,
+    quoteIcon: quoteIcon,
+    logoguardian: logoguardian,
+    logosoulmates: logosoulmates,
+    logosoulmatesjoin: logosoulmatesjoin,
+    logojobs: logojobs,
+    logomasterclasses: logomasterclasses,
+    logomasterclasseshorizontal: logomasterclasseshorizontal,
+    logomembershiphorizontal: logomembershiphorizontal,
+    logojobshorizontal: logojobshorizontal,
+    logobookshophorizontal: logobookshophorizontal,
+    iconClock: iconClock,
+    iconLocation: iconLocation,
+    iconBasket: iconBasket,
+    paidContent: paidContent,
+    closeCentralIcon: closeCentralIcon,
+    arrowWhiteRight: arrowWhiteRight,
+    arrowRight: arrowRight,
+    bookmark: bookmark,
+    dropdownMask: dropdownMask,
+    commentAnchor: commentAnchor,
+    reply: reply,
+    expandImage: expandImage,
+    cursor: cursor,
+    plus: plus,
+    share: share,
+    shareTwitter: shareTwitter,
+    shareEmail: shareEmail,
+    shareFacebook: shareFacebook,
+    sharePinterest: sharePinterest,
+    shareGPlus: shareGPlus,
+    externalLink: externalLink,
+    tick: tick,
+    notificationsOff: notificationsOff,
+    notificationsOn: notificationsOn,
+    glabsLogoSmall: glabsLogoSmall,
+    adblockCoinsUk: adblockCoins,
+    adblockCoinsUs: adblockCoinsUS,
+    logomembership: membershipLogo,
+    notificationsExplainerDesktop: notificationsExplainerDesktop,
+    notificationsExplainerMobile: notificationsExplainerMobile,
+    star: star,
+    logomembershipwhite: membershipLogoWhite
+};
 
-    return function (name, classes, title) {
-        return svg(svgs[name], classes, title);
-    };
-});
+export default function(name, classes, title) {
+    return svg(svgs[name], classes, title);
+};

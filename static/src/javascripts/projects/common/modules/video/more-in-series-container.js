@@ -1,26 +1,22 @@
-define([
-    'common/modules/component',
-    'common/utils/mediator'
-], function(
-    Component,
-    mediator
-) {
+import Component from 'common/modules/component';
+import mediator from 'common/utils/mediator';
 
-    function init(el, mediaType, section, shortUrl, series) {
-        var component = new Component();
-        var endpoint  = '/' + mediaType + '/section/' + section +
-                        (series ? '/' + series : '') +
-                        '.json?shortUrl=' + shortUrl +
-                        // exclude professional network content from video pages
-                        (mediaType === 'video' ? '&exclude-tag=guardian-professional/guardian-professional' : '');
+function init(el, mediaType, section, shortUrl, series) {
+    var component = new Component();
+    var endpoint = '/' + mediaType + '/section/' + section +
+        (series ? '/' + series : '') +
+        '.json?shortUrl=' + shortUrl +
+        // exclude professional network content from video pages
+        (mediaType === 'video' ? '&exclude-tag=guardian-professional/guardian-professional' : '');
 
-        component.endpoint = endpoint;
+    component.endpoint = endpoint;
 
-        component.fetch(el).then(function () {
-            mediator.emit('page:media:moreinloaded', el);
-            mediator.emit('page:new-content', el);
-        });
-    }
+    component.fetch(el).then(function() {
+        mediator.emit('page:media:moreinloaded', el);
+        mediator.emit('page:new-content', el);
+    });
+}
 
-    return { init: init };
-});
+export default {
+    init: init
+};

@@ -5,59 +5,57 @@
  *  The system is passive, and is typically used for modules which we want to
  *  run analytics over (eg. ab tests, enhancement).
  */
-define([
-    'common/utils/mediator',
-    'lodash/collections/where'
-], function (
-    mediator,
-    where
-) {
-    var register = [],
-        startTime = Date.now();
+import mediator from 'common/utils/mediator';
+import where from 'lodash/collections/where';
+var register = [],
+    startTime = Date.now();
 
-    function begin(name) {
-        register.push({
-            name: name,
-            status: 'unfinished'
+function begin(name) {
+    register.push({
+        name: name,
+        status: 'unfinished'
+    });
+}
+
+function end(name) {
+    where(register, {
+            name: name
+        })
+        .forEach(function(module) {
+            module.status = 'completed';
+            module.endTime = Date.now() - startTime + 'ms';
         });
-    }
+}
 
-    function end(name) {
-        where(register, {name: name})
-            .forEach(function (module) {
-                module.status = 'completed';
-                module.endTime = Date.now() - startTime + 'ms';
-            });
-    }
-
-    function error(name) {
-        where(register, {name: name})
-            .forEach(function (module) {
-                module.status = 'failed';
-                module.endTime = Date.now() - startTime + 'ms';
-            });
-    }
-
-    function sendEvent() {
-        xxxrequirexxx(['ophan/ng'], function (ophan) {
-            ophan.record({
-                register: register
-            });
+function error(name) {
+    where(register, {
+            name: name
+        })
+        .forEach(function(module) {
+            module.status = 'failed';
+            module.endTime = Date.now() - startTime + 'ms';
         });
-    }
+}
 
-    function initialise() {
-        mediator.on('register:begin', begin);
-        mediator.on('register:end', end);
-        mediator.on('register:error', error);
+function sendEvent() {
+    xxxrequirexxx(['ophan/ng'], function(ophan) {
+        ophan.record({
+            register: register
+        });
+    });
+}
 
-        window.setTimeout(sendEvent.bind(), 5000);
-    }
+function initialise() {
+    mediator.on('register:begin', begin);
+    mediator.on('register:end', end);
+    mediator.on('register:error', error);
 
-    return {
-        initialise: initialise,
-        begin: begin,
-        end: end,
-        error: error
-    };
-});
+    window.setTimeout(sendEvent.bind(), 5000);
+}
+
+export default {
+    initialise: initialise,
+    begin: begin,
+    end: end,
+    error: error
+};

@@ -1,28 +1,14 @@
-define([
-    'common/utils/$',
-    'bean',
-    'bonzo',
-    'common/utils/config',
-    'common/utils/mediator',
-    'common/modules/analytics/beacon',
-    'common/modules/discussion/api',
-    'common/modules/identity/api',
-    'common/modules/component',
-    'common/modules/discussion/user-avatars',
-    'common/modules/identity/validation-email'
-], function(
-    $,
-    bean,
-    bonzo,
-    config,
-    mediator,
-    beacon,
-    DiscussionApi,
-    IdentityApi,
-    Component,
-    UserAvatars,
-    ValidationEmail
-) {
+import $ from 'common/utils/$';
+import bean from 'bean';
+import bonzo from 'bonzo';
+import config from 'common/utils/config';
+import mediator from 'common/utils/mediator';
+import beacon from 'common/modules/analytics/beacon';
+import DiscussionApi from 'common/modules/discussion/api';
+import IdentityApi from 'common/modules/identity/api';
+import Component from 'common/modules/component';
+import UserAvatars from 'common/modules/discussion/user-avatars';
+import ValidationEmail from 'common/modules/identity/validation-email';
 
 /**
  * @constructor
@@ -78,7 +64,7 @@ CommentBox.prototype.errorMessages = {
     AUTH_COOKIE_INVALID: 'Sorry, your comment was not published as you are no longer signed in. Please sign in and try again.',
     'READ-ONLY-MODE': 'Sorry your comment can not currently be published as commenting is undergoing maintenance but will be back shortly. Please try again in a moment.',
     /* Custom error codes */
-    API_CORS_BLOCKED: /*CORS blocked by HTTP/1.0 proxy*/'Could not post due to your internet settings, which might be controlled by your provider. Please contact your administrator or disable any proxy servers or VPNs and try again.',
+    API_CORS_BLOCKED: /*CORS blocked by HTTP/1.0 proxy*/ 'Could not post due to your internet settings, which might be controlled by your provider. Please contact your administrator or disable any proxy servers or VPNs and try again.',
     API_ERROR: 'Sorry, there was a problem posting your comment.  Please try another browser or network connection.  Reference code ',
     EMAIL_VERIFIED: '<span class="d-comment-box__error-meta">Sent. Please check your email to verify ' +
         ' your email address' + '. Once verified post your comment.</span>',
@@ -186,8 +172,8 @@ CommentBox.prototype.ready = function() {
     // TODO (jamesgorrie): Could definitely use the this.on and make the default context this
 
     if (this.options.newCommenter) {
-         bean.on(document.body, 'submit', [this.elem], this.showOnboarding.bind(this));
-         bean.on(document.body, 'click', this.getClass('onboarding-cancel'), this.hideOnboarding.bind(this));
+        bean.on(document.body, 'submit', [this.elem], this.showOnboarding.bind(this));
+        bean.on(document.body, 'click', this.getClass('onboarding-cancel'), this.hideOnboarding.bind(this));
     } else {
         bean.on(document.body, 'submit', [this.elem], this.submitPostComment.bind(this));
     }
@@ -235,9 +221,9 @@ CommentBox.prototype.submitPostComment = function(e) {
     this.postComment();
 };
 
-CommentBox.prototype.invalidEmailError = function () {
-   this.error('EMAIL_NOT_VALIDATED');
-   ValidationEmail.init();
+CommentBox.prototype.invalidEmailError = function() {
+    this.error('EMAIL_NOT_VALIDATED');
+    ValidationEmail.init();
 };
 
 CommentBox.prototype.postComment = function() {
@@ -248,7 +234,7 @@ CommentBox.prototype.postComment = function() {
 
     self.clearErrors();
 
-    var validEmailCommentSubmission = function () {
+    var validEmailCommentSubmission = function() {
         if (comment.body === '') {
             self.error('EMPTY_COMMENT_BODY');
         }
@@ -275,7 +261,7 @@ CommentBox.prototype.postComment = function() {
         // Cookie could be stale so lets refresh and check from the api
         var createdDate = new Date(self.getUserData().accountCreatedDate);
         if (createdDate > self.options.priorToVerificationDate) {
-            IdentityApi.getUserFromApiWithRefreshedCookie().then(function (response) {
+            IdentityApi.getUserFromApiWithRefreshedCookie().then(function(response) {
                 if (response.user.statusFields.userEmailValidated === true) {
                     validEmailCommentSubmission();
                 } else {
@@ -308,8 +294,8 @@ CommentBox.prototype.error = function(type, message) {
     this.setState('invalid');
     var error = bonzo.create(
         '<div class="d-discussion__error ' + this.getClass('error', true) + '">' +
-            '<i class="i i-alert"></i>' +
-            '<span class="d-discussion__error-text">' + message + '</span>' +
+        '<i class="i i-alert"></i>' +
+        '<span class="d-discussion__error-text">' + message + '</span>' +
         '</div>'
     )[0];
     this.getElem('messages').appendChild(error);
@@ -338,8 +324,11 @@ CommentBox.prototype.fail = function(xhr) {
     var response;
     // if our API is down, it returns HTML
     // this is not so good for JSON.parse
-    try { response = JSON.parse(xhr.responseText); }
-        catch (e) { response = {}; }
+    try {
+        response = JSON.parse(xhr.responseText);
+    } catch (e) {
+        response = {};
+    }
 
     this.setFormState();
 
@@ -350,7 +339,7 @@ CommentBox.prototype.fail = function(xhr) {
     } else if (this.errorMessages[response.errorCode]) {
         this.error(response.errorCode);
     } else {
-        this.error('API_ERROR', this.errorMessages.API_ERROR + xhr.status);// templating would be ideal here
+        this.error('API_ERROR', this.errorMessages.API_ERROR + xhr.status); // templating would be ideal here
     }
 };
 
@@ -510,7 +499,7 @@ CommentBox.prototype.formatComment = function(formatStyle) {
             newText + commentBody.value.substring(commentBody.selectionEnd);
     };
 
-    switch(formatStyle) {
+    switch (formatStyle) {
         case 'bold':
             formatSelection('<b>', '</b>');
             break;
@@ -526,6 +515,4 @@ CommentBox.prototype.formatComment = function(formatStyle) {
     }
 };
 
-return CommentBox;
-
-}); // define
+export default CommentBox; // define

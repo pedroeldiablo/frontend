@@ -4,22 +4,17 @@
  * Explicitly NOT stuff that only runs on the identity pages. Put that in profile.js or I will hunt you down. I WILL
  * HUNT YOU DOWN.
  */
-define([
-    'common/utils/robust',
-    'common/modules/identity/api'
-], function (
-    robust,
-    Id
-) {
-    function setCssClass() {
-        // Used to show elements that need signin. Use .sign-in-required
-        if (Id.isUserLoggedIn()) {
-            document.documentElement.className = document.documentElement.className
-                .replace(/\bid--signed-out\b/, 'id--signed-in');
-        }
-    }
+import robust from 'common/utils/robust';
+import Id from 'common/modules/identity/api';
 
-    return function () {
-        robust.catchErrorsAndLog('i-css-class', setCssClass);
-    };
-});
+function setCssClass() {
+    // Used to show elements that need signin. Use .sign-in-required
+    if (Id.isUserLoggedIn()) {
+        document.documentElement.className = document.documentElement.className
+            .replace(/\bid--signed-out\b/, 'id--signed-in');
+    }
+}
+
+export default function() {
+    robust.catchErrorsAndLog('i-css-class', setCssClass);
+};

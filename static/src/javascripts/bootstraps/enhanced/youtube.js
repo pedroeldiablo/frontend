@@ -1,14 +1,9 @@
-define([
-    'common/modules/atoms/youtube'
-], function (
-    youtube
-) {
+import youtube from 'common/modules/atoms/youtube';
 
-    function init() {
-        youtube.checkElemsForVideos();
-    }
+function init() {
+    youtube.checkElemsForVideos();
+}
 
-    return {
-        init: init
-    };
-});
+export default {
+    init: init
+};

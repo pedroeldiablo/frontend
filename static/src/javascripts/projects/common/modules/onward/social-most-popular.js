@@ -1,21 +1,16 @@
-define([
-    'common/modules/component',
-    'common/utils/mediator'
-], function (
-    Component,
-    mediator
-) {
-    function SocialMostPopular(context, socialContext) {
-        this.context = context;
-        this.endpoint = '/most-read-' + socialContext + '.json';
-        this.fetch(this.context, 'html');
-    }
+import Component from 'common/modules/component';
+import mediator from 'common/utils/mediator';
 
-    Component.define(SocialMostPopular);
+function SocialMostPopular(context, socialContext) {
+    this.context = context;
+    this.endpoint = '/most-read-' + socialContext + '.json';
+    this.fetch(this.context, 'html');
+}
 
-    SocialMostPopular.prototype.ready = function (elem) {
-        mediator.emit('page:new-content', elem);
-    };
+Component.define(SocialMostPopular);
 
-    return SocialMostPopular;
-});
+SocialMostPopular.prototype.ready = function(elem) {
+    mediator.emit('page:new-content', elem);
+};
+
+export default SocialMostPopular;

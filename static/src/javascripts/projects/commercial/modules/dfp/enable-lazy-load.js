@@ -1,15 +1,14 @@
-define([
-    'common/utils/add-event-listener',
-    'commercial/modules/dfp/dfp-env',
-    'commercial/modules/dfp/lazy-load'
-], function (addEventListener, dfpEnv, lazyLoad) {
-    return enableLazyLoad;
+import addEventListener from 'common/utils/add-event-listener';
+import dfpEnv from 'commercial/modules/dfp/dfp-env';
+import lazyLoad from 'commercial/modules/dfp/lazy-load';
+export default enableLazyLoad;
 
-    function enableLazyLoad() {
-        if (!dfpEnv.lazyLoadEnabled) {
-            dfpEnv.lazyLoadEnabled = true;
-            addEventListener(window, 'scroll', lazyLoad, { passive: true });
-            lazyLoad();
-        }
+function enableLazyLoad() {
+    if (!dfpEnv.lazyLoadEnabled) {
+        dfpEnv.lazyLoadEnabled = true;
+        addEventListener(window, 'scroll', lazyLoad, {
+            passive: true
+        });
+        lazyLoad();
     }
-});
+}

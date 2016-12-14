@@ -1,7 +1,4 @@
-define([
-    'common/modules/sudoku/main'
-], function (init) {
-    return {
-        init: init
-    };
-});
+import init from 'common/modules/sudoku/main';
+export default {
+    init: init
+};

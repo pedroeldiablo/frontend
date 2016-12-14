@@ -1,9 +1,3 @@
-define([
-    'lodash/utilities/template'
-], function (
-    template
-) {
+import template from 'lodash/utilities/template';
 
-    return template;
-
-});
+export default template;

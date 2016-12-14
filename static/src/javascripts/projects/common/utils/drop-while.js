@@ -1,20 +1,17 @@
-define(function () {
-    return dropWhile;
+export default dropWhile;
 
-    /**
-     * Returns a subset of arr from the first element x where f(x) is false on.
-     */
-    function dropWhile(f, arr) {
-        var i = -1;
-        var size = arr.length;
-        var dropping;
+/**
+ * Returns a subset of arr from the first element x where f(x) is false on.
+ */
+function dropWhile(f, arr) {
+    var i = -1;
+    var size = arr.length;
+    var dropping;
 
-        do {
-            i += 1;
-            dropping = i < size && f(arr[i], i, arr);
-        } while (dropping);
+    do {
+        i += 1;
+        dropping = i < size && f(arr[i], i, arr);
+    } while (dropping);
 
-        return arr.slice(i);
-    }
-
-});
+    return arr.slice(i);
+}

@@ -1,9 +1,4 @@
-define([
-    'lodash/collections/map'
-], function (
-    map
-) {
-    return function (xs, f) {
-        return Array.prototype.concat.apply([], map(xs, f));
-    };
-});
+import map from 'lodash/collections/map';
+export default function(xs, f) {
+    return Array.prototype.concat.apply([], map(xs, f));
+};

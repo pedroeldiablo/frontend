@@ -1,61 +1,34 @@
-define([
-    'bean',
-    'bonzo',
-    'qwery',
-    'Promise',
-    'common/utils/$',
-    'common/utils/raven',
-    'common/utils/config',
-    'common/utils/detect',
-    'common/utils/mediator',
-    'common/utils/scroller',
-    'common/utils/fastdom-promise',
-    'common/utils/fetch-json',
-    'common/modules/analytics/discussion',
-    'common/modules/analytics/register',
-    'common/modules/component',
-    'common/modules/discussion/api',
-    'common/modules/discussion/comment-box',
-    'common/modules/discussion/comments',
-    'common/modules/discussion/discussion-frontend',
-    'common/modules/discussion/upvote',
-    'common/modules/experiments/ab',
-    'common/modules/identity/api',
-    'common/modules/user-prefs',
-    'lodash/objects/isNumber'
-], function (
-    bean,
-    bonzo,
-    qwery,
-    Promise,
-    $,
-    raven,
-    config,
-    detect,
-    mediator,
-    scroller,
-    fastdom,
-    fetchJson,
-    DiscussionAnalytics,
-    register,
-    Component,
-    DiscussionApi,
-    CommentBox,
-    Comments,
-    discussionFrontend,
-    upvote,
-    ab,
-    Id,
-    userPrefs,
-    isNumber
-) {
+import bean from 'bean';
+import bonzo from 'bonzo';
+import qwery from 'qwery';
+import Promise from 'Promise';
+import $ from 'common/utils/$';
+import raven from 'common/utils/raven';
+import config from 'common/utils/config';
+import detect from 'common/utils/detect';
+import mediator from 'common/utils/mediator';
+import scroller from 'common/utils/scroller';
+import fastdom from 'common/utils/fastdom-promise';
+import fetchJson from 'common/utils/fetch-json';
+import DiscussionAnalytics from 'common/modules/analytics/discussion';
+import register from 'common/modules/analytics/register';
+import Component from 'common/modules/component';
+import DiscussionApi from 'common/modules/discussion/api';
+import CommentBox from 'common/modules/discussion/comment-box';
+import Comments from 'common/modules/discussion/comments';
+import discussionFrontend from 'common/modules/discussion/discussion-frontend';
+import upvote from 'common/modules/discussion/upvote';
+import ab from 'common/modules/experiments/ab';
+import Id from 'common/modules/identity/api';
+import userPrefs from 'common/modules/user-prefs';
+import isNumber from 'lodash/objects/isNumber';
 
 var Loader = function() {
     register.begin('discussion');
 };
 Component.define(Loader);
 
-Loader.prototype.classes = { };
+Loader.prototype.classes = {};
 
 Loader.prototype.componentClass = 'discussion';
 Loader.prototype.comments = null;
@@ -91,7 +64,9 @@ Loader.prototype.initMainComments = function() {
     var order = userPrefs.get('discussion.order') || (this.getDiscussionClosed() ? 'oldest' : 'newest');
     var threading = userPrefs.get('discussion.threading') || 'collapsed';
 
-    var defaultPagesize = detect.isBreakpoint({min: 'tablet'}) ?  25 : 10;
+    var defaultPagesize = detect.isBreakpoint({
+        min: 'tablet'
+    }) ? 25 : 10;
 
     this.comments = new Comments({
         discussionId: this.getDiscussionId(),
@@ -105,7 +80,7 @@ Loader.prototype.initMainComments = function() {
     this.comments.on('untruncate-thread', this.removeTruncation.bind(this));
 
     this.on('click,', '.js-discussion-author-link', this.removeTruncation.bind(this));
-    this.on('click', '.js-discussion-change-page, .js-discussion-show-button', function () {
+    this.on('click', '.js-discussion-change-page, .js-discussion-show-button', function() {
         mediator.emit('discussion:comments:get-more-replies');
         self.removeTruncation();
     });
@@ -142,7 +117,9 @@ Loader.prototype.initMainComments = function() {
             }
             this.initPageSizeDropdown(pageSize);
 
-            if (config.switches.discussionPageSize && detect.isBreakpoint({min: 'tablet'})) {
+            if (config.switches.discussionPageSize && detect.isBreakpoint({
+                    min: 'tablet'
+                })) {
                 this.comments.options.pagesize = pageSize;
             }
 
@@ -157,8 +134,9 @@ Loader.prototype.initMainComments = function() {
         var shouldTruncate = !commentId && window.location.hash !== '#comments';
 
         this.loadComments({
-            comment: commentId,
-            shouldTruncate: shouldTruncate})
+                comment: commentId,
+                shouldTruncate: shouldTruncate
+            })
             .catch(this.logError.bind(this, 'Comments'));
     });
     this.getUser();
@@ -196,7 +174,9 @@ Loader.prototype.initPageSizeDropdown = function(pageSize) {
         this.comments.options.pagesize = selectedPageSize;
         $pagesizeLabel.text(selectedPageSize);
         userPrefs.set('discussion.pagesize', selectedPageSize);
-        this.loadComments({page: 1});
+        this.loadComments({
+            page: 1
+        });
     });
 
 };
@@ -210,7 +190,9 @@ Loader.prototype.initToolbar = function() {
         this.comments.options.order = bonzo(e.currentTarget).data('order');
         $orderLabel.text(this.comments.options.order);
         userPrefs.set('discussion.order', this.comments.options.order);
-        this.loadComments({page: 1});
+        this.loadComments({
+            page: 1
+        });
     });
 
     var $threadingLabel = $('.js-comment-threading');
@@ -225,16 +207,14 @@ Loader.prototype.initToolbar = function() {
 
     if (config.page.section === 'crosswords') {
         var $timestampsLabel = $('.js-timestamps');
-        var updateLabelText = function (prefValue) {
+        var updateLabelText = function(prefValue) {
             $timestampsLabel.text(prefValue ? 'Relative' : 'Absolute');
         };
         updateLabelText(undefined);
 
         var PREF_RELATIVE_TIMESTAMPS = 'discussion.enableRelativeTimestamps';
         // Default to true
-        var prefValue = userPrefs.get(PREF_RELATIVE_TIMESTAMPS) !== null
-            ? userPrefs.get(PREF_RELATIVE_TIMESTAMPS)
-            : true;
+        var prefValue = userPrefs.get(PREF_RELATIVE_TIMESTAMPS) !== null ? userPrefs.get(PREF_RELATIVE_TIMESTAMPS) : true;
         updateLabelText(prefValue);
 
         this.on('click', '.js-timestamps-dropdown .popup__action', function(e) {
@@ -332,7 +312,7 @@ Loader.prototype.renderCommentBar = function() {
     }
 };
 
-Loader.prototype.commentPosted = function () {
+Loader.prototype.commentPosted = function() {
     this.removeState('truncated');
     this.comments.addComment.apply(this.comments, arguments);
 };
@@ -354,7 +334,7 @@ Loader.prototype.getDiscussionClosed = function() {
     return this.elem.getAttribute('data-discussion-closed') === 'true';
 };
 
-Loader.prototype.renderCommentCount = function () {
+Loader.prototype.renderCommentCount = function() {
     if (window.curlConfig.paths['discussion-frontend-preact']) {
         return discussionFrontend.load(ab, this, {
             apiHost: config.page.discussionApiUrl,
@@ -398,12 +378,12 @@ Loader.prototype.gotoComment = function(id, fromRequest) {
         var commentsAreHidden = $('.js-discussion-main-comments').css('display') === 'none';
         // If comments are hidden, lets show them
         if (commentsAreHidden) {
-            fastdom.write(function(){
+            fastdom.write(function() {
                 thisLoader.comments.showHiddenComments();
                 thisLoader.removeState('truncated');
                 var $showAllButton = $('.d-discussion__show-all-comments');
                 $showAllButton.length && $showAllButton.addClass('u-h');
-            }).then(function(){
+            }).then(function() {
                 thisLoader.setCommentHash(id);
             });
         } else {
@@ -412,13 +392,15 @@ Loader.prototype.gotoComment = function(id, fromRequest) {
         }
     } else if (!fromRequest) {
         // If the comment isn't on the page, then we need to load the comment thread
-        thisLoader.loadComments({comment: id});
+        thisLoader.loadComments({
+            comment: id
+        });
     } else {
         // The comment didn't exist in the response
 
         // Scroll to toolbar and show message
         scroller.scrollToElement(qwery('.js-discussion-toolbar'), 100);
-        fastdom.write(function(){
+        fastdom.write(function() {
             $('.js-discussion-main-comments').prepend('<div class="d-discussion__message d-discussion__message--error">The comment you requested could not be found.</div>');
         });
 
@@ -435,7 +417,9 @@ Loader.prototype.gotoComment = function(id, fromRequest) {
 Loader.prototype.gotoPage = function(page) {
     scroller.scrollToElement(qwery('.js-discussion-toolbar'), 100);
     this.comments.relativeDates();
-    this.loadComments({page: page});
+    this.loadComments({
+        page: page
+    });
 };
 
 Loader.prototype.loadComments = function(options) {
@@ -448,23 +432,23 @@ Loader.prototype.loadComments = function(options) {
     }
 
     return this.comments.fetchComments(options)
-    .then(function(){
-        this.removeState('loading');
-        if (options && options.shouldTruncate) {
-            this.setState('truncated');
-        } else {
-            // do not call removeTruncation because it could invoke another fetch.
-            this.removeState('truncated');
-        }
-        if (this.comments.shouldShowPageSizeMessage()){
-            this.setState('pagesize-msg-show');
-        } else {
-            this.removeState('pagesize-msg-show');
-        }
-        if (options.comment) {
-            this.gotoComment(options.comment, true);
-        }
-    }.bind(this));
+        .then(function() {
+            this.removeState('loading');
+            if (options && options.shouldTruncate) {
+                this.setState('truncated');
+            } else {
+                // do not call removeTruncation because it could invoke another fetch.
+                this.removeState('truncated');
+            }
+            if (this.comments.shouldShowPageSizeMessage()) {
+                this.setState('pagesize-msg-show');
+            } else {
+                this.removeState('pagesize-msg-show');
+            }
+            if (options.comment) {
+                this.gotoComment(options.comment, true);
+            }
+        }.bind(this));
 };
 
 Loader.prototype.removeTruncation = function() {
@@ -477,6 +461,4 @@ Loader.prototype.removeTruncation = function() {
     }
 };
 
-return Loader;
-
-}); //define
+export default Loader; //define

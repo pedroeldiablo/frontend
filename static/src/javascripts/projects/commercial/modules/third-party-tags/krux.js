@@ -1,28 +1,20 @@
-define([
-    'common/utils/config',
-    'common/utils/cookies',
-    'common/utils/storage'
-], function (
-    config,
-    cookies,
-    storage
-) {
-    var kruxUrl = '//cdn.krxd.net/controltag?confid=JVZiE3vn';
+import config from 'common/utils/config';
+import cookies from 'common/utils/cookies';
+import storage from 'common/utils/storage';
+var kruxUrl = '//cdn.krxd.net/controltag?confid=JVZiE3vn';
 
-    function retrieve(n) {
-        var k = 'kx' + n;
+function retrieve(n) {
+    var k = 'kx' + n;
 
-        return storage.local.getRaw(k) || cookies.get(k + '=([^;]*)') || '';
-    }
+    return storage.local.getRaw(k) || cookies.get(k + '=([^;]*)') || '';
+}
 
-    function getSegments() {
-        return retrieve('segs') ? retrieve('segs').split(',') : [];
-    }
+function getSegments() {
+    return retrieve('segs') ? retrieve('segs').split(',') : [];
+}
 
-    return {
-        shouldRun: !(config.page.contentType == 'Network Front') && config.switches.krux,
-        url: kruxUrl,
-        getSegments: getSegments
-    };
-
-});
+export default {
+    shouldRun: !(config.page.contentType == 'Network Front') && config.switches.krux,
+    url: kruxUrl,
+    getSegments: getSegments
+};

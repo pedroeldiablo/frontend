@@ -17,67 +17,66 @@ Bundles we need to run: commercial + enhanced
 Only if we detect we should run enhance.
  */
 
-define([
-    'Promise',
-    'domReady',
-    'common/utils/raven'
-], function (
-    Promise,
-    domReady,
-    raven
-) {
-    // curl’s promise API is broken, so we must cast it to a real Promise
-    // https://github.com/cujojs/curl/issues/293
-    var promiseRequire = function (moduleIds) {
-        return Promise.resolve(xxxrequirexxx(moduleIds));
-    };
+import Promise from 'Promise';
+import domReady from 'domReady';
+import raven from 'common/utils/raven';
+// curl’s promise API is broken, so we must cast it to a real Promise
+// https://github.com/cujojs/curl/issues/293
+var promiseRequire = function(moduleIds) {
+    return Promise.resolve(xxxrequirexxx(moduleIds));
+};
 
-    var guardian = window.guardian;
-    var config = guardian.config;
+var guardian = window.guardian;
+var config = guardian.config;
 
-    var domReadyPromise = new Promise(function (resolve) { domReady(resolve); });
-
-    var bootStandard = function () {
-        return promiseRequire(['bootstraps/standard/main'])
-            .then(function (boot) { boot(); });
-    };
-
-    var bootCommercial = function () {
-        if (!config.switches.commercial) {
-            return;
-        }
-
-        if (config.page.isDev) {
-            guardian.adBlockers.onDetect.push(function (isInUse) {
-                var needsMessage = isInUse && window.console && window.console.warn;
-                var message = 'Do you have an adblocker enabled? Commercial features might fail to run, or throw exceptions.';
-                if (needsMessage) {
-                    window.console.warn(message);
-                }
-            });
-        }
-
-        return promiseRequire(['bootstraps/commercial'])
-            .then(raven.wrap(
-                    { tags: { feature: 'commercial' } },
-                    function (commercial) {
-                        commercial.init();
-                    }
-                )
-            );
-    };
-
-    var bootEnhanced = function () {
-        if (guardian.isEnhanced) {
-            return promiseRequire(['bootstraps/enhanced/main'])
-                .then(function (boot) {
-                    boot();
-                });
-        }
-    };
-
-    domReadyPromise
-        .then(bootStandard)
-        .then(bootCommercial)
-        .then(bootEnhanced);
+var domReadyPromise = new Promise(function(resolve) {
+    domReady(resolve);
 });
+
+var bootStandard = function() {
+    return promiseRequire(['bootstraps/standard/main'])
+        .then(function(boot) {
+            boot();
+        });
+};
+
+var bootCommercial = function() {
+    if (!config.switches.commercial) {
+        return;
+    }
+
+    if (config.page.isDev) {
+        guardian.adBlockers.onDetect.push(function(isInUse) {
+            var needsMessage = isInUse && window.console && window.console.warn;
+            var message = 'Do you have an adblocker enabled? Commercial features might fail to run, or throw exceptions.';
+            if (needsMessage) {
+                window.console.warn(message);
+            }
+        });
+    }
+
+    return promiseRequire(['bootstraps/commercial'])
+        .then(raven.wrap({
+                tags: {
+                    feature: 'commercial'
+                }
+            },
+            function(commercial) {
+                commercial.init();
+            }
+        ));
+};
+
+var bootEnhanced = function() {
+    if (guardian.isEnhanced) {
+        return promiseRequire(['bootstraps/enhanced/main'])
+            .then(function(boot) {
+                boot();
+            });
+    }
+};
+
+domReadyPromise
+    .then(bootStandard)
+    .then(bootCommercial)
+    .then(bootEnhanced);

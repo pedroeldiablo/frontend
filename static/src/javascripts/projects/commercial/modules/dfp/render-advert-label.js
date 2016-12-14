@@ -1,30 +1,25 @@
-define([
-    'Promise',
-    'common/utils/fastdom-promise'
-], function (
-    Promise,
-    fastdom
-) {
-    function renderAdvertLabel(adSlotNode) {
-        if (shouldRenderLabel(adSlotNode)) {
-            return fastdom.write(function () {
-                adSlotNode.insertAdjacentHTML('afterbegin', '<div class="ad-slot__label" data-test-id="ad-slot-label">Advertisement</div>');
-            });
-        } else {
-            return Promise.resolve(null);
-        }
-    }
+import Promise from 'Promise';
+import fastdom from 'common/utils/fastdom-promise';
 
-    function shouldRenderLabel(adSlotNode) {
-        return !(
-            adSlotNode.classList.contains('ad-slot--fluid') ||
-            adSlotNode.classList.contains('ad-slot--frame') ||
-            adSlotNode.classList.contains('gu-style') ||
-            adSlotNode.classList.contains('ad-slot--facebook') ||
-            adSlotNode.getAttribute('data-label') === 'false' ||
-            adSlotNode.getElementsByClassName('ad-slot__label').length
-        );
+function renderAdvertLabel(adSlotNode) {
+    if (shouldRenderLabel(adSlotNode)) {
+        return fastdom.write(function() {
+            adSlotNode.insertAdjacentHTML('afterbegin', '<div class="ad-slot__label" data-test-id="ad-slot-label">Advertisement</div>');
+        });
+    } else {
+        return Promise.resolve(null);
     }
+}
 
-    return renderAdvertLabel;
-});
+function shouldRenderLabel(adSlotNode) {
+    return !(
+        adSlotNode.classList.contains('ad-slot--fluid') ||
+        adSlotNode.classList.contains('ad-slot--frame') ||
+        adSlotNode.classList.contains('gu-style') ||
+        adSlotNode.classList.contains('ad-slot--facebook') ||
+        adSlotNode.getAttribute('data-label') === 'false' ||
+        adSlotNode.getElementsByClassName('ad-slot__label').length
+    );
+}
+
+export default renderAdvertLabel;

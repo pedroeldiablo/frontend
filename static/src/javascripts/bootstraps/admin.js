@@ -1,27 +1,19 @@
-define([
-    'admin/bootstraps/abtests',
-    'admin/bootstraps/radiator',
-    'admin/bootstraps/commercial-browser-performance',
-    'domReady'
-], function (
-    abTests,
-    radiator,
-    commercialBrowserPerformance,
-    domReady
-) {
-    domReady(function () {
-        switch (window.location.pathname) {
-            case '/analytics/abtests':
-                abTests.init();
-                break;
+import abTests from 'admin/bootstraps/abtests';
+import radiator from 'admin/bootstraps/radiator';
+import commercialBrowserPerformance from 'admin/bootstraps/commercial-browser-performance';
+import domReady from 'domReady';
+domReady(function() {
+    switch (window.location.pathname) {
+        case '/analytics/abtests':
+            abTests.init();
+            break;
 
-            case '/radiator':
-                radiator.init();
-                break;
+        case '/radiator':
+            radiator.init();
+            break;
 
-            case '/commercial/performance/browser-dashboard':
-                commercialBrowserPerformance.init();
-                break;
-        }
-    });
+        case '/commercial/performance/browser-dashboard':
+            commercialBrowserPerformance.init();
+            break;
+    }
 });

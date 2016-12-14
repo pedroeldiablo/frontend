@@ -1,84 +1,75 @@
-define([
-    'bean',
-    'bonzo',
-    'common/utils/$',
-    'common/utils/mediator',
-    'lodash/collections/contains'
-], function (
-    bean,
-    bonzo,
-    $,
-    mediator,
-    contains
-) {
+import bean from 'bean';
+import bonzo from 'bonzo';
+import $ from 'common/utils/$';
+import mediator from 'common/utils/mediator';
+import contains from 'lodash/collections/contains';
 
-    var Toggles = function (parent) {
+var Toggles = function(parent) {
 
-        var self = this,
-            controls,
-            doNotReset = ['popup--search'],
-            readyClass = 'js-toggle-ready',
-            isSignedIn = $('.js-profile-nav').hasClass('is-signed-in'),
-            component  = parent || document.body;
+    var self = this,
+        controls,
+        doNotReset = ['popup--search'],
+        readyClass = 'js-toggle-ready',
+        isSignedIn = $('.js-profile-nav').hasClass('is-signed-in'),
+        component = parent || document.body;
 
-        this.init = function () {
-            controls = Array.prototype.slice.call(component.querySelectorAll('[data-toggle]'));
+    this.init = function() {
+        controls = Array.prototype.slice.call(component.querySelectorAll('[data-toggle]'));
 
-            controls.forEach(function (control) {
-                if (!bonzo(control).hasClass(readyClass)) {
-                    var target = self.getTarget(component, control);
+        controls.forEach(function(control) {
+            if (!bonzo(control).hasClass(readyClass)) {
+                var target = self.getTarget(component, control);
 
-                    if (target && !(!isSignedIn && control.getAttribute('data-toggle-signed-in') === 'true')) {
-                        control.toggleTarget = target;
-                        bonzo(control).addClass(readyClass);
-                        bean.add(control, 'click', function (e) {
-                            e.preventDefault();
-                            self.toggle(control, controls);
-                        });
-                    }
+                if (target && !(!isSignedIn && control.getAttribute('data-toggle-signed-in') === 'true')) {
+                    control.toggleTarget = target;
+                    bonzo(control).addClass(readyClass);
+                    bean.add(control, 'click', function(e) {
+                        e.preventDefault();
+                        self.toggle(control, controls);
+                    });
                 }
-            });
-        };
-
-        this.reset = function (omitEl) {
-            controls.filter(function (control) {
-                return !(omitEl === control || contains(doNotReset, $(control).attr('data-toggle')));
-            }).map(self.close);
-        };
-
-        mediator.on('module:clickstream:click', function (clickSpec) {
-            self.reset(clickSpec ? clickSpec.target : null);
-        });
-    };
-
-    Toggles.prototype.toggle = function (control, controls) {
-        var self = this;
-
-        controls.forEach(function (c) {
-            if (c === control) {
-                self[bonzo(c).hasClass('is-active') ? 'close' : 'open'](c);
-            } else {
-                self.close(c);
             }
         });
     };
 
-    Toggles.prototype.getTarget = function (parent, control) {
-        var targetClass = bonzo(control).data('toggle');
-        if (targetClass) {
-            return parent.querySelector('.' + targetClass);
+    this.reset = function(omitEl) {
+        controls.filter(function(control) {
+            return !(omitEl === control || contains(doNotReset, $(control).attr('data-toggle')));
+        }).map(self.close);
+    };
+
+    mediator.on('module:clickstream:click', function(clickSpec) {
+        self.reset(clickSpec ? clickSpec.target : null);
+    });
+};
+
+Toggles.prototype.toggle = function(control, controls) {
+    var self = this;
+
+    controls.forEach(function(c) {
+        if (c === control) {
+            self[bonzo(c).hasClass('is-active') ? 'close' : 'open'](c);
+        } else {
+            self.close(c);
         }
-    };
+    });
+};
 
-    Toggles.prototype.open = function (c) {
-        bonzo(c).addClass('is-active');
-        bonzo(c.toggleTarget).removeClass('is-off');
-    };
+Toggles.prototype.getTarget = function(parent, control) {
+    var targetClass = bonzo(control).data('toggle');
+    if (targetClass) {
+        return parent.querySelector('.' + targetClass);
+    }
+};
 
-    Toggles.prototype.close = function (c) {
-        bonzo(c).removeClass('is-active');
-        bonzo(c.toggleTarget).addClass('is-off');
-    };
+Toggles.prototype.open = function(c) {
+    bonzo(c).addClass('is-active');
+    bonzo(c.toggleTarget).removeClass('is-off');
+};
 
-    return Toggles;
-});
+Toggles.prototype.close = function(c) {
+    bonzo(c).removeClass('is-active');
+    bonzo(c.toggleTarget).addClass('is-off');
+};
+
+export default Toggles;

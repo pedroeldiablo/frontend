@@ -1,22 +1,15 @@
-define([
-    'common/utils/config',
-    'common/utils/proximity-loader',
-    'common/modules/onward/onward-content'
-], function (
-    config,
-    proximityLoader,
-    Series
-) {
-    return function () {
+import config from 'common/utils/config';
+import proximityLoader from 'common/utils/proximity-loader';
+import Series from 'common/modules/onward/onward-content';
+export default function() {
 
-        var el = document.getElementsByClassName('js-onward');
+    var el = document.getElementsByClassName('js-onward');
 
-        if (el.length > 0) {
-            proximityLoader.add(el[0], 1500, function () {
-                if (config.page.seriesId && config.page.showRelatedContent) {
-                    new Series(document.getElementsByClassName('js-onward'));
-                }
-            });
-        }
-    };
-});
+    if (el.length > 0) {
+        proximityLoader.add(el[0], 1500, function() {
+            if (config.page.seriesId && config.page.showRelatedContent) {
+                new Series(document.getElementsByClassName('js-onward'));
+            }
+        });
+    }
+};

@@ -1,34 +1,27 @@
-define([
-    'common/utils/config',
-    'common/utils/mediator',
-    'common/modules/component',
-    'common/modules/ui/images'
-], function (
-    config,
-    mediator,
-    Component,
-    images
-) {
-    function SocialBurners() {
-        mediator.emit('register:begin', 'social-content');
-        this.endpoint = '/most-referred.json';
-    }
+import config from 'common/utils/config';
+import mediator from 'common/utils/mediator';
+import Component from 'common/modules/component';
+import images from 'common/modules/ui/images';
 
-    Component.define(SocialBurners);
+function SocialBurners() {
+    mediator.emit('register:begin', 'social-content');
+    this.endpoint = '/most-referred.json';
+}
 
-    SocialBurners.prototype.init = function () {
-        this.fetch(document.body, 'html');
-    };
+Component.define(SocialBurners);
 
-    SocialBurners.prototype.ready = function () {
-        images.upgradePictures();
-        mediator.emit('register:end', 'social-content');
-    };
+SocialBurners.prototype.init = function() {
+    this.fetch(document.body, 'html');
+};
 
-    SocialBurners.prototype.error = function () {
-        mediator.emit('modules:error', 'Failed to load social burner content on page: ' + config.page.pageId + 'common/modules/onwards/related.js');
-        mediator.emit('register:error', 'social-content');
-    };
+SocialBurners.prototype.ready = function() {
+    images.upgradePictures();
+    mediator.emit('register:end', 'social-content');
+};
 
-    return SocialBurners;
-});
+SocialBurners.prototype.error = function() {
+    mediator.emit('modules:error', 'Failed to load social burner content on page: ' + config.page.pageId + 'common/modules/onwards/related.js');
+    mediator.emit('register:error', 'social-content');
+};
+
+export default SocialBurners;
