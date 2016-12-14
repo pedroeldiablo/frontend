@@ -28,17 +28,17 @@ const Button = React.createClass({
 
 export default React.createClass({
     render() {
-        let self = this;
-        let x = this.props.x;
-        let y = this.props.y;
-        let buttonsPerRow = 7;
-        let buttonOffset = n => n * (constants.buttonSize + constants.buttonMargin);
+        const self = this;
+        const x = this.props.x;
+        const y = this.props.y;
+        const buttonsPerRow = 7;
+        const buttonOffset = n => n * (constants.buttonSize + constants.buttonMargin);
 
-        let numberButtons = map(range(9), (n) => {
-            let col = n % buttonsPerRow;
-            let row = Math.floor(n / buttonsPerRow);
-            let buttonX = x + buttonOffset(col);
-            let buttonY = y + buttonOffset(row);
+        const numberButtons = map(range(9), (n) => {
+            const col = n % buttonsPerRow;
+            const row = Math.floor(n / buttonsPerRow);
+            const buttonX = x + buttonOffset(col);
+            const buttonY = y + buttonOffset(row);
 
             return Button({
                 key: `button_${n}`,

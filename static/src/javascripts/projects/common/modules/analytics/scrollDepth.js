@@ -34,9 +34,9 @@ ScrollDepth.prototype.data = {
 
 ScrollDepth.prototype.timeSince = time => new Date().getTime() - time;
 
-ScrollDepth.prototype.getPercentageInViewPort = el => {
-    let rect = el.getBoundingClientRect();
-    let height = (window.innerHeight || document.body.clientHeight);
+ScrollDepth.prototype.getPercentageInViewPort = (el) => {
+    const rect = el.getBoundingClientRect();
+    const height = (window.innerHeight || document.body.clientHeight);
 
     if (rect.bottom < 0 || rect.bottom < height) {
         return 100;
@@ -49,14 +49,14 @@ ScrollDepth.prototype.getPercentageInViewPort = el => {
     }
 };
 
-ScrollDepth.prototype.isInViewport = el => {
+ScrollDepth.prototype.isInViewport = (el) => {
     const rect = el.getBoundingClientRect();
     return rect.top < (window.innerHeight || document.body.clientHeight) && rect.left < (window.innerWidth || document.body.clientWidth);
 };
 
 ScrollDepth.prototype.setData = function (type) {
     let currentDepth;
-    let el = this.opts[`${type}El`];
+    const el = this.opts[`${type}El`];
     if (!el) {
         return false;
     }
@@ -73,8 +73,8 @@ ScrollDepth.prototype.setData = function (type) {
 };
 
 ScrollDepth.prototype.hasDataChanged = function () {
-    let page = this.setData('page');
-    let content = (this.opts.isContent) ? this.setData('content') : false;
+    const page = this.setData('page');
+    const content = (this.opts.isContent) ? this.setData('content') : false;
     if (page || content) {
         this.log();
     }

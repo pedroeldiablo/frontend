@@ -5,9 +5,9 @@ import history from 'common/modules/onward/history';
 import reduce from 'lodash/collections/reduce';
 import isEmpty from 'lodash/objects/isEmpty';
 export default function () {
-    let placeholder = document.getElementById('preferences-history-tags');
+    const placeholder = document.getElementById('preferences-history-tags');
 
-    let initialiseSummaryTagsSettings = () => {
+    const initialiseSummaryTagsSettings = () => {
         const SummaryTagsList = React.createClass({
             getInitialState() {
                 return {
@@ -24,9 +24,9 @@ export default function () {
                 history.showInMegaNav();
             },
             render() {
-                let self = this;
+                const self = this;
 
-                let tags = reduce(this.state.popular, (obj, tag) => {
+                const tags = reduce(this.state.popular, (obj, tag) => {
                     obj[tag[0]] = React.DOM.span({
                         className: 'button button--small button--tag button--secondary',
                     },
@@ -68,8 +68,8 @@ export default function () {
                 history.showInMegaNavEnable(isEnabled);
             },
             render() {
-                let self = this;
-                let toggleAction = this.state.enabled ? 'OFF' : 'ON';
+                const self = this;
+                const toggleAction = this.state.enabled ? 'OFF' : 'ON';
 
                 return React.DOM.div({
                     'data-link-name': 'suggested links',

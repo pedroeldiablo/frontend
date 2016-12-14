@@ -12,48 +12,48 @@ import debounce from 'lodash/functions/debounce';
 import throttle from 'lodash/functions/throttle';
 import some from 'lodash/collections/some';
 
-let $body = bonzo(document.body);
-let twitterIcon = svgs('shareTwitter', ['icon', 'centered-icon']);
-let emailIcon = svgs('shareEmail', ['icon', 'centered-icon']);
+const $body = bonzo(document.body);
+const twitterIcon = svgs('shareTwitter', ['icon', 'centered-icon']);
+const emailIcon = svgs('shareEmail', ['icon', 'centered-icon']);
 
-let selectionSharing = template(sharingTemplate, {
+const selectionSharing = template(sharingTemplate, {
     twitterIcon,
     emailIcon,
 });
 
-let $selectionSharing = $.create(selectionSharing);
+const $selectionSharing = $.create(selectionSharing);
 let $twitterAction;
 let $emailAction;
-let twitterShortUrl = `${config.page.shortUrl}/stw`;
-let twitterHrefTemplate = 'https://twitter.com/intent/tweet?text=%E2%80%9C<%=text%>%E2%80%9D&url=<%=url%>';
+const twitterShortUrl = `${config.page.shortUrl}/stw`;
+const twitterHrefTemplate = 'https://twitter.com/intent/tweet?text=%E2%80%9C<%=text%>%E2%80%9D&url=<%=url%>';
 
-let // 140 - t.co length - 3 chars for quotes and url spacing
+const // 140 - t.co length - 3 chars for quotes and url spacing
 twitterMessageLimit = 114;
 
-let emailShortUrl = `${config.page.shortUrl}/sbl`;
-let emailHrefTemplate = 'mailto:?subject=<%=subject%>&body=%E2%80%9C<%=selection%>%E2%80%9D <%=url%>';
-let validAncestors = ['js-article__body', 'content__standfirst', 'block', 'caption--main', 'content__headline'];
+const emailShortUrl = `${config.page.shortUrl}/sbl`;
+const emailHrefTemplate = 'mailto:?subject=<%=subject%>&body=%E2%80%9C<%=selection%>%E2%80%9D <%=url%>';
+const validAncestors = ['js-article__body', 'content__standfirst', 'block', 'caption--main', 'content__headline'];
 
-let isValidSelection = range => // commonAncestorContainer is buggy, can't use it here.
+const isValidSelection = range => // commonAncestorContainer is buggy, can't use it here.
 some(
     validAncestors,
     className => $.ancestor(range.startContainer, className) && $.ancestor(range.endContainer, className)
 );
 
-let hideSelection = () => {
+const hideSelection = () => {
     if ($selectionSharing.hasClass('selection-sharing--active')) {
         $selectionSharing.removeClass('selection-sharing--active');
     }
 };
 
-let showSelection = () => {
+const showSelection = () => {
     if (!$selectionSharing.hasClass('selection-sharing--active')) {
         $selectionSharing.addClass('selection-sharing--active');
     }
 };
 
-let updateSelection = () => {
-    let selection = window.getSelection && document.createRange && window.getSelection();
+const updateSelection = () => {
+    const selection = window.getSelection && document.createRange && window.getSelection();
     let range;
     let rect;
     let top;
@@ -101,13 +101,13 @@ let updateSelection = () => {
     }
 };
 
-let onMouseDown = event => {
+const onMouseDown = (event) => {
     if (!$.ancestor(event.target, 'social__item')) {
         hideSelection();
     }
 };
 
-let initSelectionSharing = () => {
+const initSelectionSharing = () => {
     // The current mobile Safari returns absolute Rect co-ordinates (instead of viewport-relative),
     // and the UI is generally fiddly on touch.
     if (!detect.hasTouchScreen()) {

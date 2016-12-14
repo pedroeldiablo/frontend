@@ -15,9 +15,9 @@ import svgs from 'common/views/svgs';
 import sample from 'lodash/collections/sample';
 
 function showAdblockMessage() {
-    let adblockLink = 'https://membership.theguardian.com/supporter';
+    const adblockLink = 'https://membership.theguardian.com/supporter';
 
-    let messages = {
+    const messages = {
         UK: {
             campaign: 'ADB_UK',
             messageText: [
@@ -44,7 +44,7 @@ function showAdblockMessage() {
         },
     };
 
-    let message = messages[config.page.edition];
+    const message = messages[config.page.edition];
 
     if (message) {
         new Message('adblock-message-2016-06-15', {

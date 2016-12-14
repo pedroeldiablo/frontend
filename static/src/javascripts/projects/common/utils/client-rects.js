@@ -1,16 +1,16 @@
 // From https://github.com/edg2s/range-get-client-rects/blob/master/rangefix.js
 let isBroken;
 
-let isGetClientRectsBroken = () => {
+const isGetClientRectsBroken = () => {
     // Check if the bug is present in the native function
     // Constructs two lines of text and creates a range between them.
     // Broken browsers will return three rectangles instead of two.
     if (isBroken === undefined) {
-        let p1 = document.createElement('p');
-        let p2 = document.createElement('p');
-        let t1 = document.createTextNode('aa');
-        let t2 = document.createTextNode('aa');
-        let range = document.createRange();
+        const p1 = document.createElement('p');
+        const p2 = document.createElement('p');
+        const t1 = document.createTextNode('aa');
+        const t2 = document.createTextNode('aa');
+        const range = document.createRange();
 
         p1.appendChild(t1);
         p2.appendChild(t2);
@@ -28,7 +28,7 @@ let isGetClientRectsBroken = () => {
     return isBroken;
 };
 
-let getClientRects = range => {
+const getClientRects = (range) => {
     if (!isGetClientRectsBroken()) {
         return range.getClientRects();
     }
@@ -38,7 +38,7 @@ let getClientRects = range => {
     // we reach the common ancestor, then we can add on from start to where
     // we got up to
     // https://code.google.com/p/chromium/issues/detail?id=324437
-    let rects = [];
+    const rects = [];
 
     let endContainer = range.endContainer;
     let endOffset = range.endOffset;
@@ -63,12 +63,12 @@ let getClientRects = range => {
     return rects;
 };
 
-let getBoundingClientRect = range => {
+const getBoundingClientRect = (range) => {
     let i;
     let l;
     let boundingRect;
-    let rects = getClientRects(range);
-    let nativeBoundingRect = range.getBoundingClientRect();
+    const rects = getClientRects(range);
+    const nativeBoundingRect = range.getBoundingClientRect();
 
     // If there are no rects return null, otherwise we'll fall through to
     // getBoundingClientRect, which in Chrome becomes [0,0,0,0].

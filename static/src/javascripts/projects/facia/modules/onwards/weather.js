@@ -27,7 +27,7 @@ import contains from 'lodash/collections/contains';
 
 let $holder = null;
 let searchTool = null;
-let prefName = 'weather-location';
+const prefName = 'weather-location';
 
 export default {
     init() {
@@ -176,8 +176,8 @@ export default {
     },
 
     renderForecast(forecastData) {
-        let $forecastHolder = $('.js-weather-forecast');
-        let tmpl = forecastData.html;
+        const $forecastHolder = $('.js-weather-forecast');
+        const tmpl = forecastData.html;
 
         $forecastHolder.empty().html(tmpl);
     },

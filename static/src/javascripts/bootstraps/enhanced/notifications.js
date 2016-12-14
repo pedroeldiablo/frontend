@@ -54,11 +54,11 @@ const modules = {
     },
 
     configureSubscribeButton() {
-        let $follow = $('.js-notifications__toggle');
-        let isSubscribed = modules.checkSubscriptions();
-        let handler = isSubscribed ? modules.unSubscribeHandler : modules.subscribeHandler;
+        const $follow = $('.js-notifications__toggle');
+        const isSubscribed = modules.checkSubscriptions();
+        const handler = isSubscribed ? modules.unSubscribeHandler : modules.subscribeHandler;
 
-        let src = template(followLink, {
+        const src = template(followLink, {
             isSubscribed,
             icon: svgs(isSubscribed ? 'notificationsOff' : 'notificationsOn'),
         });
@@ -145,8 +145,8 @@ const modules = {
         const notificationsEndpoint = '/notification/delete';
         return modules.updateSubscription(notificationsEndpoint).then(
             () => {
-                let subscriptions = modules.getSubscriptions();
-                let newSubscriptions = without(subscriptions, config.page.pageId);
+                const subscriptions = modules.getSubscriptions();
+                const newSubscriptions = without(subscriptions, config.page.pageId);
                 userPrefs.set('subscriptions', uniq(newSubscriptions));
             }
         );

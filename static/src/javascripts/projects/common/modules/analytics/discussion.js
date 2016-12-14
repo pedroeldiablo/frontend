@@ -50,7 +50,7 @@ track.scrolledToComments = () => {
 track.areCommentsSeen = () => {
     let timer;
 
-    let scroll = () => {
+    const scroll = () => {
         if (!track.seen && !timer && track.areCommentsVisible()) {
             track.scrolledToComments();
             mediator.off('window:throttledScroll', debounce(scroll, 200));
@@ -63,9 +63,9 @@ track.areCommentsSeen = () => {
 };
 
 track.areCommentsVisible = () => {
-    let comments = $('#comments').offset();
-    let scrollTop = window.pageYOffset;
-    let viewport = bonzo.viewport().height;
+    const comments = $('#comments').offset();
+    const scrollTop = window.pageYOffset;
+    const viewport = bonzo.viewport().height;
 
     if ((comments.top - ((viewport / 2)) < scrollTop) &&
         ((comments.top + comments.height) - (viewport / 3) > scrollTop)) {

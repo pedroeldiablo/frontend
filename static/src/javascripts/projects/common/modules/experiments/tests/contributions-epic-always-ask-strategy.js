@@ -66,7 +66,7 @@ export default function () {
         },
     };
 
-    const componentWriter = component => {
+    const componentWriter = (component) => {
         fastdom.write(() => {
             const submetaElement = $('.submeta');
             if (submetaElement.length > 0) {
@@ -84,7 +84,7 @@ export default function () {
         });
     };
 
-    const registerViewListener = complete => {
+    const registerViewListener = (complete) => {
         mediator.on(epicViewedEvent, complete);
     };
 

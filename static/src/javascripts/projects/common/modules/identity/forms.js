@@ -4,7 +4,7 @@ import bonzo from 'bonzo';
 function forgottenEmail() {
     let hashEmail;
     let input;
-    let form = document.body.querySelector('.js-reset-form');
+    const form = document.body.querySelector('.js-reset-form');
     if (form) {
         hashEmail = window.location.hash.match('email=([^&#]*)');
         if (hashEmail) {
@@ -18,7 +18,7 @@ function forgottenPassword() {
     let email;
     let link;
     let href;
-    let form = document.body.querySelector('.js-signin-form');
+    const form = document.body.querySelector('.js-signin-form');
     if (form) {
         email = form.querySelector('.js-signin-email');
         link = form.querySelector('.js-forgotten-password');
@@ -38,7 +38,7 @@ function passwordToggle() {
     let toggleClass;
     let toggleTmpl;
     let $toggle;
-    let form = document.body.querySelector('.js-register-form');
+    const form = document.body.querySelector('.js-register-form');
     if (form) {
         password = form.querySelector('.js-register-password');
         toggleClass = 'js-toggle-password';
@@ -51,9 +51,9 @@ function passwordToggle() {
         $toggle.previous().addClass('form-field__note--left');
         bean.add($toggle[0], `.${toggleClass}`, 'click', (e) => {
             e.preventDefault();
-            let link = e.target;
-            let inputType = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            let label = link.getAttribute(`data-${inputType}-label`);
+            const link = e.target;
+            const inputType = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            const label = link.getAttribute(`data-${inputType}-label`);
             password.setAttribute('type', inputType);
             bonzo(link).text(label);
         });

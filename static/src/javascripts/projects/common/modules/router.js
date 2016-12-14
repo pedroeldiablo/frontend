@@ -1,9 +1,9 @@
 // Client-side routing module
 // Heavily inspired by https://github.com/PaulKinlan/leviroutes/blob/master/routes.js
 function Router() {
-    let routes = [];
+    const routes = [];
 
-    let matchRoute = url => {
+    const matchRoute = (url) => {
         let i;
         let routeExec;
         let routeMatch;
@@ -37,10 +37,10 @@ function Router() {
     };
 
     this.parseRoute = function (path) {
-        this.parseGroups = loc => {
-            let nameRegexp = new RegExp(':([^/.\\\\]+)', 'g');
+        this.parseGroups = (loc) => {
+            const nameRegexp = new RegExp(':([^/.\\\\]+)', 'g');
             let newRegexp = `${loc}`;
-            let groups = {};
+            const groups = {};
             let matches = null;
             let i = 0;
 

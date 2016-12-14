@@ -73,7 +73,7 @@ export default function () {
 
     };
 
-    const componentWriter = component => {
+    const componentWriter = (component) => {
         ajax({
             url: 'https://api.nextgen.guardianapps.co.uk/geolocation',
             method: 'GET',

@@ -4,9 +4,9 @@ import idApi from 'common/modules/identity/api';
 import assign from 'lodash/objects/assign';
 
 function Formstack(el, formstackId, config) {
-    let self = this;
-    let dom = {};
-    let formId = formstackId.split('-')[0];
+    const self = this;
+    const dom = {};
+    const formId = formstackId.split('-')[0];
 
     config = assign({
         idClasses: {
@@ -65,7 +65,7 @@ function Formstack(el, formstackId, config) {
         self.postMessage('ready');
     };
 
-    self.dom = user => {
+    self.dom = (user) => {
         let selector;
         let $userId;
         let $email;
@@ -119,7 +119,7 @@ function Formstack(el, formstackId, config) {
         self.postMessage('unload');
     };
 
-    self.postMessage = message => {
+    self.postMessage = (message) => {
         const domain = config.page.idUrl;
         window.top.postMessage(message, domain);
     };

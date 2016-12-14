@@ -17,7 +17,7 @@ const renderBlock = state => fastdomPromise.write(() => {
     }
 });
 
-const render = state => {
+const render = (state) => {
     state.elements.each((element) => {
         renderBlock({
             $el: $(element),

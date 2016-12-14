@@ -9,10 +9,10 @@ import range from 'lodash/arrays/range';
 
 // This size effectively determines how many calls this module needs to make.
 // Number of ajax calls = number of comments / comments per page
-let commentsPerPage = 50;
+const commentsPerPage = 50;
 
-let concurrentLimit = 3;
-let maximumCommentCount = 1000;
+const concurrentLimit = 3;
+const maximumCommentCount = 1000;
 
 // A basic Promise queue based on: http://talks.joneisen.me/presentation-javascript-concurrency-patterns/refactoru-9-23-2014.slide#25
 function runConcurrently(workFunction, items) {
@@ -76,7 +76,7 @@ WholeDiscussion.prototype.firstPageLoaded = function (resp) {
 
 // Caches a bonzo object/array of comments, so that they can be re-assembled when the load is complete.
 WholeDiscussion.prototype.storeCommentPage = function (response, page) {
-    let container = $('.d-thread--comments', bonzo.create(response.commentsHtml));
+    const container = $('.d-thread--comments', bonzo.create(response.commentsHtml));
     let comments = $('.d-comment--top-level', container);
     if (this.params.orderBy === 'newest') {
         comments = comments.map(comment => comment).reverse();

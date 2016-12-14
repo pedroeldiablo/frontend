@@ -98,14 +98,14 @@ function getSpacefinderRules() {
 function insertTagRichLink() {
     let $insertedEl;
 
-    let richLinkHrefs = $('.element-rich-link a')
+    const richLinkHrefs = $('.element-rich-link a')
     .map(el => $(el).attr('href'));
 
-    let testIfDuplicate = richLinkHref => // Tag-targeted rich links can be absolute
+    const testIfDuplicate = richLinkHref => // Tag-targeted rich links can be absolute
     contains(config.page.richLink, richLinkHref);
 
-    let isDuplicate = richLinkHrefs.some(testIfDuplicate);
-    let isSensitive = config.page.shouldHideAdverts || !config.page.showRelatedContent;
+    const isDuplicate = richLinkHrefs.some(testIfDuplicate);
+    const isSensitive = config.page.shouldHideAdverts || !config.page.showRelatedContent;
 
     if (config.page.richLink &&
         config.page.richLink.indexOf(config.page.pageId) === -1 &&

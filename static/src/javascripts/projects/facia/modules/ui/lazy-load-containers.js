@@ -7,10 +7,10 @@ import throttle from 'lodash/functions/throttle';
 const distanceBeforeLoad = detect.getViewport().height;
 
 export default function () {
-    let $frontBottom = bonzo(qwery('.js-front-bottom'));
-    let containers = qwery('.js-container--lazy-load');
+    const $frontBottom = bonzo(qwery('.js-front-bottom'));
+    const containers = qwery('.js-container--lazy-load');
 
-    let lazyLoad = throttle(() => {
+    const lazyLoad = throttle(() => {
         if (containers.length === 0) {
             mediator.off('window:throttledScroll', lazyLoad);
         } else {

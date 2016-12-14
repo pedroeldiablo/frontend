@@ -92,8 +92,8 @@ Component.prototype.attachTo = function (elem) {
  */
 Component.prototype.render = function (parent) {
     this.checkAttached();
-    let template = bonzo.create((this.template) ? this.template : document.getElementById(`tmpl-${this.templateName}`).innerHTML)[0];
-    let container = parent || document.body;
+    const template = bonzo.create((this.template) ? this.template : document.getElementById(`tmpl-${this.templateName}`).innerHTML)[0];
+    const container = parent || document.body;
 
     this.elem = template;
     this._prerender();
@@ -140,7 +140,7 @@ Component.prototype.fetch = function (parent, key) {
  */
 Component.prototype._fetch = function () {
     let endpoint = (typeof this.endpoint === 'function') ? this.endpoint() : this.endpoint;
-    let self = this;
+    const self = this;
     let opt;
 
     for (opt in this.options) {
@@ -366,7 +366,7 @@ Component.prototype.destroy = function () {
 /**
  * @param {Function} child
  */
-Component.define = child => {
+Component.define = (child) => {
     function Tmp() {}
     Tmp.prototype = Component.prototype;
     child.prototype = new Tmp();

@@ -19,18 +19,18 @@ import mediator from 'common/utils/mediator';
 function init() {
     const geoContinentCookie = cookies.get('GU_geo_continent');
     if (geoContinentCookie && geoContinentCookie.toUpperCase() === 'EU') {
-        let EU_COOKIE_MSG = 'GU_EU_MSG';
-        let euMessageCookie = cookies.get(EU_COOKIE_MSG);
+        const EU_COOKIE_MSG = 'GU_EU_MSG';
+        const euMessageCookie = cookies.get(EU_COOKIE_MSG);
         if (!euMessageCookie || euMessageCookie != 'seen') {
-            let link = 'https://www.theguardian.com/info/cookies';
-            let txt = `Welcome to the Guardian. This site uses cookies. Read <a href="${link}" class="cookie-message__link">our policy</a>.`;
+            const link = 'https://www.theguardian.com/info/cookies';
+            const txt = `Welcome to the Guardian. This site uses cookies. Read <a href="${link}" class="cookie-message__link">our policy</a>.`;
 
-            let opts = {
+            const opts = {
                 important: true,
             };
 
-            let cookieLifeDays = 365;
-            let msg = new Message('cookies', opts);
+            const cookieLifeDays = 365;
+            const msg = new Message('cookies', opts);
             msg.show(txt);
             cookies.add(EU_COOKIE_MSG, 'seen', cookieLifeDays);
             return true;

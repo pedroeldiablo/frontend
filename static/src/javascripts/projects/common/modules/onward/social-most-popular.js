@@ -9,7 +9,7 @@ function SocialMostPopular(context, socialContext) {
 
 Component.define(SocialMostPopular);
 
-SocialMostPopular.prototype.ready = elem => {
+SocialMostPopular.prototype.ready = (elem) => {
     mediator.emit('page:new-content', elem);
 };
 

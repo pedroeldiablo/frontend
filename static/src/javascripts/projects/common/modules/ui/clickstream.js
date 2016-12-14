@@ -4,16 +4,16 @@ import ab from 'common/modules/experiments/ab';
 import merge from 'lodash/objects/merge';
 import map from 'lodash/collections/map';
 
-const Clickstream = opts => {
+const Clickstream = (opts) => {
     opts = opts || {};
 
     // Allow a fake window.location to be passed in for testing
     const location = opts.location || window.location;
 
-    let filters = opts.filter || [];
-    let filterSource = element => filters.filter(f => (f === element));
+    const filters = opts.filter || [];
+    const filterSource = element => filters.filter(f => (f === element));
 
-    let compareHosts = url => {
+    const compareHosts = (url) => {
         let urlHost;
         let host;
 
@@ -35,14 +35,14 @@ const Clickstream = opts => {
         return !urlHost || urlHost === host;
     };
 
-    let getClickSpec = (spec, forceValid) => {
+    const getClickSpec = (spec, forceValid) => {
         // element was removed from the DOM
         if (!spec.el) {
             return false;
         }
-        let el = spec.el;
-        let elName = el.tagName.toLowerCase();
-        let dataLinkName = el.getAttribute('data-link-name');
+        const el = spec.el;
+        const elName = el.tagName.toLowerCase();
+        const dataLinkName = el.getAttribute('data-link-name');
         let href;
 
         if (dataLinkName) {

@@ -9,9 +9,9 @@ function connect(config) {
     }
 
     let $pushedContent;
-    let chatSocket = new window.WebSocket(config.page.onwardWebSocket);
+    const chatSocket = new window.WebSocket(config.page.onwardWebSocket);
 
-    let receiveEvent = event => {
+    const receiveEvent = (event) => {
         if (event && 'data' in event) {
             const data = JSON.parse(event.data);
 
@@ -27,7 +27,7 @@ function connect(config) {
         }
     };
 
-    let disconnectEvent = () => {
+    const disconnectEvent = () => {
         chatSocket.close();
         connect(config);
     };

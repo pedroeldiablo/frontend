@@ -2,11 +2,11 @@ import bonzo from 'bonzo';
 import bean from 'bean';
 
 const clamp = (elem, lines, showMore) => {
-    let height = elem.clientHeight;
-    let lineHeight = getComputedStyle(elem).getPropertyValue('line-height');
-    let maxHeight = (parseInt(lineHeight, 10) + (showMore ? 2 : 0)) * lines;
-    let $fade = bonzo(bonzo.create('<span class="clamp-fade"></span>'));
-    let $elem = bonzo(elem);
+    const height = elem.clientHeight;
+    const lineHeight = getComputedStyle(elem).getPropertyValue('line-height');
+    const maxHeight = (parseInt(lineHeight, 10) + (showMore ? 2 : 0)) * lines;
+    const $fade = bonzo(bonzo.create('<span class="clamp-fade"></span>'));
+    const $elem = bonzo(elem);
     let $showMore;
 
     if (height < maxHeight) {

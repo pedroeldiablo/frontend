@@ -8,9 +8,9 @@ function skipAd(mediaType, skipTimeout) {
     let intervalId;
     const events = {
         update() {
-            let adsManager = this.ima.getAdsManager();
-            let currentTime = adsManager.getCurrentAd().getDuration() - adsManager.getRemainingTime();
-            let skipTime = parseInt((skipTimeout - currentTime).toFixed(), 10);
+            const adsManager = this.ima.getAdsManager();
+            const currentTime = adsManager.getCurrentAd().getDuration() - adsManager.getRemainingTime();
+            const skipTime = parseInt((skipTimeout - currentTime).toFixed(), 10);
 
             if (skipTime > 0) {
                 $('.js-skip-remaining-time', this.el()).text(skipTime);

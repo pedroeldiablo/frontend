@@ -2,7 +2,7 @@ import partialRight from 'lodash/functions/partialRight';
 // We make a new chainable with each operation to prevent mutations and
 // thus allow multiple usages of a given chainable.
 
-const createObject = prototype => {
+const createObject = (prototype) => {
     if (Object.create) {
         return Object.create(prototype);
     } else {

@@ -14,13 +14,13 @@ import storage from 'common/utils/storage';
 import googleAnalytics from 'common/modules/analytics/google';
 import find from 'lodash/collections/find';
 
-let insertBottomOfArticle = $iframeEl => {
-        $iframeEl.appendTo('.js-article__body');
-    };
+const insertBottomOfArticle = ($iframeEl) => {
+    $iframeEl.appendTo('.js-article__body');
+};
 
-let isUSMinuteArticle = config.page.isMinuteArticle && config.page.keywordIds.indexOf('us-news/us-elections-2016') > -1;
+const isUSMinuteArticle = config.page.isMinuteArticle && config.page.keywordIds.indexOf('us-news/us-elections-2016') > -1;
 
-let listConfigs = {
+const listConfigs = {
     theCampaignMinute: {
         listId: '3599',
         listName: 'theCampaignMinute',
@@ -113,7 +113,7 @@ let listConfigs = {
     },
 };
 
-let getSpacefinderRules = () => ({
+const getSpacefinderRules = () => ({
     bodySelector: '.js-article__body',
     slotSelector: ' > p',
     minAbove: 200,
@@ -138,13 +138,13 @@ let getSpacefinderRules = () => ({
             minAbove: 150,
             minBelow: 200,
         },
-    }
+    },
 });
 
-let addListToPage = listConfig => {
+const addListToPage = (listConfig) => {
     if (listConfig) {
-        let iframe = bonzo.create(template(iframeTemplate, listConfig))[0];
-        let $iframeEl = $(iframe);
+        const iframe = bonzo.create(template(iframeTemplate, listConfig))[0];
+        const $iframeEl = $(iframe);
 
         bean.on(iframe, 'load', () => {
             email.init(iframe);

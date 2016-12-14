@@ -14,7 +14,7 @@ export default {
 
             if ($quizzes.length > 0) {
                 bean.on(document, 'click', toArray($quizzes), (e) => {
-                    let quiz = e.currentTarget;
+                    const quiz = e.currentTarget;
                     let total = $(':checked + .atom-quiz__answer__item--is-correct', quiz).length;
 
                     if (quiz.checkValidity()) { // the form (quiz) is complete

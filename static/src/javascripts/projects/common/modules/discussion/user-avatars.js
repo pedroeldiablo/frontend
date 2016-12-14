@@ -8,12 +8,12 @@ function init() {
 }
 
 function avatarify(el) {
-    let container = bonzo(el);
-    let updating = bonzo(bonzo.create('<div class="is-updating"></div>'));
-    let avatar = bonzo(bonzo.create('<img class="user-avatar__image" alt="" />'));
-    let avatarUserId = container.data('userid');
-    let userId = config.user ? parseInt(config.user.id) : null;
-    let ownAvatar = avatarUserId === userId;
+    const container = bonzo(el);
+    const updating = bonzo(bonzo.create('<div class="is-updating"></div>'));
+    const avatar = bonzo(bonzo.create('<img class="user-avatar__image" alt="" />'));
+    const avatarUserId = container.data('userid');
+    const userId = config.user ? parseInt(config.user.id) : null;
+    const ownAvatar = avatarUserId === userId;
 
     const updateCleanup = () => {
         updating.remove();

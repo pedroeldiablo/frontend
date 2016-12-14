@@ -119,7 +119,7 @@ function loaded(elem) {
 
 function init() {
     // We're doing this as to have one redraw
-    let extras = [];
+    const extras = [];
 
     let dropdownTemplate;
 
@@ -130,9 +130,9 @@ function init() {
         if (match.pageType === 'stats') {
             renderNav(match);
         } else {
-            let $h = $('.js-score');
+            const $h = $('.js-score');
 
-            let scoreBoard = new ScoreBoard({
+            const scoreBoard = new ScoreBoard({
                 pageType: match.pageType,
                 parent: $h,
                 responseDataKey: 'matchSummary',
@@ -211,10 +211,10 @@ function init() {
     });
 
     page.isLiveClockwatch(() => {
-        let ml = new MatchListLive('match-day', page.isCompetition() || 'premierleague', config.dateFromSlug());
-        let $img = $('.media-primary');
+        const ml = new MatchListLive('match-day', page.isCompetition() || 'premierleague', config.dateFromSlug());
+        const $img = $('.media-primary');
 
-        let $matchListContainer = $.create('<div class="football-matches__container" data-link-name="football-matches-clockwatch"></div>')
+        const $matchListContainer = $.create('<div class="football-matches__container" data-link-name="football-matches-clockwatch"></div>')
         .css({
             minHeight: $img[0] ? $img[0].offsetHeight : 0,
         });

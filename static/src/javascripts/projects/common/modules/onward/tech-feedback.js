@@ -64,8 +64,8 @@ function registerHandler(selector, addEmailHeaders) {
 function getValuesFromHash(hash) {
     const pairs = hash.substring(1).split('&');
     return reduce(pairs, (accu, pairJoined) => {
-        let pair = pairJoined.split('=');
-        let object = {};
+        const pair = pairJoined.split('=');
+        const object = {};
         if (!!pair[0] && !!pair[1]) {
             object[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
             return assign(accu, object);

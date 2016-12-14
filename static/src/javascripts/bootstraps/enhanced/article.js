@@ -15,38 +15,38 @@ import quiz from 'common/modules/atoms/quiz';
 import articleLiveblogCommon from 'bootstraps/enhanced/article-liveblog-common';
 import trail from 'bootstraps/enhanced/trail';
 
-let modules = {
-        initCmpParam() {
-            const allvars = urlutils.getUrlVars();
+const modules = {
+    initCmpParam() {
+        const allvars = urlutils.getUrlVars();
 
-            if (allvars.CMP) {
-                $('.element-pass-cmp').each((el) => {
-                    el.src = `${el.src}?CMP=${allvars.CMP}`;
-                });
-            }
-        },
-
-        initRightHandComponent() {
-            const mainColumn = qwery('.js-content-main-column');
-            // only render when we have >1000px or more (enough space for ad + most popular)
-            if (mainColumn[0] && mainColumn[0].offsetHeight > 1150 && detect.isBreakpoint({
-                min: 'desktop',
-            })) {
-                geoMostPopular.render();
-            } else {
-                mediator.emit('modules:onward:geo-most-popular:cancel');
-            }
-        },
-
-        initQuizListeners() {
-            // This event is for older-style quizzes implemented as interactives. See https://github.com/guardian/quiz-builder
-            require(['ophan/ng'], (ophan) => {
-                mediator.on('quiz/ophan-event', ophan.record);
+        if (allvars.CMP) {
+            $('.element-pass-cmp').each((el) => {
+                el.src = `${el.src}?CMP=${allvars.CMP}`;
             });
-        },
-    };
+        }
+    },
 
-let ready = () => {
+    initRightHandComponent() {
+        const mainColumn = qwery('.js-content-main-column');
+            // only render when we have >1000px or more (enough space for ad + most popular)
+        if (mainColumn[0] && mainColumn[0].offsetHeight > 1150 && detect.isBreakpoint({
+            min: 'desktop',
+        })) {
+            geoMostPopular.render();
+        } else {
+            mediator.emit('modules:onward:geo-most-popular:cancel');
+        }
+    },
+
+    initQuizListeners() {
+            // This event is for older-style quizzes implemented as interactives. See https://github.com/guardian/quiz-builder
+        require(['ophan/ng'], (ophan) => {
+            mediator.on('quiz/ophan-event', ophan.record);
+        });
+    },
+};
+
+const ready = () => {
     trail();
     articleLiveblogCommon();
     if (!shouldRemoveGeoMostPop()) {

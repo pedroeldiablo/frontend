@@ -30,13 +30,13 @@ import last from 'lodash/arrays/last';
 import sortBy from 'lodash/collections/sortBy';
 import reduceRight from 'lodash/collections/reduceRight';
 
-let editions = [
-        'uk',
-        'us',
-        'au',
-    ];
+const editions = [
+    'uk',
+    'us',
+    'au',
+];
 
-let editionalised = [
+const editionalised = [
     'business',
     'commentisfree',
     'culture',
@@ -47,7 +47,7 @@ let editionalised = [
     'technology',
 ];
 
-let pageMeta = [{
+const pageMeta = [{
     tid: 'section',
     tname: 'sectionName',
 }, {
@@ -61,7 +61,7 @@ let pageMeta = [{
     tname: 'author',
 }];
 
-let buckets = [{
+const buckets = [{
     type: 'content',
     indexInRecord: 1,
 }, {
@@ -69,13 +69,13 @@ let buckets = [{
     indexInRecord: 2,
 }];
 
-let summaryPeriodDays = 90;
-let forgetUniquesAfter = 10;
-let historySize = 50;
-let storageKeyHistory = 'gu.history';
-let storageKeySummary = 'gu.history.summary';
+const summaryPeriodDays = 90;
+const forgetUniquesAfter = 10;
+const historySize = 50;
+const storageKeyHistory = 'gu.history';
+const storageKeySummary = 'gu.history.summary';
 
-let // 1 day in ms
+const // 1 day in ms
 today = Math.floor(Date.now() / 86400000);
 
 let historyCache;
@@ -83,8 +83,8 @@ let summaryCache;
 let popularFilteredCache;
 let topNavItemsCache;
 let inMegaNav = false;
-let isEditionalisedRx = new RegExp(`^(${editions.join('|')})\/(${editionalised.join('|')})$`);
-let stripEditionRx = new RegExp(`^(${editions.join('|')})\/`);
+const isEditionalisedRx = new RegExp(`^(${editions.join('|')})\/(${editionalised.join('|')})$`);
+const stripEditionRx = new RegExp(`^(${editions.join('|')})\/`);
 
 function saveHistory(history) {
     historyCache = history;
@@ -143,8 +143,8 @@ function isRevisit(pageId) {
 }
 
 function pruneSummary(summary, mockToday) {
-    let newToday = mockToday || today;
-    let updateBy = newToday - summary.periodEnd;
+    const newToday = mockToday || today;
+    const updateBy = newToday - summary.periodEnd;
 
     if (updateBy !== 0) {
         summary.periodEnd = newToday;
@@ -171,10 +171,10 @@ function pruneSummary(summary, mockToday) {
 }
 
 function getPopular(opts) {
-    let tags = getSummary().tags;
+    const tags = getSummary().tags;
     let tids = keys(tags);
 
-    let op = assign({
+    const op = assign({
         number: 100,
         weights: {},
         thresholds: {},
@@ -184,8 +184,8 @@ function getPopular(opts) {
     tids = op.blacklist ? tids.filter(tid => op.blacklist.indexOf(tid) === -1) : tids;
 
     return chain(tids).and(map, (tid) => {
-        let record = tags[tid];
-        let rank = reduce(buckets, (rank, bucket) => rank + tally(record[bucket.indexInRecord], op.weights[bucket.type], op.thresholds[bucket.type]), 0);
+        const record = tags[tid];
+        const rank = reduce(buckets, (rank, bucket) => rank + tally(record[bucket.indexInRecord], op.weights[bucket.type], op.thresholds[bucket.type]), 0);
 
         return {
             idAndName: [tid, record[0]],
@@ -201,9 +201,9 @@ function getPopular(opts) {
 }
 
 function getContributors() {
-    let contibutors = [];
+    const contibutors = [];
     let tagId;
-    let tags = getSummary().tags;
+    const tags = getSummary().tags;
     for (tagId in tags) {
         if (tagId.indexOf('profile/') === 0) {
             contibutors.push(tags[tagId]);
@@ -239,8 +239,8 @@ function tally(visits, weight, minimum) {
     minimum = minimum || 1;
 
     result = reduce(visits, (tally, day) => {
-        let dayOffset = day[0];
-        let dayVisits = day[1];
+        const dayOffset = day[0];
+        const dayVisits = day[1];
 
         totalVisits += dayVisits;
         return tally + weight * (9 + dayVisits) * (summaryPeriodDays - dayOffset);
@@ -275,19 +275,19 @@ function reset() {
 }
 
 function logHistory(pageConfig) {
-    let pageId = pageConfig.pageId;
+    const pageId = pageConfig.pageId;
     let history;
     let foundCount = 0;
 
     if (!pageConfig.isFront) {
         history = getHistory()
             .filter((item) => {
-            let isArr = isArray(item);
-            let found = isArr && (item[0] === pageId);
+                const isArr = isArray(item);
+                const found = isArr && (item[0] === pageId);
 
-            foundCount = found ? item[1] : foundCount;
-            return isArr && !found;
-        });
+                foundCount = found ? item[1] : foundCount;
+                return isArr && !found;
+            });
 
         history.unshift([pageId, foundCount + 1]);
         saveHistory(history.slice(0, historySize));
@@ -295,13 +295,13 @@ function logHistory(pageConfig) {
 }
 
 function logSummary(pageConfig, mockToday) {
-    let summary = pruneSummary(getSummary(), mockToday);
-    let page = collapsePath(pageConfig.pageId);
+    const summary = pruneSummary(getSummary(), mockToday);
+    const page = collapsePath(pageConfig.pageId);
     let isFront = false;
 
     chain(pageMeta).and(reduceRight, (tagMeta, tag) => {
-        let tid = collapsePath(firstCsv(pageConfig[tag.tid]));
-        let tname = tid && firstCsv(pageConfig[tag.tname]);
+        const tid = collapsePath(firstCsv(pageConfig[tag.tid]));
+        const tname = tid && firstCsv(pageConfig[tag.tname]);
 
         if (tid && tname) {
             tagMeta[tid] = tname;
@@ -309,7 +309,7 @@ function logSummary(pageConfig, mockToday) {
         isFront = isFront || tid === page;
         return tagMeta;
     }, {}).and(forEach, (tname, tid) => {
-        let record = summary.tags[tid] || [];
+        const record = summary.tags[tid] || [];
         let visits;
         let today;
 

@@ -25,7 +25,7 @@ function FormstackIframe(el, config) {
         });
     };
 
-    self.onMessage = event => {
+    self.onMessage = (event) => {
         switch (event.data) {
             case 'ready':
                 self.show();
@@ -42,7 +42,7 @@ function FormstackIframe(el, config) {
         }
     };
 
-    self.refreshHeight = reset => {
+    self.refreshHeight = (reset) => {
         if (reset) {
             // If a height is set on the iframe, the following calculation
             // will be at least that height, optionally reset first
@@ -51,11 +51,11 @@ function FormstackIframe(el, config) {
             });
         }
 
-        let iframe = el.contentWindow.document;
-        let body = iframe.body;
-        let html = iframe.documentElement;
+        const iframe = el.contentWindow.document;
+        const body = iframe.body;
+        const html = iframe.documentElement;
 
-        let height = Math.max(body.scrollHeight, body.offsetHeight,
+        const height = Math.max(body.scrollHeight, body.offsetHeight,
             html.clientHeight, html.scrollHeight, html.offsetHeight);
 
         $(el).css({

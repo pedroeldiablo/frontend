@@ -75,7 +75,7 @@ function GalleryLightbox() {
     bean.on(this.infoBtn, 'click', this.trigger.bind(this, 'toggle-info'));
     this.handleKeyEvents = this.handleKeyEvents.bind(this); // bound for event handler
     this.resize = this.trigger.bind(this, 'resize');
-    this.toggleInfo = e => {
+    this.toggleInfo = (e) => {
         const infoPanelClick =
             bonzo(e.target).hasClass('js-gallery-lightbox-info') ||
             $.ancestor(e.target, 'js-gallery-lightbox-info');
@@ -108,10 +108,10 @@ function GalleryLightbox() {
 }
 
 GalleryLightbox.prototype.generateImgHTML = function (img, i) {
-    let blockShortUrl = config.page.shortUrl;
-    let urlPrefix = img.src.indexOf('//') === 0 ? 'http:' : '';
+    const blockShortUrl = config.page.shortUrl;
+    const urlPrefix = img.src.indexOf('//') === 0 ? 'http:' : '';
 
-    let shareItems = [{
+    const shareItems = [{
         text: 'Facebook',
         css: 'facebook',
         icon: svgs('shareFacebook', ['icon']),
@@ -145,7 +145,7 @@ GalleryLightbox.prototype.initSwipe = function () {
     let ox;
     let dx;
     let touchMove;
-    let updateTime = 20;
+    const updateTime = 20;
 
     bean.on(this.$swipeContainer[0], 'touchstart', (e) => {
         threshold = this.swipeContainerWidth * this.swipeThreshold;
@@ -153,7 +153,7 @@ GalleryLightbox.prototype.initSwipe = function () {
         dx = 0;
     });
 
-    touchMove = e => {
+    touchMove = (e) => {
         e.preventDefault();
         if (e.touches.length > 1 || e.scale && e.scale !== 1) {
             return;
@@ -235,8 +235,8 @@ GalleryLightbox.prototype.loadSurroundingImages = function (index, count) {
 };
 
 GalleryLightbox.prototype.translateContent = function (imgIndex, offset, duration) {
-    let px = -1 * (imgIndex - 1) * this.swipeContainerWidth;
-    let contentEl = this.$contentEl[0];
+    const px = -1 * (imgIndex - 1) * this.swipeContainerWidth;
+    const contentEl = this.$contentEl[0];
     contentEl.style.webkitTransitionDuration = `${duration}ms`;
     contentEl.style.mozTransitionDuration = `${duration}ms`;
     contentEl.style.msTransitionDuration = `${duration}ms`;
@@ -447,7 +447,7 @@ GalleryLightbox.prototype.hide = function () {
     }, 1);
 };
 
-GalleryLightbox.prototype.pulseButton = button => {
+GalleryLightbox.prototype.pulseButton = (button) => {
     const $btn = bonzo(button);
     $btn.addClass('gallery-lightbox__button-pulse');
     window.setTimeout(() => {
@@ -496,18 +496,18 @@ function bootstrap() {
             let lightbox;
             let galleryId;
             let match;
-            let galleryHash = window.location.hash;
-            let images = config.page.lightboxImages;
+            const galleryHash = window.location.hash;
+            const images = config.page.lightboxImages;
             let res;
 
             bean.on(document.body, 'click', '.js-gallerythumbs', (e) => {
                 e.preventDefault();
 
-                let $el = bonzo(e.currentTarget); // 1-based index
-                let galleryHref = $el.attr('href') || $el.attr('data-gallery-url');
-                let galleryHrefParts = galleryHref.split('#img-');
-                let parsedGalleryIndex = parseInt(galleryHrefParts[1], 10);
-                let galleryIndex = isNaN(parsedGalleryIndex) ? 1 : parsedGalleryIndex;
+                const $el = bonzo(e.currentTarget); // 1-based index
+                const galleryHref = $el.attr('href') || $el.attr('data-gallery-url');
+                const galleryHrefParts = galleryHref.split('#img-');
+                const parsedGalleryIndex = parseInt(galleryHrefParts[1], 10);
+                const galleryIndex = isNaN(parsedGalleryIndex) ? 1 : parsedGalleryIndex;
                 lightbox = lightbox || new GalleryLightbox();
 
                 lightbox.loadGalleryfromJson(images, galleryIndex);

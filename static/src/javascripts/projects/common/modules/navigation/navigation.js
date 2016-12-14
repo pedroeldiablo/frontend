@@ -28,8 +28,8 @@ const Navigation = {
     },
 
     copyMegaNavMenu() {
-        let megaNavCopy = $.create($('.js-mega-nav').html());
-        let placeholder = $('.js-mega-nav-placeholder');
+        const megaNavCopy = $.create($('.js-mega-nav').html());
+        const placeholder = $('.js-mega-nav-placeholder');
 
         fastdom.write(() => {
             $('.global-navigation', megaNavCopy).addClass('global-navigation--top');

@@ -10,14 +10,14 @@ export default React.createClass({
     },
 
     render() {
-        let self = this;
-        let value = this.props.value;
-        let x = utils.position(this.props.x);
-        let y = utils.position(this.props.y);
-        let jottingX = n => x + constants.jottingXOffset + ((n - 1) % 3) * constants.jottingWidth;
-        let jottingY = n => y + constants.jottingYOffset + Math.floor((n - 1) / 3) * constants.jottingHeight;
+        const self = this;
+        const value = this.props.value;
+        const x = utils.position(this.props.x);
+        const y = utils.position(this.props.y);
+        const jottingX = n => x + constants.jottingXOffset + ((n - 1) % 3) * constants.jottingWidth;
+        const jottingY = n => y + constants.jottingYOffset + Math.floor((n - 1) / 3) * constants.jottingHeight;
 
-        let innerCells = compact([
+        const innerCells = compact([
             React.DOM.rect({
                 key: 'background',
                 x,

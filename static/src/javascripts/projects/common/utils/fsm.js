@@ -39,7 +39,7 @@ function FiniteStateMachine(options) {
     this.onChangeState = options.onChangeState.bind(this.context) || (() => {});
 }
 
-FiniteStateMachine.prototype.log = function(...args) {
+FiniteStateMachine.prototype.log = function (...args) {
     if (this.debug && window.console && window.console.log) {
         window.console.log(...args);
     }
@@ -48,8 +48,8 @@ FiniteStateMachine.prototype.log = function(...args) {
 FiniteStateMachine.prototype.trigger = function (event, data) {
     this.log('fsm: (event)', event);
 
-    let state = this.context.state;
-    let noop = () => {};
+    const state = this.context.state;
+    const noop = () => {};
 
     (this.states[state].events[event] || noop).call(this.context, data);
 

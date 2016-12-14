@@ -53,11 +53,11 @@ function SaveForLater() {
     );
 }
 
-let bookmarkSvg = svgs('bookmark', ['rounded-icon']);
-let shortUrl = config.page.shortUrlId || '';
-let savedPlatformAnalytics = `web:${detect.getUserAgent.browser}:${detect.getBreakpoint()}`;
+const bookmarkSvg = svgs('bookmark', ['rounded-icon']);
+const shortUrl = config.page.shortUrlId || '';
+const savedPlatformAnalytics = `web:${detect.getUserAgent.browser}:${detect.getBreakpoint()}`;
 
-const getCustomEventProperties = contentId => {
+const getCustomEventProperties = (contentId) => {
     const prefix = config.page.contentType.match(/^Network Front|Section$/) ? 'Front' : 'Content';
     return {
         prop74: `${prefix}ContainerSave:${contentId}`,
@@ -205,11 +205,11 @@ SaveForLater.prototype.renderFaciaItemLinks = function (signedIn, context) {
     const elements = this.getElementsIndexedById(context);
 
     forEach(elements, (item) => {
-        let $item = $(item);
-        let $itemSaveLink = $(this.classes.itemSaveLink, item);
-        let shortUrl = item.getAttribute(this.attributes.containerItemShortUrl);
-        let id = item.getAttribute(this.attributes.containerItemDataId);
-        let isSaved = signedIn ? this.getSavedArticle(shortUrl) : false;
+        const $item = $(item);
+        const $itemSaveLink = $(this.classes.itemSaveLink, item);
+        const shortUrl = item.getAttribute(this.attributes.containerItemShortUrl);
+        const id = item.getAttribute(this.attributes.containerItemDataId);
+        const isSaved = signedIn ? this.getSavedArticle(shortUrl) : false;
 
         if ($itemSaveLink.length === 0) {
             return;
@@ -242,9 +242,9 @@ SaveForLater.prototype.renderFaciaItemLinks = function (signedIn, context) {
 
 // generic functions to save/delete an article, from anywhere
 SaveForLater.prototype.save = function (pageId, shortUrl, onSave) {
-    let date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00');
+    const date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00');
 
-    let newArticle = {
+    const newArticle = {
         id: pageId,
         shortUrl,
         date,
@@ -390,9 +390,9 @@ SaveForLater.prototype.getSavedArticle = function (shortUrl) {
 };
 
 SaveForLater.prototype.updateSavedCount = function () {
-    let $saveForLaterEl = $(this.classes.profileDropdownLink);
-    let $profileDropdownItem = $(this.classes.identityProfileItem);
-    let count = (this.userData.articles) ? this.userData.articles.length : 0;
+    const $saveForLaterEl = $(this.classes.profileDropdownLink);
+    const $profileDropdownItem = $(this.classes.identityProfileItem);
+    const count = (this.userData.articles) ? this.userData.articles.length : 0;
 
     if (count > 0) {
         $saveForLaterEl.attr('data-saved-content-count', count);

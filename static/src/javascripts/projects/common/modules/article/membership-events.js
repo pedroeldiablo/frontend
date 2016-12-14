@@ -3,12 +3,12 @@ import $ from 'common/utils/$';
 import fetchJson from 'common/utils/fetch-json';
 import reportError from 'common/utils/report-error';
 
-let ELEMENT_INITIAL_CLASS = 'element-membership--not-upgraded';
-let ELEMENT_UPGRADED_CLASS = 'element-membership--upgraded';
+const ELEMENT_INITIAL_CLASS = 'element-membership--not-upgraded';
+const ELEMENT_UPGRADED_CLASS = 'element-membership--upgraded';
 
 function upgradeEvent(el) {
-    let href = $('a', el).attr('href');
-    let matches = href.match(/https:\/\/membership.theguardian.com/);
+    const href = $('a', el).attr('href');
+    const matches = href.match(/https:\/\/membership.theguardian.com/);
 
     if (matches) {
         fetchJson(`${href}/card`, {

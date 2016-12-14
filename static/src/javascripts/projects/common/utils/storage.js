@@ -5,13 +5,13 @@
  */
 let w = window;
 
-let Storage = function (type) {
+const Storage = function (type) {
     this.type = type;
 };
 
 let isAvailable;
 
-Storage.prototype.setWindow = window => {
+Storage.prototype.setWindow = (window) => {
     w = window;
 };
 
@@ -23,8 +23,8 @@ Storage.prototype.isStorageAvailable = function (refresh) {
 };
 
 Storage.prototype.isAvailable = function (data) {
-    let testKey = 'local-storage-module-test';
-    let d = data || 'test';
+    const testKey = 'local-storage-module-test';
+    const d = data || 'test';
     try {
         // to fully test, need to set item
         // http://stackoverflow.com/questions/9077101/iphone-localstorage-quota-exceeded-err-issue#answer-12976988
@@ -47,9 +47,9 @@ Storage.prototype.set = function (key, data, options) {
         if (!w[this.type]) {
             return;
         }
-        let opts = options || {};
+        const opts = options || {};
 
-        let value = JSON.stringify({
+        const value = JSON.stringify({
             value: data,
             expires: opts.expires,
         });

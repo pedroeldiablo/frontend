@@ -6,14 +6,14 @@ import debounce from 'lodash/functions/debounce';
 
 let items = [];
 
-let scroll = {
+const scroll = {
     top: 0,
     bottom: 0,
 };
 
 let doProximityLoadingDebounced;
 
-let doProximityLoading = () => {
+const doProximityLoading = () => {
     scroll.top = window.pageYOffset;
     scroll.bottom = scroll.top + bonzo.viewport().height;
     items = filter(items, (item) => {
@@ -46,9 +46,9 @@ function addItem(conditionFn, loadFn) {
 function addProximityLoader(el, distanceThreshold, loadFn) {
     // calls `loadFn` when screen is within `distanceThreshold` of `el`
     fastdom.read(() => {
-        let $el = bonzo(el);
+        const $el = bonzo(el);
 
-        let conditionFn = () => {
+        const conditionFn = () => {
             let elOffset = $el.offset(),
                 loadAfter = elOffset.top - distanceThreshold,
                 loadBefore = elOffset.top + elOffset.height + distanceThreshold;

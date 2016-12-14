@@ -11,7 +11,7 @@ const Search = function () {
     let gcsUrl;
     let resultSetSize;
     let container;
-    let self = this;
+    const self = this;
 
     if (config.switches.googleSearch && config.page.googleSearchUrl && config.page.googleSearchId) {
         gcsUrl = `${config.page.googleSearchUrl}?cx=${config.page.googleSearchId}`;
@@ -33,9 +33,9 @@ const Search = function () {
 
         bean.on(document, 'keydown', '.gsc-input', () => {
             fastdom.read(() => {
-                let $autoCompleteObject = $('.gssb_c');
-                let searchFromTop = $autoCompleteObject.css('top');
-                let windowOffset = $(window).scrollTop();
+                const $autoCompleteObject = $('.gssb_c');
+                const searchFromTop = $autoCompleteObject.css('top');
+                const windowOffset = $(window).scrollTop();
 
                 fastdom.write(() => {
                     $autoCompleteObject.css({

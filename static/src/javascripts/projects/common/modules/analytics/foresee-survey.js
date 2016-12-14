@@ -7,16 +7,16 @@ function openForesee() {
 }
 
 function load() {
-    let isNetworkFront = config.page.contentType === 'Network Front';
-    let isProfilePage = config.page.contentType === 'userid';
+    const isNetworkFront = config.page.contentType === 'Network Front';
+    const isProfilePage = config.page.contentType === 'userid';
 
-    let // 0.8% mobile and 0.6% rest
+    const // 0.8% mobile and 0.6% rest
     sampleRate = detect.isBreakpoint({
         max: 'mobile',
     }) ? 0.008 : 0.006;
 
-    let sample = Math.random() <= sampleRate;
-    let hasForcedOptIn = /forceForesee/.test(location.hash);
+    const sample = Math.random() <= sampleRate;
+    const hasForcedOptIn = /forceForesee/.test(location.hash);
 
     // the Foresee code is large, we only want to load it in when necessary.
     if (!Cookie.get('GU_TEST') && !isNetworkFront && !isProfilePage && (window.openForeseeWhenReady || sample || hasForcedOptIn)) {

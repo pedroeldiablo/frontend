@@ -12,19 +12,19 @@ import bonzo from 'bonzo';
         showCount     : {Boolean} Whether to display the count in the CTA
         buttonAfterEl : {Element} Element to add the button after (defaults to last child of dom)
 */
-const Expandable = options => {
-    let opts = options || {};
+const Expandable = (options) => {
+    const opts = options || {};
 
-    let // root element of the trailblock
+    const // root element of the trailblock
     dom = $(opts.dom);
 
     let // true = open, false = closed
     expanded = (opts.expanded === false) ? false : true;
 
-    let cta = document.createElement('button');
-    let showCount = (opts.showCount === false) ? false : true;
+    const cta = document.createElement('button');
+    const showCount = (opts.showCount === false) ? false : true;
 
-    let renderState = () => {
+    const renderState = () => {
         if (expanded) {
             dom.removeClass('shut');
         } else {
@@ -32,9 +32,9 @@ const Expandable = options => {
         }
     };
 
-    let getCount = () => parseInt(dom.attr('data-count'), 10);
+    const getCount = () => parseInt(dom.attr('data-count'), 10);
 
-    let updateCallToAction = () => {
+    const updateCallToAction = () => {
         let text = 'Show ';
         if (showCount) {
             text += `${getCount()} `;
@@ -45,7 +45,7 @@ const Expandable = options => {
         cta.setAttribute('data-is-ajax', '1');
     };
 
-    let // Model
+    const // Model
     model = {
 
         toggleExpanded() {
@@ -61,7 +61,7 @@ const Expandable = options => {
         },
     };
 
-    let // View
+    const // View
     view = {
 
         updateCallToAction,

@@ -18,8 +18,8 @@ const modules = {
         mediator.on('page:identity:ready', (config) => {
             const attr = 'data-formstack-id';
             $(`[${attr}]`).each((el) => {
-                let id = el.getAttribute(attr);
-                let isEmbed = el.className.match(/\bformstack-embed\b/);
+                const id = el.getAttribute(attr);
+                const isEmbed = el.className.match(/\bformstack-embed\b/);
 
                 if (isEmbed) {
                     new FormstackEmbedIframe(el, id, config).init();

@@ -5,14 +5,14 @@ import mediator from 'common/utils/mediator';
 import ab from 'common/modules/experiments/ab';
 import memoize from 'lodash/functions/memoize';
 
-let selectorTopEl = '.social--top';
-let selectorBottomEl = '.social--bottom';
-let stickyClassName = 'meta__social--sticky';
-let stickyRevealClassName = 'meta__social--sticky--reveal';
-let stickyRevealableClassName = 'meta__social--sticky--revealable';
-let deadzone = 100;
-let topEl = memoize(() => $(selectorTopEl)[0]);
-let bottomEl = memoize(() => $(selectorBottomEl)[0]);
+const selectorTopEl = '.social--top';
+const selectorBottomEl = '.social--bottom';
+const stickyClassName = 'meta__social--sticky';
+const stickyRevealClassName = 'meta__social--sticky--reveal';
+const stickyRevealableClassName = 'meta__social--sticky--revealable';
+const deadzone = 100;
+const topEl = memoize(() => $(selectorTopEl)[0]);
+const bottomEl = memoize(() => $(selectorBottomEl)[0]);
 let inited = false;
 let revealed = false;
 
@@ -69,7 +69,7 @@ function moveToFirstPosition($el) {
 }
 
 function init() {
-    let testVariant = ab.getTestVariantId('ShareButtons2');
+    const testVariant = ab.getTestVariantId('ShareButtons2');
     let socialContext;
 
     if (testVariant.indexOf('referrer') > -1) {

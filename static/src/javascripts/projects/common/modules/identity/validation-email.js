@@ -6,7 +6,7 @@ import IdentityApi from 'common/modules/identity/api';
 export default {
     init() {
         let $resendButton;
-        let resendButton = document.body.querySelector('.js-id-send-validation-email');
+        const resendButton = document.body.querySelector('.js-id-send-validation-email');
 
         if (resendButton) {
             $resendButton = bonzo(resendButton);

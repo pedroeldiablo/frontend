@@ -2,10 +2,10 @@ import bean from 'bean';
 import bonzo from 'bonzo';
 
 function fullscreener() {
-    let player = this;
-    let clickbox = bonzo.create('<div class="vjs-fullscreen-clickbox"></div>')[0];
+    const player = this;
+    const clickbox = bonzo.create('<div class="vjs-fullscreen-clickbox"></div>')[0];
 
-    let events = {
+    const events = {
         click(e) {
             if (this.paused()) {
                 this.play();

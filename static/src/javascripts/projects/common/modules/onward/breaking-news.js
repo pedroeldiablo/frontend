@@ -17,15 +17,15 @@ import has from 'lodash/objects/has';
 import flatten from 'lodash/arrays/flatten';
 import pick from 'lodash/objects/pick';
 
-let supportedSections = {
-        sport: 'sport',
-        football: 'sport',
-    };
+const supportedSections = {
+    sport: 'sport',
+    football: 'sport',
+};
 
-let breakingNewsURL = '/news-alert/alerts';
-let page = config.page;
+const breakingNewsURL = '/news-alert/alerts';
+const page = config.page;
 
-let // get the users breaking news alert history
+const // get the users breaking news alert history
 // {
 //     alertID: true, <- dismissed/visited
 //     alertID: false <- seen, but not dismissed/visited
@@ -76,8 +76,8 @@ function parseResponse(response) {
 // pull out the alerts from the edition/section buckets that apply to us
 // global > current edition > current section
 function getRelevantAlerts(alerts) {
-    let edition = (page.edition || '').toLowerCase();
-    let section = supportedSections[page.section];
+    const edition = (page.edition || '').toLowerCase();
+    const section = supportedSections[page.section];
 
     return flatten([
         alerts

@@ -6,8 +6,8 @@
 import pad from 'common/utils/pad';
 import urlUtils from 'common/utils/url';
 import assign from 'common/utils/assign';
-let config = guardian.config;
-let adUnitOverride = urlUtils.getUrlVars()['ad-unit'];
+const config = guardian.config;
+const adUnitOverride = urlUtils.getUrlVars()['ad-unit'];
 
 if (adUnitOverride) {
     config.page.adUnit = ['/', config.page.dfpAccountId, '/', adUnitOverride].join('');

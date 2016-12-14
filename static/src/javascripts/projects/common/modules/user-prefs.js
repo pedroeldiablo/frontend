@@ -54,7 +54,7 @@ function isBoolean(str) {
 }
 
 function setPrefs(loc) {
-    let qs = loc.hash.substr(1).split('&');
+    const qs = loc.hash.substr(1).split('&');
     let m;
     let key;
     let val;

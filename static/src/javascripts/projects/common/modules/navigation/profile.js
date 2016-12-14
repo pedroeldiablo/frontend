@@ -47,11 +47,11 @@ Profile.prototype.init = function () {
 };
 
 Profile.prototype.setFragmentFromCookie = function () {
-    let user = id.getUserFromCookie();
-    let $container = bonzo(this.dom.container);
-    let $content = bonzo(this.dom.content);
-    let $register = bonzo(this.dom.register);
-    let $commentActivity = bonzo(this.dom.commentActivity);
+    const user = id.getUserFromCookie();
+    const $container = bonzo(this.dom.container);
+    const $content = bonzo(this.dom.content);
+    const $register = bonzo(this.dom.register);
+    const $commentActivity = bonzo(this.dom.commentActivity);
 
     if (user) {
         // Run this code only if we haven't already inserted
@@ -74,7 +74,7 @@ Profile.prototype.setFragmentFromCookie = function () {
 /**
  * @param {Object} resp response from the server
  */
-Profile.prototype.emitLoadedEvent = user => {
+Profile.prototype.emitLoadedEvent = (user) => {
     mediator.emit(`${Profile.CONFIG.eventName}:loaded`, user);
 };
 

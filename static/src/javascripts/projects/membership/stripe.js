@@ -89,7 +89,7 @@ function display(parent, card) {
         const product = $parent.data('product');
         const endpoint = `${config.page.userAttributesApiUrl}/me/${product}-update-card`;
         const email = $button.data('email');
-        return e => {
+        return (e) => {
             e.preventDefault();
             fastdom.write(loading.showDots);
 
@@ -122,7 +122,7 @@ function display(parent, card) {
      *   -id: string of the stripe token id
      */
     function update(endpoint) {
-        return token => {
+        return (token) => {
             loading.send();
             ajax({
                 url: endpoint,

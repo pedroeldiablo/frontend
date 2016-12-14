@@ -103,9 +103,9 @@ function initPlayer(withPreroll) {
 }
 
 function initExploreVideo() {
-    let player = $('.vjs-tech');
-    let headline = $('.explore-series-headline')[0];
-    let controls = $('.vjs-control-bar');
+    const player = $('.vjs-tech');
+    const headline = $('.explore-series-headline')[0];
+    const controls = $('.vjs-control-bar');
     if (player && headline && controls) {
         bean.on(player[0], 'playing', () => {
             bonzo(headline).addClass('playing');
@@ -119,16 +119,16 @@ function initExploreVideo() {
 }
 
 function enhanceVideo(el, autoplay, shouldPreroll) {
-    let mediaType = el.tagName.toLowerCase();
-    let $el = bonzo(el).addClass('vjs');
-    let mediaId = $el.attr('data-media-id');
-    let endSlateUri = $el.attr('data-end-slate');
-    let embedPath = $el.attr('data-embed-path');
+    const mediaType = el.tagName.toLowerCase();
+    const $el = bonzo(el).addClass('vjs');
+    const mediaId = $el.attr('data-media-id');
+    const endSlateUri = $el.attr('data-end-slate');
+    const embedPath = $el.attr('data-embed-path');
 
-    let // we need to look up the embedPath for main media videos
+    const // we need to look up the embedPath for main media videos
     canonicalUrl = $el.attr('data-canonical-url') || (embedPath ? embedPath : null);
 
-    let // the fallback to window.location.pathname should only happen for main media on fronts
+    const // the fallback to window.location.pathname should only happen for main media on fronts
     gaEventLabel = canonicalUrl || window.location.pathname;
 
     let player;
@@ -296,8 +296,8 @@ function enhanceVideo(el, autoplay, shouldPreroll) {
 }
 
 function initEndSlate(player, endSlatePath) {
-    let endSlate = new Component();
-    let endStateClass = 'vjs-has-ended';
+    const endSlate = new Component();
+    const endStateClass = 'vjs-has-ended';
 
     endSlate.endpoint = endSlatePath;
 

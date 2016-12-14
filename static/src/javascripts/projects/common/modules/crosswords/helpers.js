@@ -14,7 +14,7 @@ import filter from 'lodash/collections/filter';
 import some from 'lodash/collections/some';
 import chain from 'common/utils/chain';
 const isAcross = clue => clue.direction === 'across';
-const getLastCellInClue = clue => {
+const getLastCellInClue = (clue) => {
     const ax = {
         true: 'x',
         false: 'y',
@@ -61,7 +61,7 @@ const clueIsInGroup = function clueIsInGroup(clue) {
     return clue.group.length !== 1;
 };
 
-const getAllSeparatorsForGroup = clues => {
+const getAllSeparatorsForGroup = (clues) => {
     const k = {};
 
     forEach([',', '-'], (separator) => {
@@ -80,7 +80,7 @@ const getClueForGroupedEntries = clueGroup => first(clueGroup).clue;
 
 const getNumbersForGroupedEntries = clueGroup => first(clueGroup).humanNumber;
 
-const getTtotalLengthOfGroup = clueGroup => {
+const getTtotalLengthOfGroup = (clueGroup) => {
     const length = reduce(clueGroup, (total, clue) => {
         const t = total += clue.length;
         return t;
@@ -179,7 +179,7 @@ const buildGrid = (rows, columns, entries, savedState) => {
 };
 
 /** A map for looking up clues that a given cell relates to */
-const buildClueMap = clues => {
+const buildClueMap = (clues) => {
     const map = {};
 
     forEach(clues, (clue) => {

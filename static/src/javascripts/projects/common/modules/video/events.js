@@ -12,14 +12,14 @@ import throttle from 'lodash/functions/throttle';
 import forOwn from 'lodash/objects/forOwn';
 import gaHelper from 'common/modules/video/ga-helper';
 
-let isDesktop = detect.isBreakpoint({
-        min: 'desktop',
-    });
+const isDesktop = detect.isBreakpoint({
+    min: 'desktop',
+});
 
-let isEmbed = !!guardian.isEmbed;
-let QUARTILES = [25, 50, 75];
+const isEmbed = !!guardian.isEmbed;
+const QUARTILES = [25, 50, 75];
 
-let // Advert and content events used by analytics. The expected order of bean events is:
+const // Advert and content events used by analytics. The expected order of bean events is:
 EVENTS = [
     'preroll:request',
     'preroll:ready',
@@ -30,8 +30,8 @@ EVENTS = [
     'content:end',
 ];
 
-let ga = window.ga;
-let gaTracker = config.googleAnalytics.trackers.editorial;
+const ga = window.ga;
+const gaTracker = config.googleAnalytics.trackers.editorial;
 
 
 /**
@@ -155,32 +155,32 @@ function initOphanTracking(player, mediaId) {
 }
 
 function bindPrerollEvents(player) {
-    let events = {
-            end() {
-                player.trigger(constructEventName('preroll:end', player));
-                bindContentEvents(player, true);
-            },
-            start() {
-                const duration = player.duration();
-                if (duration) {
-                    player.trigger(constructEventName('preroll:play', player));
-                } else {
-                    player.one('durationchange', events.start);
-                }
-            },
-            ready() {
-                player.trigger(constructEventName('preroll:ready', player));
+    const events = {
+        end() {
+            player.trigger(constructEventName('preroll:end', player));
+            bindContentEvents(player, true);
+        },
+        start() {
+            const duration = player.duration();
+            if (duration) {
+                player.trigger(constructEventName('preroll:play', player));
+            } else {
+                player.one('durationchange', events.start);
+            }
+        },
+        ready() {
+            player.trigger(constructEventName('preroll:ready', player));
 
-                player.one('adstart', events.start);
-                player.one('adend', events.end);
+            player.one('adstart', events.start);
+            player.one('adend', events.end);
 
-                if (shouldAutoPlay(player)) {
-                    player.play();
-                }
-            },
-        };
+            if (shouldAutoPlay(player)) {
+                player.play();
+            }
+        },
+    };
 
-    let adFailed = () => {
+    const adFailed = () => {
         bindContentEvents(player);
         if (shouldAutoPlay(player)) {
             player.play();

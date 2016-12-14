@@ -19,9 +19,9 @@ import idApi from 'common/modules/identity/api';
 import assign from 'lodash/objects/assign';
 
 function Formstack(el, formstackId, config) {
-    let self = this;
-    let dom = {};
-    let formId = formstackId.split('-')[0];
+    const self = this;
+    const dom = {};
+    const formId = formstackId.split('-')[0];
 
     config = assign({
         idClasses: {
@@ -80,7 +80,7 @@ function Formstack(el, formstackId, config) {
         self.sendHeight();
     };
 
-    self.dom = user => {
+    self.dom = (user) => {
         let selector;
         let $userId;
         let $email;
@@ -118,7 +118,7 @@ function Formstack(el, formstackId, config) {
         }, false);
     };
 
-    self.submit = event => {
+    self.submit = (event) => {
         event.preventDefault();
 
         setTimeout(() => {
@@ -144,7 +144,7 @@ function Formstack(el, formstackId, config) {
         }, 100);
     };
 
-    self.scrollToTopOfIframe = top => {
+    self.scrollToTopOfIframe = (top) => {
         self.postMessage('scroll-to', 'scroll-to', 0, top);
     };
 
@@ -154,10 +154,10 @@ function Formstack(el, formstackId, config) {
     };
 
     self.sendHeight = () => {
-        let body = document.body;
-        let html = document.documentElement;
+        const body = document.body;
+        const html = document.documentElement;
 
-        let height = Math.max(body.scrollHeight, body.offsetHeight,
+        const height = Math.max(body.scrollHeight, body.offsetHeight,
             html.clientHeight, html.scrollHeight, html.offsetHeight);
 
         self.postMessage('set-height', height);

@@ -56,8 +56,8 @@ import forEach from 'lodash/collections/forEach';
 const modules = {
     initialiseTopNavItems() {
         let profile;
-        let search = new Search();
-        let header = document.getElementById('header');
+        const search = new Search();
+        const header = document.getElementById('header');
 
         if (header) {
             if (config.switches.idProfileNavigation) {

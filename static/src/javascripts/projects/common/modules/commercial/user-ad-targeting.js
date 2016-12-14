@@ -6,7 +6,7 @@ const userSegmentsKey = 'gu.ads.userSegmentsData';
 function getUserSegments() {
     if (storage.local.isAvailable()) {
         let userCookieData;
-        let userSegmentsData = storage.local.get(userSegmentsKey);
+        const userSegmentsData = storage.local.get(userSegmentsKey);
 
         if (userSegmentsData) {
             userCookieData = id.getUserFromCookie();
@@ -27,7 +27,7 @@ function requestUserSegmentsFromId() {
         id.getUserFromApi((user) => {
             if (user && user.adData) {
                 let key;
-                let userSegments = [];
+                const userSegments = [];
                 for (key in user.adData) {
                     userSegments.push(key + user.adData[key]);
                 }

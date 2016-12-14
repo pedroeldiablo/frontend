@@ -34,25 +34,25 @@ const Doughnut = (data, o) => {
         showValues: false,
     }, o || {});
 
-    let w = o.width;
-    let h = o.height || w;
-    let radius = Math.min(h / 2, w / 2);
-    let cutoutRadius = radius * (o.percentCutout / 100);
+    const w = o.width;
+    const h = o.height || w;
+    const radius = Math.min(h / 2, w / 2);
+    const cutoutRadius = radius * (o.percentCutout / 100);
 
-    let totalValue = data.reduce((a, b) => ({
+    const totalValue = data.reduce((a, b) => ({
         value: a.value + b.value,
     })).value;
 
-    let halfPI = Math.PI / 2;
-    let doublePI = Math.PI * 2;
-    let c = [w / 2, h / 2];
+    const halfPI = Math.PI / 2;
+    const doublePI = Math.PI * 2;
+    const c = [w / 2, h / 2];
 
-    let center = {
+    const center = {
         x: w / 2,
         y: h / 2,
     };
 
-    let $svg = $.create('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart chart--doughnut"></svg>')
+    const $svg = $.create('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart chart--doughnut"></svg>')
     .attr({
         width: w,
         height: h,

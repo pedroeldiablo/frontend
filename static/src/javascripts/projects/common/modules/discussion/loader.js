@@ -56,8 +56,8 @@ Loader.prototype.initTopComments = function () {
 };
 
 Loader.prototype.initMainComments = function () {
-    let self = this;
-    let commentId = this.getCommentIdFromHash();
+    const self = this;
+    const commentId = this.getCommentIdFromHash();
 
     const order = userPrefs.get('discussion.order') || (this.getDiscussionClosed() ? 'oldest' : 'newest');
     const threading = userPrefs.get('discussion.threading') || 'collapsed';
@@ -85,9 +85,9 @@ Loader.prototype.initMainComments = function () {
 
 
     this.comments.on('rendered', (paginationHtml) => {
-        let newPagination = bonzo.create(paginationHtml);
-        let toolbarEl = qwery('.js-discussion-toolbar', this.elem)[0];
-        let container = $('.js-discussion-pagination', toolbarEl).empty();
+        const newPagination = bonzo.create(paginationHtml);
+        const toolbarEl = qwery('.js-discussion-toolbar', this.elem)[0];
+        const container = $('.js-discussion-pagination', toolbarEl).empty();
 
         // When the pagesize is 'All', do not show any pagination.
         if (!this.comments.isAllPageSizeActive()) {
@@ -103,7 +103,7 @@ Loader.prototype.initMainComments = function () {
         if (this.user) {
             this.comments.addUser(this.user);
 
-            let userPageSize = userPrefs.get('discussion.pagesize');
+            const userPageSize = userPrefs.get('discussion.pagesize');
             let pageSize = defaultPagesize;
 
             if (isNumber(userPageSize)) {
@@ -140,7 +140,7 @@ Loader.prototype.initMainComments = function () {
 
 Loader.prototype.logError = function (commentType, error) {
     let reportMsg = `${commentType} failed to load: `;
-    let request = error.request || {};
+    const request = error.request || {};
     if (error.message === 'Request is aborted: timeout') {
         reportMsg += 'XHR timeout';
     } else if (error.message) {
@@ -200,7 +200,7 @@ Loader.prototype.initToolbar = function () {
 
     if (config.page.section === 'crosswords') {
         const $timestampsLabel = $('.js-timestamps');
-        const updateLabelText = prefValue => {
+        const updateLabelText = (prefValue) => {
             $timestampsLabel.text(prefValue ? 'Relative' : 'Absolute');
         };
         updateLabelText(undefined);
@@ -304,7 +304,7 @@ Loader.prototype.renderCommentBar = function () {
     }
 };
 
-Loader.prototype.commentPosted = function(...args) {
+Loader.prototype.commentPosted = function (...args) {
     this.removeState('truncated');
     this.comments.addComment(...args);
 };
@@ -349,7 +349,7 @@ Loader.prototype.getCommentIdFromHash = () => {
     return reg.exec(window.location.hash) ? parseInt(reg.exec(window.location.hash)[1], 10) : null;
 };
 
-Loader.prototype.setCommentHash = id => {
+Loader.prototype.setCommentHash = (id) => {
     window.location.replace(`#comment-${id}`);
 };
 

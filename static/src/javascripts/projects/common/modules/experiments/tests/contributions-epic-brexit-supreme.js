@@ -82,7 +82,7 @@ export default function () {
 
     };
 
-    const componentWriter = component => {
+    const componentWriter = (component) => {
         fastdom.write(() => {
             const submetaElement = $('.submeta');
             if (submetaElement.length > 0) {
@@ -92,7 +92,7 @@ export default function () {
         });
     };
 
-    const completer = complete => {
+    const completer = (complete) => {
         mediator.on('contributions-embed:view', complete);
     };
 

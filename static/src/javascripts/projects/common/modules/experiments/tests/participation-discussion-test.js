@@ -61,8 +61,8 @@ export default function () {
     this.variants = [{
         id: 'variant-1',
         test() {
-            let shortUrlSlug = (config.page.shortUrl || '').replace('http://gu.com/p/', '');
-            let hide = CommentBlocker.hideComments(shortUrlSlug);
+            const shortUrlSlug = (config.page.shortUrl || '').replace('http://gu.com/p/', '');
+            const hide = CommentBlocker.hideComments(shortUrlSlug);
 
             if (config.page.isContent && hide) {
                 qwery('.js-comments').forEach((c) => {

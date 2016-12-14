@@ -10,8 +10,8 @@ import svgs from 'common/views/svgs';
 import deleteButtonAllTmp from 'text!common/views/save-for-later/delete-all-button.html';
 export default function SavedForLater() {
     this.init = function () {
-        let self = this;
-        let deleteAll = $('.js-save-for-later__delete-all')[0];
+        const self = this;
+        const deleteAll = $('.js-save-for-later__delete-all')[0];
 
         if (deleteAll) {
             this.renderDeleteButton('delete');

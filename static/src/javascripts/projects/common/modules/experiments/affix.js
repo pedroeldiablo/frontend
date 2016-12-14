@@ -49,15 +49,15 @@ Affix.prototype.checkPosition = function () {
     const that = this;
     let oldContainerStyling;
     let topStyle;
-    let scrollTop = this.$window.scrollTop();
-    let markerTopTop = this.$markerTop.offset().top;
-    let markerBottomTop = this.$markerBottom.offset().top;
-    let elHeight = this.$element.dim().height;
-    let topCheck = scrollTop >= markerTopTop;
-    let bottomCheck = scrollTop + elHeight < markerBottomTop;
-    let viewportCheck = elHeight < bonzo.viewport().height;
+    const scrollTop = this.$window.scrollTop();
+    const markerTopTop = this.$markerTop.offset().top;
+    const markerBottomTop = this.$markerBottom.offset().top;
+    const elHeight = this.$element.dim().height;
+    const topCheck = scrollTop >= markerTopTop;
+    const bottomCheck = scrollTop + elHeight < markerBottomTop;
+    const viewportCheck = elHeight < bonzo.viewport().height;
 
-    let // This is true when the element is positioned below the top threshold and above the bottom threshold.
+    const // This is true when the element is positioned below the top threshold and above the bottom threshold.
     affix = bottomCheck && topCheck && viewportCheck;
 
     if (this.affixed !== affix) {

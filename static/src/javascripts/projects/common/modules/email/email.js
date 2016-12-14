@@ -32,16 +32,16 @@ const messages = {
 
 const updateForm = {
     replaceContent(isSuccess, $form) {
-        let formData = $form.data('formData');
+        const formData = $form.data('formData');
 
-        let submissionMessage = {
+        const submissionMessage = {
             statusClass: (isSuccess) ? 'email-sub__message--success' : 'email-sub__message--failure',
             submissionHeadline: (isSuccess) ? formData.customSuccessHeadline || messages.defaultSuccessHeadline : 'Something went wrong',
             submissionMessage: (isSuccess) ? formData.customSuccessDesc || messages.defaultSuccessDesc : 'Please try again.',
             submissionIcon: (isSuccess) ? svgs('tick') : svgs('crossIcon'),
         };
 
-        let submissionHtml = template(successHtml, submissionMessage);
+        const submissionHtml = template(successHtml, submissionMessage);
 
         fastdom.write(() => {
             $form.addClass('email-sub__form--is-hidden');
@@ -57,18 +57,18 @@ function handleSubmit(isSuccess, $form) {
     };
 }
 
-let classes = {
-        wrapper: 'js-email-sub',
-        form: 'js-email-sub__form',
-        inlineLabel: 'js-email-sub__inline-label',
-        textInput: 'js-email-sub__text-input',
-        listIdHiddenInput: 'js-email-sub__listid-input',
-    };
+const classes = {
+    wrapper: 'js-email-sub',
+    form: 'js-email-sub__form',
+    inlineLabel: 'js-email-sub__inline-label',
+    textInput: 'js-email-sub__text-input',
+    listIdHiddenInput: 'js-email-sub__listid-input',
+};
 
-let removeAndRemember = (e, data) => {
-    let iframe = data[0];
-    let analytics = data[1];
-    let currentListPrefs = userPrefs.get(`email-sign-up-${analytics.formType}`) || [];
+const removeAndRemember = (e, data) => {
+    const iframe = data[0];
+    const analytics = data[1];
+    const currentListPrefs = userPrefs.get(`email-sign-up-${analytics.formType}`) || [];
 
     currentListPrefs.push(`${analytics.listId}`);
     userPrefs.set(`email-sign-up-${analytics.formType}`, uniq(currentListPrefs));
@@ -78,17 +78,17 @@ let removeAndRemember = (e, data) => {
     googleAnalytics.trackNonClickInteraction(`rtrt | email form inline | ${analytics.formType} | ${analytics.listId} | ${analytics.signedIn} | form hidden`);
 };
 
-let ui = {
+const ui = {
     updateForm(thisRootEl, el, analytics, opts) {
-        let formData = $(thisRootEl).data();
-        let formTitle = (opts && opts.formTitle) || formData.formTitle || false;
-        let formDescription = (opts && opts.formDescription) || formData.formDescription || false;
-        let formCampaignCode = (opts && opts.formCampaignCode) || formData.formCampaignCode || '';
-        let formSuccessHeadline = (opts && opts.formSuccessHeadline) || formData.formSuccessHeadline;
-        let formSuccessDesc = (opts && opts.formSuccessDesc) || formData.formSuccessDesc;
-        let removeComforter = (opts && opts.removeComforter) || formData.removeComforter || false;
-        let formModClass = (opts && opts.formModClass) || formData.formModClass || false;
-        let formCloseButton = (opts && opts.formCloseButton) || formData.formCloseButton || false;
+        const formData = $(thisRootEl).data();
+        const formTitle = (opts && opts.formTitle) || formData.formTitle || false;
+        const formDescription = (opts && opts.formDescription) || formData.formDescription || false;
+        const formCampaignCode = (opts && opts.formCampaignCode) || formData.formCampaignCode || '';
+        const formSuccessHeadline = (opts && opts.formSuccessHeadline) || formData.formSuccessHeadline;
+        const formSuccessDesc = (opts && opts.formSuccessDesc) || formData.formSuccessDesc;
+        const removeComforter = (opts && opts.removeComforter) || formData.removeComforter || false;
+        const formModClass = (opts && opts.formModClass) || formData.formModClass || false;
+        const formCloseButton = (opts && opts.formCloseButton) || formData.formCloseButton || false;
 
         Id.getUserFromApi((userFromId) => {
             ui.updateFormForLoggedIn(userFromId, el);
@@ -112,11 +112,11 @@ let ui = {
             }
 
             if (formCloseButton) {
-                let closeButtonTemplate = {
-                        closeIcon: svgs('closeCentralIcon'),
-                    };
+                const closeButtonTemplate = {
+                    closeIcon: svgs('closeCentralIcon'),
+                };
 
-                let closeButtonHtml = template(closeHtml, closeButtonTemplate);
+                const closeButtonHtml = template(closeHtml, closeButtonTemplate);
 
                 el.append(closeButtonHtml);
 
@@ -144,19 +144,19 @@ let ui = {
     freezeHeight($wrapper, reset) {
         let wrapperHeight;
 
-        let getHeight = () => {
+        const getHeight = () => {
             fastdom.read(() => {
                 wrapperHeight = $wrapper[0].clientHeight;
             });
         };
 
-        let setHeight = () => {
+        const setHeight = () => {
             fastdom.defer(() => {
                 $wrapper.css('min-height', wrapperHeight);
             });
         };
 
-        let resetHeight = () => {
+        const resetHeight = () => {
             fastdom.write(() => {
                 $wrapper.css('min-height', '');
                 getHeight();
@@ -184,7 +184,7 @@ let ui = {
     },
 };
 
-let formSubmission = {
+const formSubmission = {
     bindSubmit($form, analytics) {
         const url = '/email';
         bean.on($form[0], 'submit', this.submitForm($form, url, analytics));
@@ -202,17 +202,17 @@ let formSubmission = {
                 emailAddress.indexOf('@') > -1;
         }
 
-        return event => {
-            let emailAddress = $(`.${classes.textInput}`, $form).val();
-            let listId = $(`.${classes.listIdHiddenInput}`, $form).val();
+        return (event) => {
+            const emailAddress = $(`.${classes.textInput}`, $form).val();
+            const listId = $(`.${classes.listIdHiddenInput}`, $form).val();
             let analyticsInfo;
 
             event.preventDefault();
 
             if (!state.submitting && validate(emailAddress)) {
-                let formData = $form.data('formData');
+                const formData = $form.data('formData');
 
-                let data = `email=${encodeURIComponent(emailAddress)
+                const data = `email=${encodeURIComponent(emailAddress)
                 }&listId=${listId
                 }&campaignCode=${formData.campaignCode
                 }&referrer=${formData.referrer}`;
@@ -250,7 +250,7 @@ let formSubmission = {
     },
 };
 
-let setup = (rootEl, thisRootEl, isIframed) => {
+const setup = (rootEl, thisRootEl, isIframed) => {
     $(`.${classes.inlineLabel}`, thisRootEl).each((el) => {
         formInlineLabels.init(el, {
             textInputClass: '.js-email-sub__text-input',
@@ -261,12 +261,12 @@ let setup = (rootEl, thisRootEl, isIframed) => {
     });
 
     $(`.${classes.wrapper}`, thisRootEl).each((el) => {
-        let $el = $(el);
-        let freezeHeight = ui.freezeHeight($el, false);
-        let freezeHeightReset = ui.freezeHeight($el, true);
-        let $formEl = $(`.${classes.form}`, el);
+        const $el = $(el);
+        const freezeHeight = ui.freezeHeight($el, false);
+        const freezeHeightReset = ui.freezeHeight($el, true);
+        const $formEl = $(`.${classes.form}`, el);
 
-        let analytics = {
+        const analytics = {
             formType: $formEl.data('email-form-type'),
             listId: $formEl.data('email-list-id'),
             signedIn: (Id.isUserLoggedIn()) ? 'user signed-in' : 'user not signed-in',
@@ -292,8 +292,8 @@ let setup = (rootEl, thisRootEl, isIframed) => {
 export default {
     updateForm: ui.updateForm,
     init(rootEl) {
-        let browser = detect.getUserAgent.browser;
-        let version = detect.getUserAgent.version;
+        const browser = detect.getUserAgent.browser;
+        const version = detect.getUserAgent.version;
         // If we're in lte IE9, don't run the init and adjust the footer
         if (browser === 'MSIE' && contains(['7', '8', '9'], `${version}`)) {
             $('.js-footer__secondary').addClass('l-footer__secondary--no-email');

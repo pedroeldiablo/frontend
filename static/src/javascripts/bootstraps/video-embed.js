@@ -37,8 +37,8 @@ function addTitleBar() {
 }
 
 function initEndSlate(player) {
-    let endSlate = new Component();
-    let endState = 'vjs-has-ended';
+    const endSlate = new Component();
+    const endState = 'vjs-has-ended';
 
     endSlate.endpoint = $('.js-gu-media--enhance').first().attr('data-end-slate');
 
@@ -63,11 +63,11 @@ function initPlayer() {
     bonzo(qwery('.js-gu-media--enhance')).each((el) => {
         let player;
         let mouseMoveIdle;
-        let $el = bonzo(el).addClass('vjs');
-        let mediaId = $el.attr('data-media-id');
-        let canonicalUrl = $el.attr('data-canonical-url');
-        let gaEventLabel = canonicalUrl;
-        let mediaType = el.tagName.toLowerCase();
+        const $el = bonzo(el).addClass('vjs');
+        const mediaId = $el.attr('data-media-id');
+        const canonicalUrl = $el.attr('data-canonical-url');
+        const gaEventLabel = canonicalUrl;
+        const mediaType = el.tagName.toLowerCase();
 
         bonzo(el).addClass('vjs');
 

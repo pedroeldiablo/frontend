@@ -21,62 +21,62 @@ import weather from 'facia/modules/onwards/weather';
 import partial from 'lodash/functions/partial';
 import forEach from 'lodash/collections/forEach';
 
-let modules = {
-        showSnaps() {
-            snaps.init();
-            mediator.on('modules:container:rendered', snaps.init);
-        },
+const modules = {
+    showSnaps() {
+        snaps.init();
+        mediator.on('modules:container:rendered', snaps.init);
+    },
 
-        showContainerShowMore() {
-            mediator.addListeners({
-                'modules:container:rendered': containerShowMore.init,
-                'page:front:ready': containerShowMore.init,
+    showContainerShowMore() {
+        mediator.addListeners({
+            'modules:container:rendered': containerShowMore.init,
+            'page:front:ready': containerShowMore.init,
+        });
+    },
+
+    showContainerToggle() {
+        const containerToggleAdd = (context) => {
+            $('.js-container--toggle', $(context || document)[0]).each((container) => {
+                new ContainerToggle(container).addToggle();
             });
-        },
+        };
+        mediator.addListeners({
+            'page:front:ready': containerToggleAdd,
+            'modules:geomostpopular:ready': partial(containerToggleAdd, '.js-popular-trails'),
+        });
+    },
 
-        showContainerToggle() {
-            const containerToggleAdd = context => {
-                $('.js-container--toggle', $(context || document)[0]).each((container) => {
-                    new ContainerToggle(container).addToggle();
-                });
-            };
-            mediator.addListeners({
-                'page:front:ready': containerToggleAdd,
-                'modules:geomostpopular:ready': partial(containerToggleAdd, '.js-popular-trails'),
+    upgradeMostPopularToGeo() {
+        if (config.switches.geoMostPopular) {
+            new GeoMostPopularFront().go();
+        }
+    },
+
+    showWeather() {
+        if (config.switches.weather) {
+            mediator.on('page:front:ready', () => {
+                weather.init();
             });
-        },
+        }
+    },
 
-        upgradeMostPopularToGeo() {
-            if (config.switches.geoMostPopular) {
-                new GeoMostPopularFront().go();
-            }
-        },
+    showLiveblogUpdates() {
+        if (detect.isBreakpoint({
+            min: 'desktop',
+        })) {
+            mediator.on('page:front:ready', () => {
+                liveblogUpdates.show();
+            });
+        }
+    },
 
-        showWeather() {
-            if (config.switches.weather) {
-                mediator.on('page:front:ready', () => {
-                    weather.init();
-                });
-            }
-        },
+    finished() {
+        mediator.emit('page:front:ready');
+    },
 
-        showLiveblogUpdates() {
-            if (detect.isBreakpoint({
-                min: 'desktop',
-            })) {
-                mediator.on('page:front:ready', () => {
-                    liveblogUpdates.show();
-                });
-            }
-        },
+};
 
-        finished() {
-            mediator.emit('page:front:ready');
-        },
-
-    };
-
-let ready = () => {
+const ready = () => {
     forEach(robust.makeBlocks([
         ['f-accessibility', accessibility.shouldHideFlashingElements],
         ['f-snaps', modules.showSnaps],

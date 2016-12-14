@@ -130,10 +130,10 @@ function RepeatablePromise() {
     this.callbacks = [];
 }
 
-RepeatablePromise.prototype.resolve = function(...args) {
+RepeatablePromise.prototype.resolve = function (...args) {
     this.args = Array.prototype.slice.apply(args);
     let i;
-    let numCallbacks = this.callbacks.length;
+    const numCallbacks = this.callbacks.length;
     for (i = 0; i < numCallbacks; i++) {
         this.callbacks[i].apply(null, this.args);
     }

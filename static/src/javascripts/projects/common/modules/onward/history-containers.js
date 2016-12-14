@@ -13,14 +13,14 @@ import map from 'lodash/collections/map';
 import chain from 'common/utils/chain';
 
 // Maximum number of favourite containers to inject
-let maxContainers = 3;
+const maxContainers = 3;
 
-let // Favourite containers will be injected /before/ this container
+const // Favourite containers will be injected /before/ this container
 refContainerId = '#most-popular';
 
-let containerUrlTemplate = '/container/{containerId}.json';
+const containerUrlTemplate = '/container/{containerId}.json';
 
-let /* Currently this list has been derived from the section and
+const /* Currently this list has been derived from the section and
  * sub-sections in the global nav, minus some irrelevant fronts
  * (e.g. football tables) and mapped onto the first container for
  * each front
@@ -75,8 +75,8 @@ frontsTopContainers = {
 function getFavouriteContainerIds(opts) {
     opts = opts || {};
 
-    let limitContainers = opts.maxContainers || maxContainers;
-    let favouriteTags = history.getPopular().map(pair => pair[0]);
+    const limitContainers = opts.maxContainers || maxContainers;
+    const favouriteTags = history.getPopular().map(pair => pair[0]);
 
     return chain(favouriteTags).and(map, tag => frontsTopContainers[tag]).and(compact).and(first, limitContainers).value();
 }
@@ -100,9 +100,9 @@ function injectContainers(opts) {
     const favouriteContainers = getFavouriteContainerIds(opts);
     if (favouriteContainers.length > 0) {
         Promise.all(favouriteContainers.map(fetchContainerHtml)).then((containers) => {
-            let refContainer = $(refContainerId);
+            const refContainer = $(refContainerId);
 
-            let // Join containers to minimise DOM insertion
+            const // Join containers to minimise DOM insertion
             allContainers = containers.join('');
 
             refContainer.before(allContainers);

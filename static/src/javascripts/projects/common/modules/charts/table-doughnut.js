@@ -8,13 +8,13 @@ const TableDoughnut = () => {};
  * @param {Element} el
  * @return {Bonzo} the SVG Element
  */
-TableDoughnut.prototype.render = el => {
+TableDoughnut.prototype.render = (el) => {
     let $doughnut;
     let currentClasses;
-    let width = el.scrollWidth || el.getAttribute('data-chart-width');
-    let headings = $('th', el);
+    const width = el.scrollWidth || el.getAttribute('data-chart-width');
+    const headings = $('th', el);
 
-    let data = $('td', el).map((el, i) => ({
+    const data = $('td', el).map((el, i) => ({
         label: headings[i].innerHTML,
         value: parseInt(el.getAttribute('data-chart-value'), 10),
         color: el.getAttribute('data-chart-color'),

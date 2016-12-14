@@ -20,7 +20,7 @@ function ajax(params) {
     return r;
 }
 
-ajax.setHost = host => {
+ajax.setHost = (host) => {
     ajaxHost = host;
 };
 

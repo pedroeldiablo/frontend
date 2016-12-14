@@ -1,8 +1,8 @@
 import detect from 'common/utils/detect';
 
-let supportsPushState = detect.hasPushStateSupport();
+const supportsPushState = detect.hasPushStateSupport();
 
-let model = {
+const model = {
 
     // returns a map of querystrings
     // eg ?foo=bar&fizz=buzz returns {foo: 'bar', fizz: 'buzz'}

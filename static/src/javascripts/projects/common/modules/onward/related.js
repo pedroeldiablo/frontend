@@ -22,22 +22,22 @@ Related.prototype.popularInTagOverride = () => {
         return false;
     }
 
-    let whitelistedTags = [ // order matters here (first match wins)
+    const whitelistedTags = [ // order matters here (first match wins)
             // sport tags
-            'sport/cricket', 'sport/rugby-union', 'sport/rugbyleague', 'sport/formulaone',
-            'sport/tennis', 'sport/cycling', 'sport/motorsports', 'sport/golf', 'sport/horse-racing',
-            'sport/boxing', 'sport/us-sport', 'sport/australia-sport',
+        'sport/cricket', 'sport/rugby-union', 'sport/rugbyleague', 'sport/formulaone',
+        'sport/tennis', 'sport/cycling', 'sport/motorsports', 'sport/golf', 'sport/horse-racing',
+        'sport/boxing', 'sport/us-sport', 'sport/australia-sport',
             // football tags
-            'football/championsleague', 'football/premierleague', 'football/championship',
-            'football/europeanfootball', 'football/world-cup-2014',
+        'football/championsleague', 'football/premierleague', 'football/championship',
+        'football/europeanfootball', 'football/world-cup-2014',
             // football team tags
-            'football/manchester-united', 'football/chelsea', 'football/arsenal',
-            'football/manchestercity', 'football/tottenham-hotspur', 'football/liverpool',
-        ];
+        'football/manchester-united', 'football/chelsea', 'football/arsenal',
+        'football/manchestercity', 'football/tottenham-hotspur', 'football/liverpool',
+    ];
 
-    let pageTags = config.page.keywordIds.split(',');
+    const pageTags = config.page.keywordIds.split(',');
 
-    let // if this is an advertisement feature, use the page's keyword (there'll only be one)
+    const // if this is an advertisement feature, use the page's keyword (there'll only be one)
     popularInTags = config.page.isAdvertisementFeature ? pageTags : intersection(whitelistedTags, pageTags);
 
     if (popularInTags.length) {
@@ -50,7 +50,7 @@ Related.prototype.renderRelatedComponent = function () {
     let popularInTag;
     let componentName;
     let container;
-    let fetchRelated = config.switches.relatedContent && config.page.showRelatedContent;
+    const fetchRelated = config.switches.relatedContent && config.page.showRelatedContent;
     if (config.page && config.page.hasStoryPackage) {
         new Expandable({
             dom: document.body.querySelector('.related-trails'),

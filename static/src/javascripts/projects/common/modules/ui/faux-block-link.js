@@ -2,16 +2,16 @@ import bean from 'bean';
 import bonzo from 'bonzo';
 import fastdom from 'fastdom';
 import $ from 'common/utils/$';
-let overlaySelector = '.u-faux-block-link__overlay';
-let hoverStateClassName = 'u-faux-block-link--hover';
+const overlaySelector = '.u-faux-block-link__overlay';
+const hoverStateClassName = 'u-faux-block-link--hover';
 
 export default function () {
-    const showIntentToClick = e => {
+    const showIntentToClick = (e) => {
         fastdom.write(() => {
             $(e.currentTarget).parent().addClass(hoverStateClassName);
         });
     };
-    const removeIntentToClick = e => {
+    const removeIntentToClick = (e) => {
         fastdom.write(() => {
             $(e.currentTarget).parent().removeClass(hoverStateClassName);
         });

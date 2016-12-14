@@ -124,8 +124,8 @@ function getUserVote() {
         return 'no-storage';
     }
 
-    let currentPage = config.page.pageId;
-    let votedPages = JSON.parse(storage.local.get(prefs));
+    const currentPage = config.page.pageId;
+    const votedPages = JSON.parse(storage.local.get(prefs));
 
     // Will return result for current page if available
     return votedPages && votedPages[currentPage];
@@ -134,7 +134,7 @@ function getUserVote() {
 // Setters
 
 function setUserVote() {
-    let currentPage = config.page.pageId;
+    const currentPage = config.page.pageId;
     let votedPages = JSON.parse(storage.local.get(prefs));
 
     // If the prefs object doesn't exist, lets create one

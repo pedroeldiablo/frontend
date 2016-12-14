@@ -1,9 +1,9 @@
 import cookies from 'common/utils/cookies';
-let MULTIVARIATE_ID_COOKIE = 'GU_mvt_id';
-let VISITOR_ID_COOKIE = 's_vi';
-let BROWSER_ID_COOKIE = 'bwid';
+const MULTIVARIATE_ID_COOKIE = 'GU_mvt_id';
+const VISITOR_ID_COOKIE = 's_vi';
+const BROWSER_ID_COOKIE = 'bwid';
 
-let // The full mvt ID interval is [1, 1000000]
+const // The full mvt ID interval is [1, 1000000]
 MAX_CLIENT_MVT_ID = 1000000;
 
 function overwriteMvtCookie(testId) {

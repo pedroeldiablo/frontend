@@ -33,11 +33,11 @@ function onIncorrectNumber($numberInput, $correctNumberInfo, $incorrectNumberInf
 function submitForm($form, event) {
     event.preventDefault();
 
-    let $numberInput = $('.input-number', $form);
-    let numberVal = $numberInput.val();
-    let isSubscriber = /^(?=\S{8,11}$)(00|GA|A-S)\S+/.test(numberVal);
-    let $correctNumberInfo = $('.js-subscriber-number-correct');
-    let $incorrectNumberInfo = $('.js-subscriber-number-incorrect');
+    const $numberInput = $('.input-number', $form);
+    const numberVal = $numberInput.val();
+    const isSubscriber = /^(?=\S{8,11}$)(00|GA|A-S)\S+/.test(numberVal);
+    const $correctNumberInfo = $('.js-subscriber-number-correct');
+    const $incorrectNumberInfo = $('.js-subscriber-number-incorrect');
 
     if (isSubscriber) {
         onCorrectNumber($numberInput, $correctNumberInfo, $incorrectNumberInfo);

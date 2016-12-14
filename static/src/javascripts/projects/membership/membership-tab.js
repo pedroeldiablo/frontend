@@ -5,30 +5,30 @@ import config from 'common/utils/config';
 import formatters from 'membership/formatters';
 import stripe from 'membership/stripe';
 
-let CARD_DETAILS = '.js-mem-card-details';
-let CHANGE_TIER_CARD_LAST4 = '.js-mem-card-last4';
-let PACKAGE_COST = '.js-mem-package-cost';
-let PACKAGE_CURRENT_RENEWAL_DATE = '.js-mem-current-renewal-date';
-let PACKAGE_CURRENT_PERIOD_END = '.js-mem-current-period-end';
-let PACKAGE_CURRENT_PERIOD_START = '.js-mem-current-period-start';
-let PACKAGE_CURRENT_PERIOD_START_CONTAINER = '.js-mem-current-period-start-container';
-let PACKAGE_NEXT_PAYMENT_CONTAINER = '.js-mem-next-payment-container';
-let TRIAL_INFO_CONTAINER = '.js-mem-only-for-trials';
-let PACKAGE_NEXT_PAYMENT_DATE = '.js-mem-next-payment-date';
-let PACKAGE_NEXT_PAYMENT_PRICE = '.js-mem-next-payment-price';
-let PACKAGE_INTERVAL = '.js-mem-plan-interval';
-let DETAILS_MEMBERSHIP_TIER_ICON_CURRENT = '.js-mem-icon-current';
-let DETAILS_JOIN_DATE = '.js-mem-join-date';
-let DETAILS_MEMBER_NUM_TEXT = '.js-mem-number';
-let NOTIFICATION_CANCEL = '.js-mem-cancel-tier';
-let NOTIFICATION_CHANGE = '.js-mem-change-tier';
-let MEMBER_DETAILS = '.js-mem-details';
-let DETAILS_MEMBER_NUMBER_CONTAINER = '.js-mem-number-container';
-let MEMBERSHIP_TIER = '.js-mem-tier';
-let UP_SELL = '.js-mem-up-sell';
-let MEMBER_INFO = '.js-mem-info';
-let LOADER = '.js-mem-loader';
-let IS_HIDDEN_CLASSNAME = 'is-hidden';
+const CARD_DETAILS = '.js-mem-card-details';
+const CHANGE_TIER_CARD_LAST4 = '.js-mem-card-last4';
+const PACKAGE_COST = '.js-mem-package-cost';
+const PACKAGE_CURRENT_RENEWAL_DATE = '.js-mem-current-renewal-date';
+const PACKAGE_CURRENT_PERIOD_END = '.js-mem-current-period-end';
+const PACKAGE_CURRENT_PERIOD_START = '.js-mem-current-period-start';
+const PACKAGE_CURRENT_PERIOD_START_CONTAINER = '.js-mem-current-period-start-container';
+const PACKAGE_NEXT_PAYMENT_CONTAINER = '.js-mem-next-payment-container';
+const TRIAL_INFO_CONTAINER = '.js-mem-only-for-trials';
+const PACKAGE_NEXT_PAYMENT_DATE = '.js-mem-next-payment-date';
+const PACKAGE_NEXT_PAYMENT_PRICE = '.js-mem-next-payment-price';
+const PACKAGE_INTERVAL = '.js-mem-plan-interval';
+const DETAILS_MEMBERSHIP_TIER_ICON_CURRENT = '.js-mem-icon-current';
+const DETAILS_JOIN_DATE = '.js-mem-join-date';
+const DETAILS_MEMBER_NUM_TEXT = '.js-mem-number';
+const NOTIFICATION_CANCEL = '.js-mem-cancel-tier';
+const NOTIFICATION_CHANGE = '.js-mem-change-tier';
+const MEMBER_DETAILS = '.js-mem-details';
+const DETAILS_MEMBER_NUMBER_CONTAINER = '.js-mem-number-container';
+const MEMBERSHIP_TIER = '.js-mem-tier';
+const UP_SELL = '.js-mem-up-sell';
+const MEMBER_INFO = '.js-mem-info';
+const LOADER = '.js-mem-loader';
+const IS_HIDDEN_CLASSNAME = 'is-hidden';
 
 function fetchUserDetails() {
     ajax({
@@ -53,9 +53,9 @@ function hideLoader() {
 
 
 function populateUserDetails(userDetails) {
-    let isMonthly = userDetails.subscription.plan.interval === 'month';
-    let intervalText = isMonthly ? 'Monthly' : 'Annual';
-    let glyph = userDetails.subscription.plan.currency;
+    const isMonthly = userDetails.subscription.plan.interval === 'month';
+    const intervalText = isMonthly ? 'Monthly' : 'Annual';
+    const glyph = userDetails.subscription.plan.currency;
     let notificationTypeSelector;
 
     $(MEMBERSHIP_TIER).text(userDetails.tier);

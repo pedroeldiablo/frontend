@@ -21,7 +21,7 @@ document.mozVisibilityState ||
 document.msVisibilityState ||
 'visible';
 
-let // Ordered lists of breakpoints
+const // Ordered lists of breakpoints
 // These should match those defined in:
 //   stylesheets/_vars.scss
 //   common/app/layout/Breakpoint.scala
@@ -68,7 +68,7 @@ let detect;
  */
 function hasCrossedBreakpoint(includeTweakpoint) {
     let was = getBreakpoint(includeTweakpoint);
-    return callback => {
+    return (callback) => {
         const is = getBreakpoint(includeTweakpoint);
         if (is !== was) {
             callback(is, was);
@@ -136,7 +136,7 @@ function socialContext() {
 }
 
 getUserAgent = ((() => {
-    let ua = navigator.userAgent;
+    const ua = navigator.userAgent;
     let tem;
     let M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if (/trident/i.test(M[1])) {
@@ -180,9 +180,9 @@ function hasPushStateSupport() {
 
 function getVideoFormatSupport() {
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/video.js
-    let elem = document.createElement('video');
+    const elem = document.createElement('video');
 
-    let types = {};
+    const types = {};
 
     try {
         if (elem.canPlayType) {
@@ -200,10 +200,10 @@ function getOrientation() {
 }
 
 function getViewport() {
-    let w = window;
-    let d = document;
-    let e = d.documentElement;
-    let g = d.getElementsByTagName('body')[0];
+    const w = window;
+    const d = document;
+    const e = d.documentElement;
+    const g = d.getElementsByTagName('body')[0];
 
     return {
         width: w.innerWidth || e.clientWidth || g.clientWidth,
@@ -282,10 +282,10 @@ function initPageVisibility() {
     const hidden = 'hidden';
 
     function onchange(evt) {
-        let v = 'visible';
-        let h = 'hidden';
+        const v = 'visible';
+        const h = 'hidden';
 
-        let evtMap = {
+        const evtMap = {
             focus: v,
             focusin: v,
             pageshow: v,

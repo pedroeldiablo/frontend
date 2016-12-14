@@ -19,11 +19,11 @@ import chain from 'common/utils/chain';
 import filter from 'lodash/collections/filter';
 import forEach from 'lodash/collections/forEach';
 import reduce from 'lodash/collections/reduce';
-let sample = 500;
-let rxPsuedoClass = new RegExp(/:+[^\s\,]+/g);
-let rxSeparator = new RegExp(/\s*,\s*/g);
-let classNameLoggable = 'js-loggable';
-let classNameInlined = 'js-inlined';
+const sample = 500;
+const rxPsuedoClass = new RegExp(/:+[^\s\,]+/g);
+const rxSeparator = new RegExp(/\s*,\s*/g);
+const classNameLoggable = 'js-loggable';
+const classNameInlined = 'js-inlined';
 let eventsInitialised = false;
 
 function getRules(s) {
@@ -52,7 +52,7 @@ function getAllSelectors(all) {
     let rand;
     let len;
 
-    let rules = chain(getInlineStylesheets())
+    const rules = chain(getInlineStylesheets())
     .and(map, getRules)
     .and(flatten)
     .and(map, getRules) // 2nd pass for rules nested in media queries

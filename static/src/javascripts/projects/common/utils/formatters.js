@@ -1,7 +1,7 @@
 export default {
     integerCommas(val) {
         // commafy integers. see formatters.spec.js for expected input/output
-        let num = parseInt(val, 10);
+        const num = parseInt(val, 10);
 
         let digits;
         let i;

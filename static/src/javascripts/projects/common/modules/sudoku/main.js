@@ -8,7 +8,7 @@ import range from 'lodash/arrays/range';
 import map from 'lodash/collections/map';
 export default function () {
     $('.js-sudoku').each((element) => {
-        let $element = bonzo(element);
+        const $element = bonzo(element);
         let sudokuData;
         let cells;
 

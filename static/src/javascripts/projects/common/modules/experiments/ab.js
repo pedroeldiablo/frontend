@@ -95,8 +95,8 @@ function getExpiredTests() {
 }
 
 function testCanBeRun(test) {
-    let expired = (new Date() - new Date(test.expiry)) > 0;
-    let isSensitive = config.page.isSensitive;
+    const expired = (new Date() - new Date(test.expiry)) > 0;
+    const isSensitive = config.page.isSensitive;
 
     return ((isSensitive ? test.showForSensitive : true) && isTestSwitchedOn(test)) && !expired && test.canRun();
 }
@@ -111,8 +111,8 @@ function getTest(id) {
 }
 
 function makeOmnitureTag() {
-    let participations = getParticipations();
-    let tag = [];
+    const participations = getParticipations();
+    const tag = [];
 
     Object.keys(participations)
         .map(getTest)
@@ -201,8 +201,8 @@ function recordTestComplete(test, variantId, complete) {
 // Finds variant in specific tests and runs it
 function run(test) {
     if (isParticipating(test) && testCanBeRun(test)) {
-        let participations = getParticipations();
-        let variantId = participations[test.id].variant;
+        const participations = getParticipations();
+        const variantId = participations[test.id].variant;
         const variant = getVariant(test, variantId);
         if (variant) {
             variant.test();
@@ -315,7 +315,7 @@ function getServerSideTests() {
 }
 
 function not(f) {
-    return function(...args) {
+    return function (...args) {
         return !f.apply(this, args);
     };
 }
@@ -356,7 +356,7 @@ const ab = {
 
     segmentUser() {
         let tokens;
-        let forceUserIntoTest = /^#ab/.test(window.location.hash);
+        const forceUserIntoTest = /^#ab/.test(window.location.hash);
         if (forceUserIntoTest) {
             tokens = window.location.hash.replace('#ab-', '').split(',');
             tokens.forEach((token) => {

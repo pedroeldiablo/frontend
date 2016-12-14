@@ -9,11 +9,11 @@ const createStore = (reducer, initialState) => {
             fn();
         });
     };
-    const dispatch = action => {
+    const dispatch = (action) => {
         state = reducer(state, action);
         notify();
     };
-    const subscribe = fn => {
+    const subscribe = (fn) => {
         subscribers.push(fn);
     };
     const getState = () => state;

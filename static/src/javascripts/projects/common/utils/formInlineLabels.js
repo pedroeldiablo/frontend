@@ -24,11 +24,11 @@ function updateClass(type, $el, cssClass, testFunc) {
 
 export default {
     init(el, opts) {
-        let $el = $(el);
-        let $input = $(opts.textInputClass, el);
-        let $label = $(opts.labelClass, el);
-        let hiddenLabelClass = opts.hiddenLabelClass;
-        let labelEnabledClass = opts.labelEnabledClass;
+        const $el = $(el);
+        const $input = $(opts.textInputClass, el);
+        const $label = $(opts.labelClass, el);
+        const hiddenLabelClass = opts.hiddenLabelClass;
+        const labelEnabledClass = opts.labelEnabledClass;
 
         // Add the js only styling class for inline label enabled
         updateClass('add', $el, labelEnabledClass)();

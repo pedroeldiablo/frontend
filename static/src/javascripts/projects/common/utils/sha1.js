@@ -23,7 +23,7 @@ const Sha1 = {};
  * @param   {string} msg - (Unicode) string to be hashed.
  * @returns {string} Hash of msg as hex character string.
  */
-Sha1.hash = msg => {
+Sha1.hash = (msg) => {
     // convert string to UTF-8, as SHA only deals with byte-streams
     msg = decodeURIComponent(encodeURIComponent(msg));
 
@@ -136,7 +136,7 @@ Sha1.ROTL = (x, n) => (x << n) | (x >>> (32 - n));
  * Hexadecimal representation of a number.
  * @private
  */
-Sha1.toHexStr = n => {
+Sha1.toHexStr = (n) => {
     // note can't use toString(16) as it is implementation-dependant,
     // and in IE returns signed numbers when used on full words
     let s = '';

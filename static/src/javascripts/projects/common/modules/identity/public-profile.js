@@ -10,7 +10,7 @@ import mapValues from 'lodash/objects/mapValues';
 function getActivityStream(cb) {
     let activityStream;
 
-    let dataOpts = {
+    const dataOpts = {
         userId: 'data-user-id',
         streamType: 'data-stream-type',
     };
@@ -35,8 +35,8 @@ function selectTab(el) {
 
 function setupActivityStreamChanger(activityStream) {
     bean.on(document.body, 'click', '.js-activity-stream-change', (e) => {
-        let el = e.currentTarget;
-        let streamType = el.getAttribute('data-stream-type');
+        const el = e.currentTarget;
+        const streamType = el.getAttribute('data-stream-type');
         e.preventDefault();
         selectTab(el);
 

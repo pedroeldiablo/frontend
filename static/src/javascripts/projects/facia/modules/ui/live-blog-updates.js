@@ -16,19 +16,19 @@ import debounce from 'lodash/functions/debounce';
 import filter from 'lodash/collections/filter';
 import isEmpty from 'lodash/objects/isEmpty';
 import map from 'lodash/collections/map';
-let animateDelayMs = 2000;
-let animateAfterScrollDelayMs = 500;
+const animateDelayMs = 2000;
+const animateAfterScrollDelayMs = 500;
 let refreshSecs = 30;
-let refreshDecay = 1;
+const refreshDecay = 1;
 let refreshMaxTimes = 5;
-let selector = '.js-liveblog-blocks';
-let articleIdAttribute = 'data-article-id';
-let sessionStorageKey = 'gu.liveblog.block-dates';
-let veiwportHeightPx = detect.getViewport().height;
+const selector = '.js-liveblog-blocks';
+const articleIdAttribute = 'data-article-id';
+const sessionStorageKey = 'gu.liveblog.block-dates';
+const veiwportHeightPx = detect.getViewport().height;
 
 function blockRelativeTime(block) {
-    let pubDate = (block || {}).publishedDateTime;
-    let relDate = pubDate ? relativeDates.makeRelativeDate(new Date(pubDate)) : false;
+    const pubDate = (block || {}).publishedDateTime;
+    const relDate = pubDate ? relativeDates.makeRelativeDate(new Date(pubDate)) : false;
 
     return relDate || '';
 }
@@ -59,12 +59,12 @@ function showBlocks(articleId, targets, blocks, oldBlockDate) {
     forEach(targets, (element) => {
         let hasNewBlock = false;
 
-        let wrapperClasses = [
+        const wrapperClasses = [
             'fc-item__liveblog-blocks__inner',
             'u-faux-block-link__promote',
         ];
 
-        let blocksHtml = chain(blocks).slice(0, 2).and(map, (block, index) => {
+        const blocksHtml = chain(blocks).slice(0, 2).and(map, (block, index) => {
             if (!hasNewBlock && (block.publishedDateTime > oldBlockDate || fakeUpdate)) {
                 block.isNew = true;
                 hasNewBlock = true;
@@ -73,11 +73,11 @@ function showBlocks(articleId, targets, blocks, oldBlockDate) {
             return renderBlock(articleId, block, index);
         }).slice(0, hasNewBlock ? 2 : 1).value();
 
-        let el = bonzo.create(
+        const el = bonzo.create(
             `<div class="${wrapperClasses.join(' ')}">${blocksHtml.join('')}</div>`
         );
 
-        let $element = bonzo(element);
+        const $element = bonzo(element);
 
         fastdomPromise.write(() => {
             $element.append(el);

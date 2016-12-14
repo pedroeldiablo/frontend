@@ -60,8 +60,8 @@ const parseIds = (ids) => {
 };
 
 const abParam = () => {
-    let abParams = [];
-    let abParticipations = ab.getParticipations();
+    const abParams = [];
+    const abParticipations = ab.getParticipations();
 
     forIn(abParticipations, (n, testKey) => {
         if (n.variant && n.variant !== 'notintest') {
@@ -83,8 +83,8 @@ const abParam = () => {
 
 const adtestParams = () => {
     if (cookies.get('adtest')) {
-        let cookieAdtest = cookies.get('adtest');
-        let first4Char = cookieAdtest.substring(0, 4);
+        const cookieAdtest = cookies.get('adtest');
+        const first4Char = cookieAdtest.substring(0, 4);
         if (first4Char === 'demo') {
             cookies.remove('adtest');
         }
@@ -111,13 +111,13 @@ const getVisitedValue = () => {
 };
 
 const getReferrer = () => {
-    let referrerTypes = [{
-            id: 'facebook',
-            match: 'facebook.com',
-        }, {
-            id: 'twitter',
-            match: 't.co/',
-        }, // added (/) because without slash it is picking up reddit.com too
+    const referrerTypes = [{
+        id: 'facebook',
+        match: 'facebook.com',
+    }, {
+        id: 'twitter',
+        match: 't.co/',
+    }, // added (/) because without slash it is picking up reddit.com too
         {
             id: 'googleplus',
             match: 'plus.url.google',
@@ -128,9 +128,9 @@ const getReferrer = () => {
             id: 'google',
             match: 'www.google',
         },
-        ];
+    ];
 
-    let matchedRef = referrerTypes.filter(referrerType => detect.getReferrer().indexOf(referrerType.match) > -1)[0] || {};
+    const matchedRef = referrerTypes.filter(referrerType => detect.getReferrer().indexOf(referrerType.match) > -1)[0] || {};
 
     return matchedRef.id;
 };

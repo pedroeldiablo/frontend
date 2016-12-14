@@ -116,8 +116,8 @@ accountProfile.prototype.avatarUploadByApi = function (avatarForm) {
  *   TO DO: Use html5 file api to validate file size prior to upload @chrisfinch
  */
 accountProfile.prototype.bindAvatarUpload = function () {
-    let self = this;
-    let avatarForm = self.accountProfileForms.querySelector(self.classes.avatarUploadForm);
+    const self = this;
+    const avatarForm = self.accountProfileForms.querySelector(self.classes.avatarUploadForm);
 
     if (avatarForm) {
         bean.on(avatarForm, 'submit', (event) => {
@@ -153,9 +153,9 @@ accountProfile.prototype.genUnsavedError = function () {
     let i;
     let labelId;
     let text;
-    let errorDivStart = '<div class="form__error">';
-    let errorDivEnd = '</div>';
-    let errorSaveLink = '<a href="#" class="js-save-unsaved">Save changes</a>';
+    const errorDivStart = '<div class="form__error">';
+    const errorDivEnd = '</div>';
+    const errorSaveLink = '<a href="#" class="js-save-unsaved">Save changes</a>';
     let errorMessageStart = 'Your form has unsaved changes in ';
 
     for (i = 0; i < this.unsavedFields.length; i++) {

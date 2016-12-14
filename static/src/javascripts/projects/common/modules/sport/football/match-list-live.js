@@ -21,8 +21,8 @@ MatchList.prototype.prerender = function () {
 };
 
 MatchList.prototype.autoupdate = function (elem) {
-    let updated = $('.football-match', elem);
-    let self = this;
+    const updated = $('.football-match', elem);
+    const self = this;
     let $match;
     let $updated;
 

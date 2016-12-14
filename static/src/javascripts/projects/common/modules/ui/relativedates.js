@@ -30,8 +30,8 @@ function isWithinSeconds(date, seconds) {
 }
 
 function isYesterday(relative) {
-    let today = new Date();
-    let yesterday = new Date();
+    const today = new Date();
+    const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
     return (relative.toDateString() === yesterday.toDateString());
 }
@@ -51,7 +51,7 @@ function isValidDate(date) {
 function getSuffix(type, format, value) {
     let strs;
 
-    let units = {
+    const units = {
         s: {
             short: ['s'],
             med: ['s ago'],
@@ -93,10 +93,10 @@ function makeRelativeDate(epoch, opts) {
     let hours;
     let days;
     let delta;
-    let then = new Date(Number(epoch));
-    let now = new Date();
-    let format = opts.format || 'short';
-    let extendedFormatting = (opts.format === 'short' || opts.format === 'med');
+    const then = new Date(Number(epoch));
+    const now = new Date();
+    const format = opts.format || 'short';
+    const extendedFormatting = (opts.format === 'short' || opts.format === 'med');
 
     if (!isValidDate(then)) {
         return false;
@@ -143,8 +143,8 @@ function replaceLocaleTimestamps() {
     const cls = 'js-locale-timestamp';
     $(`.${cls}`).each((el) => {
         let datetime;
-        let $el = bonzo(el);
-        let timestamp = parseInt($el.attr('data-timestamp'), 10);
+        const $el = bonzo(el);
+        const timestamp = parseInt($el.attr('data-timestamp'), 10);
 
         if (timestamp) {
             datetime = new Date(timestamp);
@@ -159,14 +159,14 @@ function replaceValidTimestamps(opts) {
 
     findValidTimestamps().each((el) => {
         let targetEl;
-        let $el = bonzo(el);
+        const $el = bonzo(el);
 
-        let // Epoch dates are more reliable, fallback to datetime for liveblog blocks
+        const // Epoch dates are more reliable, fallback to datetime for liveblog blocks
         timestamp = parseInt($el.attr('data-timestamp'), 10) || $el.attr('datetime');
 
-        let datetime = new Date(timestamp);
+        const datetime = new Date(timestamp);
 
-        let relativeDate = makeRelativeDate(datetime.getTime(), {
+        const relativeDate = makeRelativeDate(datetime.getTime(), {
             // NOTE: if this is in a block (blog), assume we want added time on > 1 day old dates
             showTime: bonzo($el.parent()).hasClass('block-time'),
             format: $el.attr('data-relativeformat'),

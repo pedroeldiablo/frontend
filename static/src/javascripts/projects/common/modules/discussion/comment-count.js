@@ -16,15 +16,15 @@ import sortBy from 'lodash/collections/sortBy';
 import uniq from 'lodash/arrays/uniq';
 import keys from 'lodash/objects/keys';
 import chain from 'common/utils/chain';
-let attributeName = 'data-discussion-id';
-let countUrl = '/discussion/comment-counts.json?shortUrls=';
+const attributeName = 'data-discussion-id';
+const countUrl = '/discussion/comment-counts.json?shortUrls=';
 
-let templates = {
+const templates = {
     content: commentCountContentTemplate,
     contentImmersive: commentCountContentImmersiveTemplate,
 };
 
-let defaultTemplate = commentCountTemplate;
+const defaultTemplate = commentCountTemplate;
 
 function getElementsIndexedById(context) {
     const elements = qwery(`[${attributeName}]`, context);
@@ -45,8 +45,8 @@ function renderCounts(counts, indexedElements) {
     counts.forEach((c) => {
         forEach(indexedElements[c.id], (node) => {
             let format;
-            let $node = bonzo(node);
-            let url = $node.attr('data-discussion-url') || getContentUrl(node);
+            const $node = bonzo(node);
+            const url = $node.attr('data-discussion-url') || getContentUrl(node);
             let $container;
             let meta;
             let html;
@@ -82,8 +82,8 @@ function renderCounts(counts, indexedElements) {
 
 function getCommentCounts(context) {
     fastdom.read(() => {
-        let indexedElements = getElementsIndexedById(context || document.body);
-        let ids = getContentIds(indexedElements);
+        const indexedElements = getElementsIndexedById(context || document.body);
+        const ids = getContentIds(indexedElements);
         ajax({
             url: countUrl + ids,
             type: 'json',

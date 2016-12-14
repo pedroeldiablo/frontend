@@ -116,10 +116,10 @@ export default React.createClass({
     },
 
     updateCellStatesAndRender() {
-        let focus = this.state.focus;
-        let isHighlighted = focus ? utils.highlights(focus.x, focus.y) : constant(false);
-        let focussedCell = this.getFocussedCell();
-        let valueInFocus = focussedCell ? focussedCell.value : null;
+        const focus = this.state.focus;
+        const isHighlighted = focus ? utils.highlights(focus.x, focus.y) : constant(false);
+        const focussedCell = this.getFocussedCell();
+        const valueInFocus = focussedCell ? focussedCell.value : null;
 
         this.mapCells(cell => assign({}, cell, {
             isHighlighted: isHighlighted(cell.x, cell.y),
@@ -132,7 +132,7 @@ export default React.createClass({
     },
 
     highlightErrors() {
-        let self = this;
+        const self = this;
         let rows;
         let columns;
         let squares;
@@ -183,9 +183,9 @@ export default React.createClass({
     },
 
     render() {
-        let self = this;
+        const self = this;
 
-        let cells = map(this.state.cells, (cell) => {
+        const cells = map(this.state.cells, (cell) => {
             const data = assign({}, cell, {
                 key: `${cell.x}_${cell.y}`,
                 onClick: self.focusCell,
@@ -194,7 +194,7 @@ export default React.createClass({
             return Cell(data);
         });
 
-        let gridSize = utils.position(9);
+        const gridSize = utils.position(9);
 
         return React.DOM.svg({
             width: gridSize,

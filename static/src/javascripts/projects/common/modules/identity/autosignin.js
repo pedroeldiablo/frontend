@@ -14,8 +14,8 @@ function AutoSignin() {
 
     this.init = () => {
         if (id.shouldAutoSigninInUser()) {
-            let appId = config.page.fbAppId;
-            let authorizer = new FacebookAuthorizer(appId);
+            const appId = config.page.fbAppId;
+            const authorizer = new FacebookAuthorizer(appId);
 
             authorizer.getLoginStatus();
 
@@ -62,7 +62,7 @@ function AutoSignin() {
         });
     };
 
-    this.welcome = name => {
+    this.welcome = (name) => {
         const msg = `${'<p class="site-message__message" data-test-id="facebook-auto-sign-in-banner">' +
             'Welcome '}${name}, you’re signed in to the Guardian using Facebook. ` +
             `<a data-link-name="fb auto : sign out" href="${config.page.idUrl}/signout"/>Sign out</a>.` +

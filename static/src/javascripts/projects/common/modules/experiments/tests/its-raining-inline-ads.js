@@ -16,7 +16,7 @@ export default function () {
 
     this.canRun = () => commercialFeatures.articleBodyAdverts;
 
-    const success = complete => {
+    const success = (complete) => {
         complete();
     };
 

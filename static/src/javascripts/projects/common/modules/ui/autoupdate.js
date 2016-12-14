@@ -45,7 +45,7 @@ export default function (opts) {
     let updateTimeoutId;
 
 
-    const updateDelay = delay => {
+    const updateDelay = (delay) => {
         let newDelay;
         if (detect.pageVisible()) {
             newDelay = options.minUpdateDelay;
@@ -79,7 +79,7 @@ export default function (opts) {
         });
     };
 
-    const injectNewBlocks = newBlocks => {
+    const injectNewBlocks = (newBlocks) => {
         // Clean up blocks before insertion
         const resultHtml = $.create(`<div>${newBlocks}</div>`)[0];
         let elementsToAdd;

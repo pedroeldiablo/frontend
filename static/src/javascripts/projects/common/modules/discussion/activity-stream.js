@@ -22,7 +22,7 @@ ActivityStream.prototype.ready = function () {
     this.on('click', '.js-disc-recommend-comment', this.recommendComment);
     $('.js-disc-recommend-comment').addClass('disc-comment__recommend--open');
 
-    window.onpopstate = event => {
+    window.onpopstate = (event) => {
         if (url.hasHistorySupport) {
             this.applyState(event.state.resp.html, event.state.streamType);
         }
@@ -30,7 +30,7 @@ ActivityStream.prototype.ready = function () {
 
     pagination(this);
 };
-ActivityStream.prototype.recommendComment = e => {
+ActivityStream.prototype.recommendComment = (e) => {
     const el = e.currentTarget;
     discussionApi.recommendComment(el.getAttribute('data-comment-id'));
     bonzo(el).addClass('disc-comment__recommend--active');

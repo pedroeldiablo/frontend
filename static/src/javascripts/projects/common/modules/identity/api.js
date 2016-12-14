@@ -13,7 +13,7 @@ import Promise from 'Promise';
  * We'll need to change this once there is some state change
  * TODO(jamesgorrie): Allow this to show policies too (not needed yet)
  */
-let Id = {};
+const Id = {};
 
 let userFromCookieCache = null;
 
@@ -54,8 +54,8 @@ Id.reset = () => {
  */
 Id.getUserFromCookie = () => {
     if (userFromCookieCache === null) {
-        let cookieData = cookies.get(Id.cookieName);
-        let userData = cookieData ? JSON.parse(Id.decodeBase64(cookieData.split('.')[0])) : null;
+        const cookieData = cookies.get(Id.cookieName);
+        const userData = cookieData ? JSON.parse(Id.decodeBase64(cookieData.split('.')[0])) : null;
         if (userData) {
             const displayName = decodeURIComponent(userData[2]);
             userFromCookieCache = {
@@ -118,9 +118,9 @@ Id.getUserFromApi = asyncCallMerger.mergeCalls(
  * refreshes the users cookie at the same time.
  */
 Id.getUserFromApiWithRefreshedCookie = () => {
-    let endpoint = '/user/me';
+    const endpoint = '/user/me';
 
-    let request = ajax({
+    const request = ajax({
         url: Id.idApiRoot + endpoint,
         type: 'jsonp',
         data: {
@@ -134,7 +134,7 @@ Id.getUserFromApiWithRefreshedCookie = () => {
 /**
  * Returns user object when signed in, otherwise redirects to sign in with configurable absolute returnUrl
  */
-Id.getUserOrSignIn = returnUrl => {
+Id.getUserOrSignIn = (returnUrl) => {
     if (Id.isUserLoggedIn()) {
         return Id.getUserFromCookie();
     } else {
@@ -147,7 +147,7 @@ Id.getUserOrSignIn = returnUrl => {
 /**
  * Wrap window.location.href so it can be spied in unit tests
  */
-Id.redirectTo = url => {
+Id.redirectTo = (url) => {
     window.location.href = url;
 };
 
@@ -174,25 +174,25 @@ Id.hasUserSignedOutInTheLast24Hours = () => {
  * Returns true if a there is no signed in user and the user has not signed in the last 24 hours
  */
 Id.shouldAutoSigninInUser = function () {
-    let signedInUser = !!cookies.get(Id.cookieName);
-    let checkFacebook = !!storage.local.get(Id.fbCheckKey);
+    const signedInUser = !!cookies.get(Id.cookieName);
+    const checkFacebook = !!storage.local.get(Id.fbCheckKey);
     return !signedInUser && !checkFacebook && !this.hasUserSignedOutInTheLast24Hours();
 };
 
-Id.setNextFbCheckTime = nextFbCheckDue => {
+Id.setNextFbCheckTime = (nextFbCheckDue) => {
     storage.local.set(Id.fbCheckKey, {}, {
         expires: nextFbCheckDue,
     });
 };
 
-Id.emailSignup = listId => {
-    let endpoint = `/useremails/${Id.getUserFromCookie().id}/subscriptions`;
+Id.emailSignup = (listId) => {
+    const endpoint = `/useremails/${Id.getUserFromCookie().id}/subscriptions`;
 
-    let data = {
+    const data = {
         listId,
     };
 
-    let request = ajax({
+    const request = ajax({
         url: Id.idApiRoot + endpoint,
         type: 'jsonp',
         crossOrigin: true,
@@ -207,9 +207,9 @@ Id.emailSignup = listId => {
 
 Id.getUserEmailSignUps = () => {
     if (Id.getUserFromCookie()) {
-        let endpoint = `/useremails/${Id.getUserFromCookie().id}`;
+        const endpoint = `/useremails/${Id.getUserFromCookie().id}`;
 
-        let request = ajax({
+        const request = ajax({
             url: Id.idApiRoot + endpoint,
             type: 'jsonp',
             crossOrigin: true,
@@ -222,9 +222,9 @@ Id.getUserEmailSignUps = () => {
 };
 
 Id.sendValidationEmail = () => {
-    let endpoint = '/user/send-validation-email';
+    const endpoint = '/user/send-validation-email';
 
-    let request = ajax({
+    const request = ajax({
         url: Id.idApiRoot + endpoint,
         type: 'jsonp',
         crossOrigin: true,
@@ -237,9 +237,9 @@ Id.sendValidationEmail = () => {
 };
 
 Id.getSavedArticles = () => {
-    let endpoint = '/syncedPrefs/me/savedArticles';
+    const endpoint = '/syncedPrefs/me/savedArticles';
 
-    let request = ajax({
+    const request = ajax({
         url: Id.idApiRoot + endpoint,
         type: 'jsonp',
         crossOrigin: true,
@@ -248,10 +248,10 @@ Id.getSavedArticles = () => {
     return request;
 };
 
-Id.saveToArticles = data => {
-    let endpoint = '/syncedPrefs/cors/me/savedArticles';
+Id.saveToArticles = (data) => {
+    const endpoint = '/syncedPrefs/cors/me/savedArticles';
 
-    let request = ajax({
+    const request = ajax({
         url: Id.idApiRoot + endpoint,
         type: 'json',
         crossOrigin: true,

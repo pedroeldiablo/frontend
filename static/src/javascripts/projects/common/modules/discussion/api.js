@@ -6,9 +6,9 @@ import config from 'common/utils/config';
  * Singleton to deal with Discussion API requests
  * @type {Object}
  */
-let root = config.page.discussionApiUrl;
+const root = config.page.discussionApiUrl;
 
-let Api = {
+const Api = {
     root,
     clientHeader: config.page.discussionApiClientHeader,
     d2Uid: config.page.discussionD2Uid,
@@ -55,7 +55,7 @@ Api.postComment = (discussionId, comment) => {
  * @param {string} comment
  * @return {Reqwest} a promise
  */
-Api.previewComment = comment => {
+Api.previewComment = (comment) => {
     const endpoint = '/comment/preview';
     return Api.send(endpoint, 'post', comment);
 };
@@ -64,7 +64,7 @@ Api.previewComment = comment => {
  * @param {number} id the comment ID
  * @return {Reqwest} a promise
  */
-Api.recommendComment = id => {
+Api.recommendComment = (id) => {
     const endpoint = `/comment/${id}/recommend`;
     return Api.send(endpoint, 'post');
 };
@@ -73,7 +73,7 @@ Api.recommendComment = id => {
  * @param {number} id the comment ID
  * @return {Reqwest} a promise
  */
-Api.pickComment = id => {
+Api.pickComment = (id) => {
     const endpoint = `/comment/${id}/highlight`;
     return Api.send(endpoint, 'post');
 };
@@ -82,7 +82,7 @@ Api.pickComment = id => {
  * @param {number} id the comment ID
  * @return {Reqwest} a promise
  */
-Api.unPickComment = id => {
+Api.unPickComment = (id) => {
     const endpoint = `/comment/${id}/unhighlight`;
     return Api.send(endpoint, 'post');
 };
@@ -103,7 +103,7 @@ Api.reportComment = (id, report) => {
  * If it isn't we use profile/me, which isn't as cachable
  * @param {number=} id (optional)
  */
-Api.getUser = id => {
+Api.getUser = (id) => {
     const endpoint = `/profile/${!id ? 'me' : id}`;
     return Api.send(endpoint, 'get');
 };
