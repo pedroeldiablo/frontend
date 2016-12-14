@@ -21,7 +21,7 @@ GeoMostPopularFront.prototype.isVideoFront = config.page.pageId === 'video';
 GeoMostPopularFront.prototype.isInternational = config.page.pageId === 'international';
 GeoMostPopularFront.prototype.manipulationType = 'html';
 
-GeoMostPopularFront.prototype.prerender = function() {
+GeoMostPopularFront.prototype.prerender = function () {
     this.elem = qwery('.headline-list', this.elem)[0];
 };
 
@@ -30,8 +30,8 @@ function hideTabs(parent) {
     $('.js-tabs', parent).addClass('u-h');
 }
 
-GeoMostPopularFront.prototype.go = function() {
-    var tabSelector = (this.isNetworkFront) ? '.js-tab-1' : '.js-tab-2';
+GeoMostPopularFront.prototype.go = function () {
+    const tabSelector = (this.isNetworkFront) ? '.js-tab-1' : '.js-tab-2';
     this.parent = qwery('.js-popular-trails')[0];
 
     if (this.parent) {
@@ -45,7 +45,7 @@ GeoMostPopularFront.prototype.go = function() {
     }
 };
 
-GeoMostPopularFront.prototype.ready = function() {
+GeoMostPopularFront.prototype.ready = function () {
     if (this.isNetworkFront) {
         hideTabs(this.parent);
     }

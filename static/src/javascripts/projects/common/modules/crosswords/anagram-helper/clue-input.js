@@ -1,29 +1,29 @@
 import React from 'react';
-var ClueInput = React.createClass({
+const ClueInput = React.createClass({
 
-    componentDidMount: function() {
+    componentDidMount() {
         React.findDOMNode(this).focus();
     },
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         // focus on reset
         if (this.props.value === '') {
             React.findDOMNode(this).focus();
         }
     },
 
-    onInputChange: function(e) {
+    onInputChange(e) {
         this.props.onChange(e.target.value.toLowerCase());
     },
 
-    onKeyDown: function(e) {
+    onKeyDown(e) {
         if (e.keyCode === 13) {
             React.findDOMNode(this).blur();
             this.props.onEnter();
         }
     },
 
-    render: function() {
+    render() {
         return React.createElement('input', {
             type: 'text',
             className: 'crossword__anagram-helper__clue-input',
@@ -31,9 +31,9 @@ var ClueInput = React.createClass({
             maxLength: this.props.clue.length,
             value: this.props.value,
             onChange: this.onInputChange,
-            onKeyDown: this.onKeyDown
+            onKeyDown: this.onKeyDown,
         });
-    }
+    },
 });
 
 export default ClueInput;

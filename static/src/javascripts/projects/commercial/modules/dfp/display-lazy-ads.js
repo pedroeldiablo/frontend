@@ -2,10 +2,10 @@ import dfpEnv from 'commercial/modules/dfp/dfp-env';
 import loadAdvert from 'commercial/modules/dfp/load-advert';
 import enableLazyLoad from 'commercial/modules/dfp/enable-lazy-load';
 import performanceLogging from 'commercial/modules/dfp/performance-logging';
-var advertsToInstantlyLoad = [
+const advertsToInstantlyLoad = [
     'dfp-ad--pageskin-inread',
     'dfp-ad--merchandising-high',
-    'dfp-ad--im'
+    'dfp-ad--im',
 ];
 
 export default displayLazyAds;
@@ -18,7 +18,7 @@ function displayLazyAds() {
 }
 
 function instantLoad() {
-    var instantLoadAdverts = dfpEnv.advertsToLoad.filter(function(advert) {
+    const instantLoadAdverts = dfpEnv.advertsToLoad.filter((advert) => {
         if (advertsToInstantlyLoad.indexOf(advert.id) > -1) {
             performanceLogging.updateAdvertMetric(advert, 'loadingMethod', 'instant');
             performanceLogging.updateAdvertMetric(advert, 'lazyWaitComplete', 0);
@@ -29,9 +29,7 @@ function instantLoad() {
         }
     });
 
-    dfpEnv.advertsToLoad = dfpEnv.advertsToLoad.filter(function(advert) {
-        return advertsToInstantlyLoad.indexOf(advert.id) < 0;
-    });
+    dfpEnv.advertsToLoad = dfpEnv.advertsToLoad.filter(advert => advertsToInstantlyLoad.indexOf(advert.id) < 0);
 
     instantLoadAdverts.forEach(loadAdvert);
 }

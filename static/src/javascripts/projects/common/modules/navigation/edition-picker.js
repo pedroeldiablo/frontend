@@ -3,8 +3,8 @@ import qwery from 'qwery';
 
 function editionPickerClickHandler(event) {
     event.stopPropagation();
-    var button = event.target;
-    var editionPickerDropdown = qwery('.js-edition-picker-dropdown')[0];
+    const button = event.target;
+    const editionPickerDropdown = qwery('.js-edition-picker-dropdown')[0];
 
     function menuIsOpen() {
         return button.getAttribute('aria-expanded') === 'true';
@@ -16,7 +16,7 @@ function editionPickerClickHandler(event) {
     }
 
     function closeMenu() {
-        fastdom.write(function() {
+        fastdom.write(() => {
             button.setAttribute('aria-expanded', 'false');
             if (editionPickerDropdown) {
                 editionPickerDropdown.setAttribute('aria-hidden', 'true');
@@ -27,7 +27,7 @@ function editionPickerClickHandler(event) {
     if (menuIsOpen()) {
         closeEditionPickerAndRemoveListener();
     } else {
-        fastdom.write(function() {
+        fastdom.write(() => {
             button.setAttribute('aria-expanded', 'true');
             if (editionPickerDropdown) {
                 editionPickerDropdown.setAttribute('aria-hidden', 'false');

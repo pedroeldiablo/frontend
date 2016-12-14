@@ -22,5 +22,5 @@ export default {
     key9: 57,
     keyPad0: 96,
     keyPad9: 105,
-    keyBackspace: 8
+    keyBackspace: 8,
 };

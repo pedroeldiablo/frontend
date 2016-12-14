@@ -1,9 +1,7 @@
 import messenger from 'commercial/modules/messenger';
-var aProto = Array.prototype;
+const aProto = Array.prototype;
 
-messenger.register('get-styles', function(specs) {
-    return getStyles(specs, document.styleSheets);
-});
+messenger.register('get-styles', specs => getStyles(specs, document.styleSheets));
 export default getStyles;
 
 function getStyles(specs, styleSheets) {
@@ -11,11 +9,11 @@ function getStyles(specs, styleSheets) {
         return null;
     }
 
-    var i = 0;
-    var ii = styleSheets.length;
-    var result = [];
+    let i = 0;
+    const ii = styleSheets.length;
+    const result = [];
     while (i < ii) {
-        var sheet = styleSheets[i++];
+        const sheet = styleSheets[i++];
         if (!sheet.ownerNode || !sheet.ownerNode.matches) {
             continue;
         }
@@ -27,9 +25,7 @@ function getStyles(specs, styleSheets) {
         if (sheet.ownerNode.tagName === 'STYLE') {
             result.push(sheet.ownerNode.textContent);
         } else {
-            result.push(aProto.reduce.call(sheet.cssRules, function(res, input) {
-                return res + input.cssText;
-            }, ''));
+            result.push(aProto.reduce.call(sheet.cssRules, (res, input) => res + input.cssText, ''));
         }
     }
 

@@ -1,27 +1,27 @@
-/*eslint-disable consistent-return*/
+/* eslint-disable consistent-return*/
 /*
  Module: storage.js
  Description: Wrapper around localStorage functionality
  */
-var w = window,
-    Storage = function(type) {
+let w = window,
+    Storage = function (type) {
         this.type = type;
     },
     isAvailable;
 
-Storage.prototype.setWindow = function(window) {
+Storage.prototype.setWindow = function (window) {
     w = window;
 };
 
-Storage.prototype.isStorageAvailable = function(refresh) {
+Storage.prototype.isStorageAvailable = function (refresh) {
     if (isAvailable === undefined || refresh) {
         isAvailable = this.isAvailable();
     }
     return isAvailable;
 };
 
-Storage.prototype.isAvailable = function(data) {
-    var testKey = 'local-storage-module-test',
+Storage.prototype.isAvailable = function (data) {
+    let testKey = 'local-storage-module-test',
         d = data || 'test';
     try {
         // to fully test, need to set item
@@ -40,15 +40,15 @@ Storage.prototype.isAvailable = function(data) {
  * @param {Object} [options]
  *     {Date} expires - When should the storage expire
  */
-Storage.prototype.set = function(key, data, options) {
+Storage.prototype.set = function (key, data, options) {
     if (this.isStorageAvailable()) {
         if (!w[this.type]) {
             return;
         }
-        var opts = options || {},
+        let opts = options || {},
             value = JSON.stringify({
                 value: data,
-                expires: opts.expires
+                expires: opts.expires,
             });
         if (!this.isAvailable(value)) {
             return false;
@@ -57,9 +57,9 @@ Storage.prototype.set = function(key, data, options) {
     }
 };
 
-Storage.prototype.get = function(key) {
+Storage.prototype.get = function (key) {
     if (this.isStorageAvailable()) {
-        var data,
+        let data,
             dataParsed;
         if (!w[this.type]) {
             return;
@@ -94,40 +94,40 @@ Storage.prototype.get = function(key) {
  * @param  {String} key
  * @return {String} value
  */
-Storage.prototype.getRaw = function(key) {
+Storage.prototype.getRaw = function (key) {
     if (this.isStorageAvailable()) {
         return w[this.type].getItem(key);
     }
 };
 
-Storage.prototype.remove = function(key) {
+Storage.prototype.remove = function (key) {
     if (this.isStorageAvailable()) {
         return w[this.type].removeItem(key);
     }
 };
 
-Storage.prototype.removeAll = function() {
+Storage.prototype.removeAll = function () {
     if (this.isStorageAvailable()) {
         return w[this.type].clear();
     }
 };
 
-Storage.prototype.length = function() {
+Storage.prototype.length = function () {
     if (this.isStorageAvailable()) {
         return w[this.type].length;
     }
 };
 
-Storage.prototype.getKey = function(i) {
+Storage.prototype.getKey = function (i) {
     if (this.isStorageAvailable()) {
         return w[this.type].key(i);
     }
 };
 
-Storage.prototype.clearByPrefix = function(prefix) {
+Storage.prototype.clearByPrefix = function (prefix) {
     if (this.isStorageAvailable()) {
         // Loop in reverse because storage indexes will change as you delete items.
-        var i,
+        let i,
             name;
         for (i = this.length() - 1; i > -1; --i) {
             name = this.getKey(i);
@@ -140,5 +140,5 @@ Storage.prototype.clearByPrefix = function(prefix) {
 
 export default {
     local: new Storage('localStorage'),
-    session: new Storage('sessionStorage')
+    session: new Storage('sessionStorage'),
 };

@@ -2,7 +2,7 @@ import qwery from 'qwery';
 import config from 'common/utils/config';
 import CommentBlocker from 'common/modules/experiments/tests/utils/comment-blocker';
 import identity from 'common/modules/identity/api';
-var seriesIds = [
+const seriesIds = [
     'fashion/series/sali-hughes-beauty',
     'politics/series/politics-live-with-andrew-sparrow',
     'books/series/tips-links-and-suggestions-books',
@@ -19,26 +19,25 @@ var seriesIds = [
     'crosswords/series/quick',
     'crosswords/series/quiptic',
     'crosswords/series/cryptic,',
-    'crosswords/series/speedy'
+    'crosswords/series/speedy',
 ];
 
-var blogIds = [
+const blogIds = [
     'lifeandstyle/the-running-blog',
     'crosswords/crossword-blog',
     'politics/blog',
     'environment/bike-blog',
     'technology/askjack',
-    'commentisfree/series/guardian-comment-cartoon'
+    'commentisfree/series/guardian-comment-cartoon',
 ];
 
-var dontRunOnAuthor = 'First Dog on the Moon';
+const dontRunOnAuthor = 'First Dog on the Moon';
 
 function doesNotContain(values, toTest) {
     return values.indexOf(toTest) === -1;
 }
 
-export default function() {
-
+export default function () {
     this.id = 'ParticipationDiscussionTest';
     this.start = '2016-05-26';
     this.expiry = '2016-07-25';
@@ -51,31 +50,31 @@ export default function() {
     this.dataLinkNames = '';
     this.idealOutcome = 'DO we want to turn comments up or down';
 
-    this.canRun = function() {
-        var testAuthor = config.page.author || '';
-        var canRunOnBlog = doesNotContain(blogIds, config.page.blogIds || '');
-        var canRunOnSeries = doesNotContain(seriesIds, config.page.seriesId || '');
-        var notLoggedIn = !identity.isUserLoggedIn();
+    this.canRun = function () {
+        const testAuthor = config.page.author || '';
+        const canRunOnBlog = doesNotContain(blogIds, config.page.blogIds || '');
+        const canRunOnSeries = doesNotContain(seriesIds, config.page.seriesId || '');
+        const notLoggedIn = !identity.isUserLoggedIn();
         return testAuthor !== dontRunOnAuthor && canRunOnBlog && canRunOnSeries && notLoggedIn;
     };
 
     this.variants = [{
         id: 'variant-1',
-        test: function() {
-            var shortUrlSlug = (config.page.shortUrl || '').replace('http://gu.com/p/', ''),
+        test() {
+            let shortUrlSlug = (config.page.shortUrl || '').replace('http://gu.com/p/', ''),
                 hide = CommentBlocker.hideComments(shortUrlSlug);
 
             if (config.page.isContent && hide) {
-                qwery('.js-comments').forEach(function(c) {
+                qwery('.js-comments').forEach((c) => {
                     c.classList.add('discussion--hidden');
                 });
-                qwery('.js-commentcount').forEach(function(c) {
+                qwery('.js-commentcount').forEach((c) => {
                     c.classList.add('commentcount2--hidden');
                 });
             }
-        }
+        },
     }, {
         id: 'control',
-        test: function() {}
+        test() {},
     }];
-};
+}

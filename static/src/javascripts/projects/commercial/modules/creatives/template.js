@@ -14,14 +14,14 @@ import 'text!commercial/views/creatives/manual-container.html';
  * * https://www.google.com/dfp/59666047#delivery/CreateCreativeTemplate/creativeTemplateId=10021527
  * * https://www.google.com/dfp/59666047#delivery/CreateCreativeTemplate/creativeTemplateId=10028127
  */
-var Template = function(adSlot, params) {
+const Template = function (adSlot, params) {
     this.adSlot = adSlot instanceof HTMLElement ? adSlot : adSlot[0];
     this.params = params;
 
     if (this.params.Toneclass) {
         this.params.isSoulmates = params.Toneclass.indexOf('soulmates') !== -1;
         this.params.isMembership = params.Toneclass.indexOf('membership') !== -1;
-        this.params.HeaderToneclass = 'commercial__header--' + this.params.Toneclass.replace('commercial--tone-', '');
+        this.params.HeaderToneclass = `commercial__header--${this.params.Toneclass.replace('commercial--tone-', '')}`;
     }
 
     this.params.marque36icon = svgs('marque36icon');
@@ -41,8 +41,8 @@ var Template = function(adSlot, params) {
     this.params.marque36iconCreativeMarque = svgs('marque36icon', ['creative__marque']);
 };
 
-Template.prototype.create = function() {
-    return new Promise(function(resolve) {
+Template.prototype.create = function () {
+    return new Promise((resolve) => {
         if (this.params.creative === 'manual-single') {
             this.params.type = 'single';
             this.params.creative = 'manual-container';
@@ -72,20 +72,20 @@ Template.prototype.create = function() {
             this.params.classNames = ['legacy-inline', this.params.toneClass.replace('commercial--', ''), this.params.toneClass.replace('commercial--tone-', '')];
         }
 
-        require(['text!commercial/views/creatives/' + this.params.creative + '.html'], function(creativeTpl) {
+        require([`text!commercial/views/creatives/${this.params.creative}.html`], (creativeTpl) => {
             if (templatePreprocessor[this.params.creative]) {
                 templatePreprocessor[this.params.creative](this);
             }
 
-            var creativeHtml = template(creativeTpl, this.params);
+            const creativeHtml = template(creativeTpl, this.params);
 
-            fastdom.write(function() {
-                    this.adSlot.insertAdjacentHTML('beforeend', creativeHtml);
-                    return true;
-                }, this)
+            fastdom.write(function () {
+                this.adSlot.insertAdjacentHTML('beforeend', creativeHtml);
+                return true;
+            }, this)
                 .then(resolve);
-        }.bind(this));
-    }.bind(this));
+        });
+    });
 };
 
 export default Template;

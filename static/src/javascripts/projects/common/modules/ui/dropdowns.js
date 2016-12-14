@@ -1,23 +1,23 @@
 import $ from 'common/utils/$';
 import bonzo from 'bonzo';
 import bean from 'bean';
-var s = {
+const s = {
     container: '.dropdown',
     button: '.dropdown__button',
-    content: '.dropdown__content'
+    content: '.dropdown__content',
 };
 
 function init() {
-    bean.on(document.body, 'click', s.button, function(e) {
-        var $container = bonzo($.ancestor(e.currentTarget, s.container.substring(1)));
+    bean.on(document.body, 'click', s.button, (e) => {
+        const $container = bonzo($.ancestor(e.currentTarget, s.container.substring(1)));
         $container.toggleClass('dropdown--active');
         updateAria($container);
     });
 }
 
 function updateAria($container) {
-    $container.each(function(d) {
-        var v = bonzo(d).hasClass('dropdown--active');
+    $container.each((d) => {
+        const v = bonzo(d).hasClass('dropdown--active');
         $(s.content, d).attr('aria-hidden', !v);
         $(s.button, d).attr('aria-expanded', v);
         $(s.content, d).attr('aria-expanded', v);
@@ -25,6 +25,6 @@ function updateAria($container) {
 }
 
 export default {
-    init: init,
-    updateAria: updateAria
+    init,
+    updateAria,
 };

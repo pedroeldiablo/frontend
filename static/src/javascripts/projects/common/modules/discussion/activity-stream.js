@@ -15,14 +15,14 @@ ActivityStream.prototype.componentClass = 'activity-stream';
 ActivityStream.prototype.defaultOptions = {
     page: 1,
     streamType: 'discussions',
-    userId: null
+    userId: null,
 };
-ActivityStream.prototype.ready = function() {
+ActivityStream.prototype.ready = function () {
     this.removeState('loading');
     this.on('click', '.js-disc-recommend-comment', this.recommendComment);
     $('.js-disc-recommend-comment').addClass('disc-comment__recommend--open');
 
-    window.onpopstate = function(event) {
+    window.onpopstate = function (event) {
         if (url.hasHistorySupport) {
             this.applyState(event.state.resp.html, event.state.streamType);
         }
@@ -30,34 +30,34 @@ ActivityStream.prototype.ready = function() {
 
     pagination(this);
 };
-ActivityStream.prototype.recommendComment = function(e) {
-    var el = e.currentTarget;
+ActivityStream.prototype.recommendComment = function (e) {
+    const el = e.currentTarget;
     discussionApi.recommendComment(el.getAttribute('data-comment-id'));
     bonzo(el).addClass('disc-comment__recommend--active');
-    $('.js-disc-recommend-count', el).each(function(countEl) {
+    $('.js-disc-recommend-count', el).each((countEl) => {
         countEl.innerHTML = parseInt(countEl.innerHTML, 10) + 1;
     });
 };
-ActivityStream.prototype.change = function(opts) {
+ActivityStream.prototype.change = function (opts) {
     this.setOptions(opts);
     return this._fetch();
 };
-ActivityStream.prototype.fetched = function(resp) {
+ActivityStream.prototype.fetched = function (resp) {
     this.applyState(resp.html, this.options.streamType);
     this.updateHistory(resp);
 };
-ActivityStream.prototype.applyState = function(html, streamType) {
+ActivityStream.prototype.applyState = function (html, streamType) {
     // update display
-    var $el = bonzo(this.elem).empty();
+    const $el = bonzo(this.elem).empty();
     this.setState('loading');
-    $.create(html).each(function(el) {
+    $.create(html).each((el) => {
         $el.html($(el).html()).attr({
-            'class': el.className
+            class: el.className,
         });
     });
     this.removeState('loading');
 
-    var activeTab = $('.tabs__tab--selected');
+    const activeTab = $('.tabs__tab--selected');
     if (activeTab.data('stream-type') !== streamType) {
         selectTab(streamType === 'comments' ? 'discussions' : streamType);
     }
@@ -65,20 +65,20 @@ ActivityStream.prototype.applyState = function(html, streamType) {
     // update opts
     this.options.streamType = streamType;
 };
-ActivityStream.prototype.updateHistory = function(resp) {
-    var page = this.options.page;
-    var pageParam = url.getUrlVars().page;
-    var streamType = this.options.streamType !== 'discussions' ? '/' + this.options.streamType : '';
-    var qs = '/user/id/' + this.options.userId + streamType + '?' + url.constructQuery({
-        page: page
-    });
-    var state = {
-        resp: resp,
-        streamType: this.options.streamType
+ActivityStream.prototype.updateHistory = function (resp) {
+    const page = this.options.page;
+    const pageParam = url.getUrlVars().page;
+    const streamType = this.options.streamType !== 'discussions' ? `/${this.options.streamType}` : '';
+    const qs = `/user/id/${this.options.userId}${streamType}?${url.constructQuery({
+        page,
+    })}`;
+    const state = {
+        resp,
+        streamType: this.options.streamType,
     };
-    var params = {
+    const params = {
         querystring: qs,
-        state: state
+        state,
     };
 
     if (typeof pageParam === 'undefined') { // If first load and without page param, add it and overwrite history
@@ -89,12 +89,12 @@ ActivityStream.prototype.updateHistory = function(resp) {
 };
 
 function pagination(activityStream) {
-    bean.on(activityStream.elem, 'click', '.js-activity-stream-page-change', function(e) {
-        var page = e.currentTarget.getAttribute('data-page');
+    bean.on(activityStream.elem, 'click', '.js-activity-stream-page-change', (e) => {
+        const page = e.currentTarget.getAttribute('data-page');
         e.preventDefault();
 
         activityStream.change({
-            page: page
+            page,
         });
     });
 }
@@ -106,7 +106,7 @@ function selectTab(streamType) {
     $('.js-activity-stream-change').focus().blur();
 
     $('.tabs__tab--selected').removeClass('tabs__tab--selected');
-    bonzo($('a[data-stream-type=' + streamType + ']')).parent().addClass('tabs__tab--selected');
+    bonzo($(`a[data-stream-type=${streamType}]`)).parent().addClass('tabs__tab--selected');
 }
 
 export default ActivityStream;

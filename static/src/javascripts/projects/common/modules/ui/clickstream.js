@@ -4,21 +4,18 @@ import ab from 'common/modules/experiments/ab';
 import merge from 'lodash/objects/merge';
 import map from 'lodash/collections/map';
 
-var Clickstream = function(opts) {
-
+const Clickstream = function (opts) {
     opts = opts || {};
 
     // Allow a fake window.location to be passed in for testing
-    var location = opts.location || window.location;
+    const location = opts.location || window.location;
 
-    var filters = opts.filter || [],
-        filterSource = function(element) {
-            return filters.filter(function(f) {
-                return (f === element);
-            });
+    let filters = opts.filter || [],
+        filterSource = function (element) {
+            return filters.filter(f => (f === element));
         },
-        compareHosts = function(url) {
-            var urlHost,
+        compareHosts = function (url) {
+            let urlHost,
                 host;
 
             url = url || '';
@@ -38,13 +35,12 @@ var Clickstream = function(opts) {
             // e.g. we should treat https://gu.com/foo -> http://gu.com/bar as a same-host link.
             return !urlHost || urlHost === host;
         },
-        getClickSpec = function(spec, forceValid) {
-
+        getClickSpec = function (spec, forceValid) {
             // element was removed from the DOM
             if (!spec.el) {
                 return false;
             }
-            var el = spec.el,
+            let el = spec.el,
                 elName = el.tagName.toLowerCase(),
                 dataLinkName = el.getAttribute('data-link-name'),
                 href;
@@ -58,12 +54,12 @@ var Clickstream = function(opts) {
                 delete spec.el;
 
                 if (spec.validTarget && el.getAttribute('data-link-test')) {
-                    spec.tag = el.getAttribute('data-link-test') + ' | ' + spec.tag;
+                    spec.tag = `${el.getAttribute('data-link-test')} | ${spec.tag}`;
                 }
                 return spec;
             }
 
-            var customEventProperties = JSON.parse(el.getAttribute('data-custom-event-properties') || '{}');
+            const customEventProperties = JSON.parse(el.getAttribute('data-custom-event-properties') || '{}');
             spec.customEventProperties = merge(customEventProperties, spec.customEventProperties);
 
             if (!spec.validTarget) {
@@ -90,11 +86,11 @@ var Clickstream = function(opts) {
 
     // delegate, emit the derived tag
     if (opts.addListener !== false) {
-        bean.add(document.body, 'click', function(event) {
-            var applicableTests,
+        bean.add(document.body, 'click', (event) => {
+            let applicableTests,
                 clickSpec = {
                     el: event.target,
-                    tag: []
+                    tag: [],
                 };
 
             clickSpec.target = event.target;
@@ -104,9 +100,9 @@ var Clickstream = function(opts) {
             // prefix ab tests to the click spec
             applicableTests = ab.getActiveTestsEventIsApplicableTo(clickSpec);
             if (applicableTests !== undefined && applicableTests.length > 0) {
-                clickSpec.tag = map(applicableTests, function(test) {
-                    var variant = ab.getTestVariantId(test);
-                    return 'AB,' + test + ',' + variant + ',' + clickSpec.tag;
+                clickSpec.tag = map(applicableTests, (test) => {
+                    const variant = ab.getTestVariantId(test);
+                    return `AB,${test},${variant},${clickSpec.tag}`;
                 }).join(',');
             }
 
@@ -115,7 +111,7 @@ var Clickstream = function(opts) {
     }
 
     return {
-        getClickSpec: getClickSpec
+        getClickSpec,
     };
 };
 

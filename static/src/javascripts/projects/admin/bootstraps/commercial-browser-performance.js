@@ -1,4 +1,4 @@
-/*global $, Epoch*/
+/* global $, Epoch*/
 import config from 'common/utils/config';
 import fetchJson from 'common/utils/fetch-json';
 import template from 'common/utils/template';
@@ -7,16 +7,15 @@ import find from 'lodash/collections/find';
 import map from 'lodash/collections/map';
 import reduce from 'lodash/collections/reduce';
 import filter from 'lodash/collections/filter';
-var chart;
-var FETCH_INTERVAL = 1000; // The frequency that we poll for report data.
-var FETCH_DELAY = 10; // The delay which we wait before we ask for a time-based datapoint, eg. 10 seconds before the present moment.
-var reportTemplateUrl = '/commercial-reports/<%=isoDate%>';
+let chart;
+const FETCH_INTERVAL = 1000; // The frequency that we poll for report data.
+const FETCH_DELAY = 10; // The delay which we wait before we ask for a time-based datapoint, eg. 10 seconds before the present moment.
+const reportTemplateUrl = '/commercial-reports/<%=isoDate%>';
 
 // Store the 1000 most recently fetched datapoints.
-var commercialStartTimes = [];
+const commercialStartTimes = [];
 
 function initialise() {
-
     chart = $('#browser-live-performance-data').epoch({
         type: 'time.heatmap',
         buckets: 20,
@@ -24,45 +23,40 @@ function initialise() {
         axes: ['left', 'right', 'bottom'],
         tickFormats: {
             left: Epoch.Formats.regular,
-            right: Epoch.Formats.regular
+            right: Epoch.Formats.regular,
         },
         data: [{
             label: 'Commercial Start Time',
-            values: []
-        }]
+            values: [],
+        }],
     });
 
     window.setInterval(fetchData, FETCH_INTERVAL);
 }
 
 function fetchData() {
-    var currentDate = new Date();
+    const currentDate = new Date();
     currentDate.setSeconds(currentDate.getSeconds() - FETCH_DELAY);
-    var fetchUrl = template(reportTemplateUrl, {
-        isoDate: currentDate.toISOString()
+    const fetchUrl = template(reportTemplateUrl, {
+        isoDate: currentDate.toISOString(),
     });
 
     fetchJson(config.page.beaconUrl + fetchUrl, {
-        mode: 'cors'
-    }).then(function(logs) {
-
-        var appStartTimes = map(logs.reports, function(report) {
-            var primaryBaseline = find(report.baselines, function(baseline) {
-                return baseline.name === 'primary';
-            });
+        mode: 'cors',
+    }).then((logs) => {
+        let appStartTimes = map(logs.reports, (report) => {
+            const primaryBaseline = find(report.baselines, baseline => baseline.name === 'primary');
             return primaryBaseline ? primaryBaseline.startTime : 0;
         });
 
         // Filter the times array from silly numbers, investigating why Date times are appearing in the array.
-        appStartTimes = filter(appStartTimes, function(startTime) {
-            return startTime < 20000;
-        });
+        appStartTimes = filter(appStartTimes, startTime => startTime < 20000);
 
         updateAverageStartTime(appStartTimes);
 
-        var heatmapData = {
+        const heatmapData = {
             time: currentDate.getTime() / 1000,
-            histogram: countBy(appStartTimes)
+            histogram: countBy(appStartTimes),
         };
         chart.push([heatmapData]);
     });
@@ -80,7 +74,7 @@ function updateAverageStartTime(startTimes) {
         return;
     }
 
-    var sum = reduce(commercialStartTimes, function(sum, num) {
+    const sum = reduce(commercialStartTimes, (sum, num) => {
         // Disregard silly numbers, investigating why Date times are appearing in the array.
         if (num < 20000) {
             return sum + num;
@@ -89,11 +83,11 @@ function updateAverageStartTime(startTimes) {
         }
     });
 
-    var averageStartTime = (sum / commercialStartTimes.length).toFixed([2]);
+    const averageStartTime = (sum / commercialStartTimes.length).toFixed([2]);
 
     $('.graph__average-value').text(averageStartTime);
 }
 
 export default {
-    init: initialise
+    init: initialise,
 };

@@ -15,6 +15,6 @@ function setCssClass() {
     }
 }
 
-export default function() {
+export default function () {
     robust.catchErrorsAndLog('i-css-class', setCssClass);
-};
+}

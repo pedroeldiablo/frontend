@@ -16,13 +16,13 @@ import uniq from 'lodash/arrays/uniq';
 import pick from 'lodash/objects/pick';
 import isArray from 'lodash/objects/isArray';
 
-var format = function(keyword) {
+let format = function (keyword) {
         return keyword.replace(/[+\s]+/g, '-').toLowerCase();
     },
-    formatTarget = function(target) {
+    formatTarget = function (target) {
         return target ? format(target).replace(/&/g, 'and').replace(/'/g, '') : null;
     },
-    parseId = function(id) {
+    parseId = function (id) {
         if (!id) {
             return null;
         }
@@ -32,19 +32,17 @@ var format = function(keyword) {
             return format(id.split('/').pop());
         }
     },
-    getSeries = function(page) {
+    getSeries = function (page) {
         if (page.seriesId) {
             return parseId(page.seriesId);
         }
-        var seriesIdFromUrl = /\/series\/(.+)$/.exec(page.pageId);
+        const seriesIdFromUrl = /\/series\/(.+)$/.exec(page.pageId);
         if (seriesIdFromUrl) {
             return seriesIdFromUrl[1];
         }
 
         if (page.keywordIds) {
-            var seriesIdFromKeywords = page.keywordIds.split(',').filter(function(keyword) {
-                return keyword.indexOf('series/') === 0;
-            }).slice(0, 1);
+            const seriesIdFromKeywords = page.keywordIds.split(',').filter(keyword => keyword.indexOf('series/') === 0).slice(0, 1);
             if (seriesIdFromKeywords.length) {
                 return seriesIdFromKeywords[0].split('/')[1];
             }
@@ -52,30 +50,28 @@ var format = function(keyword) {
 
         return null;
     },
-    parseIds = function(ids) {
+    parseIds = function (ids) {
         if (!ids) {
             return null;
         }
         return compact(map(
             ids.split(','),
-            function(id) {
-                return parseId(id);
-            }
+            id => parseId(id)
         ));
     },
-    abParam = function() {
-        var abParams = [],
+    abParam = function () {
+        let abParams = [],
             abParticipations = ab.getParticipations();
 
-        forIn(abParticipations, function(n, testKey) {
+        forIn(abParticipations, (n, testKey) => {
             if (n.variant && n.variant !== 'notintest') {
-                var testData = testKey + '-' + n.variant;
+                const testData = `${testKey}-${n.variant}`;
                 // DFP key-value pairs accept value strings up to 40 characters long
                 abParams.push(testData.substring(0, 40));
             }
         });
 
-        forIn(keys(config.tests), function(n) {
+        forIn(keys(config.tests), (n) => {
             if (n.toLowerCase().match(/^cm/) ||
                 n.toLowerCase().match(/^commercial/)) {
                 abParams.push(n);
@@ -84,9 +80,9 @@ var format = function(keyword) {
 
         return abParams;
     },
-    adtestParams = function() {
+    adtestParams = function () {
         if (cookies.get('adtest')) {
-            var cookieAdtest = cookies.get('adtest'),
+            let cookieAdtest = cookies.get('adtest'),
                 first4Char = cookieAdtest.substring(0, 4);
             if (first4Char === 'demo') {
                 cookies.remove('adtest');
@@ -94,8 +90,8 @@ var format = function(keyword) {
             return cookieAdtest;
         }
     },
-    getVisitedValue = function() {
-        var visitCount = storage.local.get('gu.alreadyVisited') || 0;
+    getVisitedValue = function () {
+        const visitCount = storage.local.get('gu.alreadyVisited') || 0;
 
         if (visitCount <= 5) {
             return visitCount.toString();
@@ -111,38 +107,36 @@ var format = function(keyword) {
             return '30plus';
         }
     },
-    getReferrer = function() {
-        var referrerTypes = [{
-                    id: 'facebook',
-                    match: 'facebook.com'
-                }, {
-                    id: 'twitter',
-                    match: 't.co/'
-                }, // added (/) because without slash it is picking up reddit.com too
-                {
-                    id: 'googleplus',
-                    match: 'plus.url.google'
-                }, {
-                    id: 'reddit',
-                    match: 'reddit.com'
-                }, {
-                    id: 'google',
-                    match: 'www.google'
-                }
+    getReferrer = function () {
+        let referrerTypes = [{
+                id: 'facebook',
+                match: 'facebook.com',
+            }, {
+                id: 'twitter',
+                match: 't.co/',
+            }, // added (/) because without slash it is picking up reddit.com too
+            {
+                id: 'googleplus',
+                match: 'plus.url.google',
+            }, {
+                id: 'reddit',
+                match: 'reddit.com',
+            }, {
+                id: 'google',
+                match: 'www.google',
+            },
             ],
-            matchedRef = referrerTypes.filter(function(referrerType) {
-                return detect.getReferrer().indexOf(referrerType.match) > -1;
-            })[0] || {};
+            matchedRef = referrerTypes.filter(referrerType => detect.getReferrer().indexOf(referrerType.match) > -1)[0] || {};
 
         return matchedRef.id;
     },
-    getWhitelistedQueryParams = function() {
-        var whiteList = ['0p19G'];
+    getWhitelistedQueryParams = function () {
+        const whiteList = ['0p19G'];
         return pick(url.getUrlVars(), whiteList);
     };
 
-export default function(opts) {
-    var win = (opts || {}).window || window,
+export default function (opts) {
+    let win = (opts || {}).window || window,
         page = config.page,
         contentType = formatTarget(page.contentType),
         pageTargets = merge({
@@ -168,15 +162,15 @@ export default function(opts) {
             fr: getVisitedValue(),
             tn: uniq(compact([page.sponsorshipType].concat(parseIds(page.tones)))),
             // round video duration up to nearest 30 multiple
-            vl: page.videoDuration ? (Math.ceil(page.videoDuration / 30.0) * 30).toString() : undefined
+            vl: page.videoDuration ? (Math.ceil(page.videoDuration / 30.0) * 30).toString() : undefined,
         }, getWhitelistedQueryParams());
 
     // filter out empty values
-    return pick(pageTargets, function(target) {
+    return pick(pageTargets, (target) => {
         if (isArray(target)) {
             return target.length > 0;
         } else {
             return target;
         }
     });
-};
+}

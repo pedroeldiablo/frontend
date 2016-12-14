@@ -13,11 +13,11 @@ import selectionSharing from 'common/modules/ui/selection-sharing';
 
 function initOpenCta() {
     if (config.switches.openCta && config.page.commentable) {
-        var openCta = new OpenCta(mediator, {
-            discussionKey: config.page.shortUrlId || ''
+        const openCta = new OpenCta(mediator, {
+            discussionKey: config.page.shortUrlId || '',
         });
 
-        $.create('<div class="open-cta"></div>').each(function(el) {
+        $.create('<div class="open-cta"></div>').each((el) => {
             openCta.fetch(el);
             if (!config.page.isLiveBlog && !config.page.isMinuteArticle) {
                 rhc.addComponent(el);
@@ -27,7 +27,7 @@ function initOpenCta() {
 }
 
 function initFence() {
-    $('.fenced').each(function(el) {
+    $('.fenced').each((el) => {
         fence.render(el);
     });
 }
@@ -37,13 +37,13 @@ function initTwitter() {
     twitter.enhanceTweets();
 }
 
-export default function() {
+export default function () {
     robust.catchErrorsAndLogAll([
         ['trail-a11y', accessibility.shouldHideFlashingElements],
         ['trail-article', initOpenCta],
         ['trail-fence', initFence],
         ['trail-twitter', initTwitter],
         ['trail-sharing', selectionSharing.init],
-        ['trail-last-modified', lastModified]
+        ['trail-last-modified', lastModified],
     ]);
-};
+}

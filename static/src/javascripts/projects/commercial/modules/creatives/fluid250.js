@@ -10,32 +10,32 @@ import fluid250Str from 'text!commercial/views/creatives/fluid250.html';
 import iframeVideoStr from 'text!commercial/views/creatives/iframe-video.html';
 import scrollBgStr from 'text!commercial/views/creatives/scrollbg.html';
 import merge from 'lodash/objects/merge';
-var hasScrollEnabled = !detect.isIOS() && !detect.isAndroid();
-var isEnhanced = detect.isEnhanced();
-var isIE9OrLess = detect.getUserAgent.browser === 'MSIE' && (detect.getUserAgent.version === '9' || detect.getUserAgent.version === '8');
+const hasScrollEnabled = !detect.isIOS() && !detect.isAndroid();
+const isEnhanced = detect.isEnhanced();
+const isIE9OrLess = detect.getUserAgent.browser === 'MSIE' && (detect.getUserAgent.version === '9' || detect.getUserAgent.version === '8');
 
-var fluid250Tpl;
-var iframeVideoTpl;
-var scrollBgTpl;
+let fluid250Tpl;
+let iframeVideoTpl;
+let scrollBgTpl;
 
-var Fluid250 = function($adSlot, params) {
+const Fluid250 = function ($adSlot, params) {
     this.$adSlot = $adSlot;
     this.params = params;
 };
 
-Fluid250.prototype.create = function() {
+Fluid250.prototype.create = function () {
     if (!fluid250Tpl) {
         fluid250Tpl = template(fluid250Str);
         iframeVideoTpl = template(iframeVideoStr);
         scrollBgTpl = template(scrollBgStr);
     }
 
-    var position = {
+    const position = {
         position: this.params.videoPositionH === 'left' || this.params.videoPositionH === 'right' ?
-            this.params.videoPositionH + ':' + this.params.videoHorizSpace + 'px;' : ''
+            `${this.params.videoPositionH}:${this.params.videoHorizSpace}px;` : '',
     };
 
-    var templateOptions = {
+    const templateOptions = {
         creativeHeight: this.params.creativeHeight || '',
         isFixedHeight: this.params.creativeHeight === 'fixed',
         showLabel: this.params.showAdLabel !== 'hide',
@@ -47,11 +47,11 @@ Fluid250.prototype.create = function() {
             ) ?
             this.params.layerTwoBGPosition : '0% 0%',
         scrollbg: this.params.backgroundImagePType && this.params.backgroundImagePType !== 'none' ?
-            scrollBgTpl(this.params) : false
+            scrollBgTpl(this.params) : false,
     };
 
     this.$adSlot.append(fluid250Tpl({
-        data: merge(this.params, templateOptions)
+        data: merge(this.params, templateOptions),
     }));
     if (templateOptions.scrollbg) {
         this.scrollingBg = $('.ad-scrolling-bg', this.$adSlot[0]);
@@ -73,27 +73,27 @@ Fluid250.prototype.create = function() {
     return Promise.resolve(true);
 };
 
-Fluid250.prototype.updateBgPosition = function() {
+Fluid250.prototype.updateBgPosition = function () {
     if (this.params.backgroundImagePType === 'parallax') {
-        var scrollAmount = Math.ceil((window.pageYOffset - this.$adSlot.offset().top) * 0.3 * -1) + 20;
-        fastdom.write(function() {
+        const scrollAmount = Math.ceil((window.pageYOffset - this.$adSlot.offset().top) * 0.3 * -1) + 20;
+        fastdom.write(function () {
             bonzo(this.scrollingBg)
                 .addClass('ad-scrolling-bg-parallax')
-                .css('background-position', '50% ' + scrollAmount + '%');
+                .css('background-position', `50% ${scrollAmount}%`);
         }, this);
     }
 
     this.layer2Animation();
 };
 
-Fluid250.prototype.layer2Animation = function() {
-    var inViewB;
+Fluid250.prototype.layer2Animation = function () {
+    let inViewB;
     if (this.params.layerTwoAnimation === 'enabled' && isEnhanced && !isIE9OrLess) {
         inViewB = (window.pageYOffset + bonzo.viewport().height) > this.$adSlot.offset().top;
-        fastdom.write(function() {
-            bonzo(this.layer2).addClass('ad-scrolling-text-hide' + (this.params.layerTwoAnimationPosition ? '-' + this.params.layerTwoAnimationPosition : ''));
+        fastdom.write(function () {
+            bonzo(this.layer2).addClass(`ad-scrolling-text-hide${this.params.layerTwoAnimationPosition ? `-${this.params.layerTwoAnimationPosition}` : ''}`);
             if (inViewB) {
-                bonzo(this.layer2).addClass('ad-scrolling-text-animate' + (this.params.layerTwoAnimationPosition ? '-' + this.params.layerTwoAnimationPosition : ''));
+                bonzo(this.layer2).addClass(`ad-scrolling-text-animate${this.params.layerTwoAnimationPosition ? `-${this.params.layerTwoAnimationPosition}` : ''}`);
             }
         }, this);
     }

@@ -2,33 +2,32 @@ import fastdom from 'fastdom';
 import Promise from 'Promise';
 import $ from 'common/utils/$';
 import loadScript from 'common/utils/load-script';
-var scriptId = 'youtube-script';
-var scriptSrc = 'https://www.youtube.com/iframe_api';
-var promise = new Promise(function(resolve) {
+const scriptId = 'youtube-script';
+const scriptSrc = 'https://www.youtube.com/iframe_api';
+const promise = new Promise((resolve) => {
     window.onYouTubeIframeAPIReady = resolve;
 });
 
 function loadYoutubeJs() {
-    fastdom.write(function() {
+    fastdom.write(() => {
         if (!document.getElementById(scriptId)) {
             loadScript({
                 id: scriptId,
-                src: scriptSrc
+                src: scriptSrc,
             });
         }
     }, this);
 }
 
 function _onPlayerStateChange(event, handlers, el) {
-    //change class according to the current state
-    //TODO: Fix this so we can add poster image.
-    fastdom.write(function() {
-        ['ENDED', 'PLAYING', 'PAUSED', 'BUFFERING', 'CUED'].forEach(function(status) {
-            el.classList.toggle('youtube__video-' + status.toLocaleLowerCase(), event.data === window.YT.PlayerState[status]);
+    // change class according to the current state
+    // TODO: Fix this so we can add poster image.
+    fastdom.write(() => {
+        ['ENDED', 'PLAYING', 'PAUSED', 'BUFFERING', 'CUED'].forEach((status) => {
+            el.classList.toggle(`youtube__video-${status.toLocaleLowerCase()}`, event.data === window.YT.PlayerState[status]);
         });
         addVideoStartedClass(el);
     });
-
 
 
     if (handlers && typeof handlers.onPlayerStateChange === 'function') {
@@ -37,7 +36,7 @@ function _onPlayerStateChange(event, handlers, el) {
 }
 
 function _onPlayerReady(event, handlers, el) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         el.classList.add('youtube__video-ready');
     });
 
@@ -57,7 +56,7 @@ function addVideoStartedClass(el) {
 function init(el, handlers, videoId) {
     loadYoutubeJs();
 
-    return promise.then(function() {
+    return promise.then(() => {
         function onPlayerStateChange(event) {
             _onPlayerStateChange(event, handlers, el);
         }
@@ -77,12 +76,12 @@ function init(el, handlers, videoId) {
 function setupPlayer(id, onPlayerReady, onPlayerStateChange) {
     return new window.YT.Player(id, {
         events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+        },
     });
 }
 
 export default {
-    init: init
+    init,
 };

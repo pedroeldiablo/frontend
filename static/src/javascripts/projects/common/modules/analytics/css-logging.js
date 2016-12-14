@@ -19,7 +19,7 @@ import chain from 'common/utils/chain';
 import filter from 'lodash/collections/filter';
 import forEach from 'lodash/collections/forEach';
 import reduce from 'lodash/collections/reduce';
-var sample = 500,
+let sample = 500,
     rxPsuedoClass = new RegExp(/:+[^\s\,]+/g),
     rxSeparator = new RegExp(/\s*,\s*/g),
     classNameLoggable = 'js-loggable',
@@ -27,7 +27,7 @@ var sample = 500,
     eventsInitialised = false;
 
 function getRules(s) {
-    var rules = s ? s.cssRules || s.rules : null;
+    const rules = s ? s.cssRules || s.rules : null;
     return rules ? values(rules) : s;
 }
 
@@ -36,9 +36,9 @@ function getSplitSelectors(ruleObj) {
 }
 
 function canonicalise(selector) {
-    var siblings = selector.match(/\.[^\s\.]+\.[^\s]+/g) || [];
+    const siblings = selector.match(/\.[^\s\.]+\.[^\s]+/g) || [];
 
-    siblings.forEach(function(s) {
+    siblings.forEach((s) => {
         selector = selector.replace(s, canonicalOrder(s));
     });
     return selector.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
@@ -49,7 +49,7 @@ function canonicalOrder(s) {
 }
 
 function getAllSelectors(all) {
-    var rand,
+    let rand,
         len,
         rules = chain(getInlineStylesheets())
         .and(map, getRules)
@@ -73,21 +73,19 @@ function getAllSelectors(all) {
 }
 
 function getInlineStylesheets() {
-    return chain(document.styleSheets).and(filter, function(sheet) {
-        return sheet &&
+    return chain(document.styleSheets).and(filter, sheet => sheet &&
             values(sheet.rules || sheet.cssRules).length > 0 &&
             sheet.ownerNode &&
             sheet.ownerNode.nodeName === 'STYLE' &&
-            sheet.ownerNode.className.indexOf(classNameLoggable) > -1;
-    }).value();
+            sheet.ownerNode.className.indexOf(classNameLoggable) > -1).value();
 }
 
 function reloadSheetInline(sheet) {
     return ajax({
         url: sheet.href,
-        crossOrigin: true
-    }).then(function(resp) {
-        var el = document.createElement('style');
+        crossOrigin: true,
+    }).then((resp) => {
+        const el = document.createElement('style');
         el.className = classNameLoggable;
         el.innerHTML = resp;
         document.getElementsByTagName('head')[0].appendChild(el);
@@ -96,46 +94,44 @@ function reloadSheetInline(sheet) {
 
 function reloadSheetsInline() {
     return Promise.all(
-        chain(document.styleSheets).and(filter, function(sheet) {
-            return sheet &&
+        chain(document.styleSheets).and(filter, sheet => sheet &&
                 sheet.href &&
                 sheet.href.match(/\/\/(localhost|assets\.guim\.co\.uk)/) &&
                 (!sheet.media || sheet.media.mediaText !== 'print') &&
-                sheet.ownerNode.className.indexOf(classNameInlined) === -1;
-        }).and(forEach, function(sheet) {
-            sheet.ownerNode.className += ' ' + classNameInlined;
-        }).and(map, reloadSheetInline).value()
+                sheet.ownerNode.className.indexOf(classNameInlined) === -1).and(forEach, (sheet) => {
+                    sheet.ownerNode.className += ` ${classNameInlined}`;
+                }).and(map, reloadSheetInline).value()
     );
 }
 
 function sendReport(all) {
     reloadSheetsInline()
-        .then(function() {
+        .then(() => {
             beacon.postJson('/css', JSON.stringify({
-                selectors: chain(getAllSelectors(all)).and(reduce, function(isUsed, s) {
+                selectors: chain(getAllSelectors(all)).and(reduce, (isUsed, s) => {
                     if (isUndefined(isUsed[s])) {
                         isUsed[s] = !!document.querySelector(s);
                     }
                     return isUsed;
                 }, {}).value(),
                 contentType: config.page.contentType || 'unknown',
-                breakpoint: detect.getBreakpoint() || 'unknown'
+                breakpoint: detect.getBreakpoint() || 'unknown',
             }), all);
         });
 }
 
 function makeSender(all) {
-    return debounce(function(clickSpec) {
+    return debounce((clickSpec) => {
         if (!clickSpec || clickSpec.samePage) {
-            setTimeout(function() {
+            setTimeout(() => {
                 sendReport(all);
             }, all ? 0 : random(0, 3000));
         }
     }, 500);
 }
 
-export default function(all) {
-    var sender;
+export default function (all) {
+    let sender;
 
     all = all || window.location.hash === '#csslogging';
 
@@ -149,4 +145,4 @@ export default function(all) {
             eventsInitialised = true;
         }
     }
-};
+}

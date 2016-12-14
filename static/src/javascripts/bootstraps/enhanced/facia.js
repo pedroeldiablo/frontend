@@ -21,62 +21,62 @@ import weather from 'facia/modules/onwards/weather';
 import partial from 'lodash/functions/partial';
 import forEach from 'lodash/collections/forEach';
 
-var modules = {
-        showSnaps: function() {
+let modules = {
+        showSnaps() {
             snaps.init();
             mediator.on('modules:container:rendered', snaps.init);
         },
 
-        showContainerShowMore: function() {
+        showContainerShowMore() {
             mediator.addListeners({
                 'modules:container:rendered': containerShowMore.init,
-                'page:front:ready': containerShowMore.init
+                'page:front:ready': containerShowMore.init,
             });
         },
 
-        showContainerToggle: function() {
-            var containerToggleAdd = function(context) {
-                $('.js-container--toggle', $(context || document)[0]).each(function(container) {
+        showContainerToggle() {
+            const containerToggleAdd = function (context) {
+                $('.js-container--toggle', $(context || document)[0]).each((container) => {
                     new ContainerToggle(container).addToggle();
                 });
             };
             mediator.addListeners({
                 'page:front:ready': containerToggleAdd,
-                'modules:geomostpopular:ready': partial(containerToggleAdd, '.js-popular-trails')
+                'modules:geomostpopular:ready': partial(containerToggleAdd, '.js-popular-trails'),
             });
         },
 
-        upgradeMostPopularToGeo: function() {
+        upgradeMostPopularToGeo() {
             if (config.switches.geoMostPopular) {
                 new GeoMostPopularFront().go();
             }
         },
 
-        showWeather: function() {
+        showWeather() {
             if (config.switches.weather) {
-                mediator.on('page:front:ready', function() {
+                mediator.on('page:front:ready', () => {
                     weather.init();
                 });
             }
         },
 
-        showLiveblogUpdates: function() {
+        showLiveblogUpdates() {
             if (detect.isBreakpoint({
-                    min: 'desktop'
-                })) {
-                mediator.on('page:front:ready', function() {
+                min: 'desktop',
+            })) {
+                mediator.on('page:front:ready', () => {
                     liveblogUpdates.show();
                 });
             }
         },
 
-        finished: function() {
+        finished() {
             mediator.emit('page:front:ready');
-        }
+        },
 
     },
 
-    ready = function() {
+    ready = function () {
         forEach(robust.makeBlocks([
             ['f-accessibility', accessibility.shouldHideFlashingElements],
             ['f-snaps', modules.showSnaps],
@@ -88,12 +88,12 @@ var modules = {
             ['f-sponsorship', sponsorship],
             ['f-weather', modules.showWeather],
             ['f-live-blog-updates', modules.showLiveblogUpdates],
-            ['f-finished', modules.finished]
-        ]), function(fn) {
+            ['f-finished', modules.finished],
+        ]), (fn) => {
             fn();
         });
     };
 
 export default {
-    init: ready
+    init: ready,
 };

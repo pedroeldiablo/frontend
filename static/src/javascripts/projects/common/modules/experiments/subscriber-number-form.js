@@ -3,13 +3,13 @@ import $ from 'common/utils/$';
 import storage from 'common/utils/storage';
 
 function init() {
-    var $form = $('.js-subscriber-number-form')[0];
+    const $form = $('.js-subscriber-number-form')[0];
 
     if (!$form) {
         return;
     }
 
-    bean.on($form, 'submit', function(event) {
+    bean.on($form, 'submit', (event) => {
         submitForm($form, event);
     });
 }
@@ -33,7 +33,7 @@ function onIncorrectNumber($numberInput, $correctNumberInfo, $incorrectNumberInf
 function submitForm($form, event) {
     event.preventDefault();
 
-    var $numberInput = $('.input-number', $form),
+    let $numberInput = $('.input-number', $form),
         numberVal = $numberInput.val(),
         isSubscriber = /^(?=\S{8,11}$)(00|GA|A-S)\S+/.test(numberVal),
         $correctNumberInfo = $('.js-subscriber-number-correct'),
@@ -46,6 +46,6 @@ function submitForm($form, event) {
     }
 }
 
-export default function() {
+export default function () {
     init();
-};
+}

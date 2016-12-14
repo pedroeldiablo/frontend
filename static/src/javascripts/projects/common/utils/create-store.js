@@ -1,33 +1,33 @@
 // Mini Redux
-var createStore = function(reducer, initialState) {
+const createStore = function (reducer, initialState) {
     // We re-assign this over time
-    var state = initialState;
-    var subscribers = [];
+    let state = initialState;
+    const subscribers = [];
 
-    var notify = function() {
-        subscribers.forEach(function(fn) {
+    const notify = function () {
+        subscribers.forEach((fn) => {
             fn();
         });
     };
-    var dispatch = function(action) {
+    const dispatch = function (action) {
         state = reducer(state, action);
         notify();
     };
-    var subscribe = function(fn) {
+    const subscribe = function (fn) {
         subscribers.push(fn);
     };
-    var getState = function() {
+    const getState = function () {
         return state;
     };
 
     dispatch({
-        type: 'INIT'
+        type: 'INIT',
     });
 
     return {
-        dispatch: dispatch,
-        subscribe: subscribe,
-        getState: getState
+        dispatch,
+        subscribe,
+        getState,
     };
 };
 

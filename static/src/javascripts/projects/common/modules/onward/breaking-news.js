@@ -16,9 +16,10 @@ import isArray from 'lodash/objects/isArray';
 import has from 'lodash/objects/has';
 import flatten from 'lodash/arrays/flatten';
 import pick from 'lodash/objects/pick';
-var supportedSections = {
-        'sport': 'sport',
-        'football': 'sport'
+
+let supportedSections = {
+        sport: 'sport',
+        football: 'sport',
     },
     breakingNewsURL = '/news-alert/alerts',
     page = config.page,
@@ -55,17 +56,15 @@ function userCanDismissAlerts() {
 
 function fetchBreakingNews() {
     return fetchJson(breakingNewsURL, {
-        mode: 'cors'
+        mode: 'cors',
     });
 }
 
 // handle the breaking news JSON
 function parseResponse(response) {
     return (response.collections || [])
-        .filter(function(collection) {
-            return isArray(collection.content) && collection.content.length;
-        })
-        .map(function(collection) {
+        .filter(collection => isArray(collection.content) && collection.content.length)
+        .map((collection) => {
             // collection.href is string or null
             collection.href = (collection.href || '').toLowerCase();
             return collection;
@@ -75,31 +74,19 @@ function parseResponse(response) {
 // pull out the alerts from the edition/section buckets that apply to us
 // global > current edition > current section
 function getRelevantAlerts(alerts) {
-    var edition = (page.edition || '').toLowerCase(),
+    let edition = (page.edition || '').toLowerCase(),
         section = supportedSections[page.section];
 
     return flatten([
         alerts
-        .filter(function(alert) {
-            return alert.href === 'global';
-        })
-        .map(function(alert) {
-            return alert.content;
-        }),
+            .filter(alert => alert.href === 'global')
+            .map(alert => alert.content),
         alerts
-        .filter(function(alert) {
-            return alert.href === edition;
-        })
-        .map(function(alert) {
-            return alert.content;
-        }),
+            .filter(alert => alert.href === edition)
+            .map(alert => alert.content),
         alerts
-        .filter(function(alert) {
-            return section && alert.href === section;
-        })
-        .map(function(alert) {
-            return alert.content;
-        })
+            .filter(alert => section && alert.href === section)
+            .map(alert => alert.content),
     ]);
 }
 
@@ -111,11 +98,7 @@ function pruneKnownAlertIDs(alerts) {
 
     // then remove all known alert ids that are not
     // in the current breaking news alerts
-    knownAlertIDs = pick(knownAlertIDs, function(state, id) {
-        return alerts.some(function(alert) {
-            return alert.id === id;
-        });
-    });
+    knownAlertIDs = pick(knownAlertIDs, (state, id) => alerts.some(alert => alert.id === id));
 
     storeKnownAlertIDs();
     return alerts;
@@ -123,35 +106,31 @@ function pruneKnownAlertIDs(alerts) {
 
 // don't show alerts if we've already dismissed them
 function filterAlertsByDismissed(alerts) {
-    return alerts.filter(function(alert) {
-        return knownAlertIDs[alert.id] !== true;
-    });
+    return alerts.filter(alert => knownAlertIDs[alert.id] !== true);
 }
 
 // don't show alerts if they're over a certain age
 function filterAlertsByAge(alerts) {
-    return alerts.filter(function(alert) {
-        var alertTime = alert.frontPublicationDate;
+    return alerts.filter((alert) => {
+        const alertTime = alert.frontPublicationDate;
         return alertTime && relativeDates.isWithinSeconds(new Date(alertTime), 1200); // 20 mins
     });
 }
 
 // we only show one alert at a time, pick the youngest available
 function pickNewest(alerts) {
-    return alerts.sort(function(a, b) {
-        return b.frontPublicationDate - a.frontPublicationDate;
-    })[0];
+    return alerts.sort((a, b) => b.frontPublicationDate - a.frontPublicationDate)[0];
 }
 
 // show an alert
 function alert(alert) {
     if (alert) {
-        var $body = bonzo(document.body);
-        var $breakingNews = bonzo(qwery('.js-breaking-news-placeholder'));
+        const $body = bonzo(document.body);
+        const $breakingNews = bonzo(qwery('.js-breaking-news-placeholder'));
 
         // if its the first time we've seen this alert, we wait 3 secs to show it
         // otherwise we show it immediately
-        var alertDelay = has(knownAlertIDs, alert.id) ? 0 : init.DEFAULT_DELAY;
+        const alertDelay = has(knownAlertIDs, alert.id) ? 0 : init.DEFAULT_DELAY;
 
         // $breakingNews is hidden, so this won't trigger layout etc
         $breakingNews.append(renderAlert(alert));
@@ -159,11 +138,11 @@ function alert(alert) {
         // copy of breaking news banner (with blank content) used inline at the
         // bottom of the body, so the bottom of the body can visibly scroll
         // past the pinned alert
-        var $spectre = renderSpectre($breakingNews);
+        const $spectre = renderSpectre($breakingNews);
 
         // inject the alerts into DOM
-        setTimeout(function() {
-            fastdom.write(function() {
+        setTimeout(() => {
+            fastdom.write(() => {
                 if (alertDelay === 0) {
                     $breakingNews.removeClass('breaking-news--fade-in');
                 }
@@ -180,10 +159,10 @@ function renderAlert(alert) {
     alert.marque36icon = svgs('marque36icon');
     alert.closeIcon = svgs('closeCentralIcon');
 
-    var $alert = bonzo.create(template(alertHtml, alert));
+    const $alert = bonzo.create(template(alertHtml, alert));
 
-    bean.on($('.js-breaking-news__item__close', $alert)[0], 'click', function() {
-        fastdom.write(function() {
+    bean.on($('.js-breaking-news__item__close', $alert)[0], 'click', () => {
+        fastdom.write(() => {
             $('[data-breaking-article-id]').hide();
         });
         markAlertAsDismissed(alert.id);
@@ -210,9 +189,9 @@ function init() {
             .then(filterAlertsByAge)
             .then(pickNewest)
             .then(alert)
-            .catch(function(ex) {
+            .catch((ex) => {
                 reportError(ex, {
-                    feature: 'breaking-news'
+                    feature: 'breaking-news',
                 });
             });
     } else {

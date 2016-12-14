@@ -1,23 +1,24 @@
 import detect from 'common/utils/detect';
 import fastdom from 'common/utils/fastdom-promise';
 import messenger from 'commercial/modules/messenger';
-var w = window;
-var iframes = {};
-var iframeCounter = 0;
-var taskQueued = false;
-var lastViewportRead, lastViewport;
+let w = window;
+let iframes = {};
+let iframeCounter = 0;
+let taskQueued = false;
+let lastViewportRead,
+    lastViewport;
 
 messenger.register('viewport', onMessage, {
-    persist: true
+    persist: true,
 });
-lastViewportRead = fastdom.read(function() {
+lastViewportRead = fastdom.read(() => {
     lastViewport = detect.getViewport();
 });
 
 export default {
-    addResizeListener: addResizeListener,
-    removeResizeListener: removeResizeListener,
-    reset: reset
+    addResizeListener,
+    removeResizeListener,
+    reset,
 };
 
 function reset(window_) {
@@ -42,10 +43,10 @@ function addResizeListener(iframe, respond) {
 
     iframes[iframe.id] = {
         node: iframe,
-        respond: respond
+        respond,
     };
     iframeCounter += 1;
-    return lastViewportRead.then(function() {
+    return lastViewportRead.then(() => {
         sendViewportDimensions.bind(lastViewport)(iframe.id);
     });
 }
@@ -65,9 +66,7 @@ function onResize() {
     if (!taskQueued) {
         taskQueued = true;
 
-        return fastdom.read(function() {
-            return lastViewport = detect.getViewport();
-        }).then(function(viewport) {
+        return fastdom.read(() => lastViewport = detect.getViewport()).then((viewport) => {
             Object.keys(iframes).forEach(sendViewportDimensions, viewport);
             taskQueued = false;
         });

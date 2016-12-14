@@ -13,49 +13,49 @@ import notifications from 'bootstraps/enhanced/notifications';
 import robust from 'common/utils/robust';
 
 
-var modules;
+let modules;
 
 modules = {
-    affixTimeline: function() {
-        var topMarker;
+    affixTimeline() {
+        let topMarker;
         if (detect.isBreakpoint({
-                min: 'desktop'
-            }) && config.page.keywordIds.indexOf('football/football') < 0 && config.page.keywordIds.indexOf('sport/rugby-union') < 0) {
+            min: 'desktop',
+        }) && config.page.keywordIds.indexOf('football/football') < 0 && config.page.keywordIds.indexOf('sport/rugby-union') < 0) {
             topMarker = document.querySelector('.js-top-marker');
             new Affix({
                 element: document.querySelector('.js-live-blog__sticky-components-container'),
-                topMarker: topMarker,
+                topMarker,
                 bottomMarker: document.querySelector('.js-bottom-marker'),
-                containerElement: document.querySelector('.js-live-blog__sticky-components')
+                containerElement: document.querySelector('.js-live-blog__sticky-components'),
             });
         }
     },
 
-    createAutoUpdate: function() {
+    createAutoUpdate() {
         if (config.page.isLive) {
             AutoUpdate();
         }
     },
 
-    keepTimestampsCurrent: function() {
-        var dates = RelativeDates;
+    keepTimestampsCurrent() {
+        const dates = RelativeDates;
         window.setInterval(
-            function() {
+            () => {
                 dates.init();
             },
             60000
         );
     },
 
-    notificationsCondition: function() {
+    notificationsCondition() {
         return (config.switches.liveBlogChromeNotificationsProd && !detect.isIOS() && (window.location.protocol === 'https:' || window.location.hash === '#force-sw') && detect.getUserAgent.browser === 'Chrome' && config.page.isLive);
     },
 
-    initNotifications: function() {
+    initNotifications() {
         if (modules.notificationsCondition()) {
             notifications.init();
         }
-    }
+    },
 };
 
 function ready() {
@@ -64,18 +64,18 @@ function ready() {
         ['lb-timeline', modules.affixTimeline],
         ['lb-timestamp', modules.keepTimestampsCurrent],
         ['lb-notifications', modules.initNotifications],
-        ['lb-richlinks', richLinks.upgradeRichLinks]
+        ['lb-richlinks', richLinks.upgradeRichLinks],
     ]);
 
     trail();
     articleLiveblogCommon();
 
-    robust.catchErrorsAndLog('lb-ready', function() {
+    robust.catchErrorsAndLog('lb-ready', () => {
         mediator.emit('page:liveblog:ready');
     });
 }
 
 export default {
     init: ready,
-    notificationsCondition: modules.notificationsCondition
+    notificationsCondition: modules.notificationsCondition,
 };

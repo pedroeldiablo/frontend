@@ -16,7 +16,7 @@ import debounce from 'lodash/functions/debounce';
 import filter from 'lodash/collections/filter';
 import isEmpty from 'lodash/objects/isEmpty';
 import map from 'lodash/collections/map';
-var animateDelayMs = 2000,
+let animateDelayMs = 2000,
     animateAfterScrollDelayMs = 500,
     refreshSecs = 30,
     refreshDecay = 1,
@@ -29,42 +29,42 @@ var animateDelayMs = 2000,
     veiwportHeightPx = detect.getViewport().height;
 
 function blockRelativeTime(block) {
-    var pubDate = (block || {}).publishedDateTime,
+    let pubDate = (block || {}).publishedDateTime,
         relDate = pubDate ? relativeDates.makeRelativeDate(new Date(pubDate)) : false;
 
     return relDate || '';
 }
 
 function renderBlock(articleId, block, index) {
-    var relTime = blockRelativeTime(block);
+    let relTime = blockRelativeTime(block);
 
     if (relTime.match(/yesterday/i)) {
         relTime = relTime.toLowerCase();
     } else if (relTime) {
-        relTime = 'Latest update ' + relTime + ' ago';
+        relTime = `Latest update ${relTime} ago`;
     } else {
         relTime = 'Updated just now';
     }
 
     return template(blockTemplate, {
         ariaHidden: !block.isNew,
-        href: '/' + articleId + '#' + block.id,
+        href: `/${articleId}#${block.id}`,
         relativeTime: relTime,
         text: compact([block.title, block.body.slice(0, 500)]).join('. '),
-        index: index + 1
+        index: index + 1,
     });
 }
 
 function showBlocks(articleId, targets, blocks, oldBlockDate) {
-    var fakeUpdate = isUndefined(oldBlockDate);
+    const fakeUpdate = isUndefined(oldBlockDate);
 
-    forEach(targets, function(element) {
-        var hasNewBlock = false,
+    forEach(targets, (element) => {
+        let hasNewBlock = false,
             wrapperClasses = [
                 'fc-item__liveblog-blocks__inner',
-                'u-faux-block-link__promote'
+                'u-faux-block-link__promote',
             ],
-            blocksHtml = chain(blocks).slice(0, 2).and(map, function(block, index) {
+            blocksHtml = chain(blocks).slice(0, 2).and(map, (block, index) => {
                 if (!hasNewBlock && (block.publishedDateTime > oldBlockDate || fakeUpdate)) {
                     block.isNew = true;
                     hasNewBlock = true;
@@ -74,14 +74,14 @@ function showBlocks(articleId, targets, blocks, oldBlockDate) {
             }).slice(0, hasNewBlock ? 2 : 1).value(),
 
             el = bonzo.create(
-                '<div class="' + wrapperClasses.join(' ') + '">' + blocksHtml.join('') + '</div>'
+                `<div class="${wrapperClasses.join(' ')}">${blocksHtml.join('')}</div>`
             ),
             $element = bonzo(element);
 
-        fastdomPromise.write(function() {
-                $element.append(el);
-            })
-            .then(function() {
+        fastdomPromise.write(() => {
+            $element.append(el);
+        })
+            .then(() => {
                 if (hasNewBlock) {
                     animateBlocks(el[0]);
                 }
@@ -91,12 +91,12 @@ function showBlocks(articleId, targets, blocks, oldBlockDate) {
 
 function animateBlocks(el) {
     maybeAnimateBlocks(el)
-        .then(function(didAnimate) {
-            var animateOnScroll;
+        .then((didAnimate) => {
+            let animateOnScroll;
 
             if (!didAnimate) {
-                animateOnScroll = debounce(function() {
-                    maybeAnimateBlocks(el, true).then(function(didAnimate) {
+                animateOnScroll = debounce(() => {
+                    maybeAnimateBlocks(el, true).then((didAnimate) => {
                         if (didAnimate) {
                             mediator.off('window:throttledScroll', animateOnScroll);
                         }
@@ -109,15 +109,13 @@ function animateBlocks(el) {
 }
 
 function maybeAnimateBlocks(el, immediate) {
-    return fastdomPromise.read(function() {
-            return el.getBoundingClientRect().top;
-        })
-        .then(function(vPosition) {
+    return fastdomPromise.read(() => el.getBoundingClientRect().top)
+        .then((vPosition) => {
             if (vPosition > 0 && vPosition < veiwportHeightPx) {
-                setTimeout(function() {
-                    var $el = bonzo(el);
+                setTimeout(() => {
+                    const $el = bonzo(el);
 
-                    fastdomPromise.write(function() {
+                    fastdomPromise.write(() => {
                         $el.removeClass('fc-item__liveblog-blocks__inner--offset');
                     });
                 }, immediate ? 0 : animateDelayMs);
@@ -127,37 +125,35 @@ function maybeAnimateBlocks(el, immediate) {
 }
 
 function sanitizeBlocks(blocks) {
-    return filter(blocks, function(block) {
-        return block.id && block.publishedDateTime && block.body && block.body.length >= 10;
-    });
+    return filter(blocks, block => block.id && block.publishedDateTime && block.body && block.body.length >= 10);
 }
 
 function show() {
-    return fastdomPromise.read(function() {
-            var elementsById = {};
+    return fastdomPromise.read(() => {
+        const elementsById = {};
 
-            $(selector).each(function(element) {
-                var articleId = element.getAttribute(articleIdAttribute);
+        $(selector).each((element) => {
+            const articleId = element.getAttribute(articleIdAttribute);
 
-                if (articleId) {
-                    elementsById[articleId] = elementsById[articleId] || [];
-                    elementsById[articleId].push(element);
-                }
-            });
-            return elementsById;
-        })
-        .then(function(elementsById) {
-            var oldBlockDates;
+            if (articleId) {
+                elementsById[articleId] = elementsById[articleId] || [];
+                elementsById[articleId].push(element);
+            }
+        });
+        return elementsById;
+    })
+        .then((elementsById) => {
+            let oldBlockDates;
 
             if (!isEmpty(elementsById)) {
                 oldBlockDates = storage.session.get(sessionStorageKey) || {};
 
-                forEach(elementsById, function(elements, articleId) {
-                    fetchJson('/' + articleId + '.json?rendered=false', {
-                            mode: 'cors'
-                        })
-                        .then(function(response) {
-                            var blocks = response && sanitizeBlocks(response.blocks);
+                forEach(elementsById, (elements, articleId) => {
+                    fetchJson(`/${articleId}.json?rendered=false`, {
+                        mode: 'cors',
+                    })
+                        .then((response) => {
+                            const blocks = response && sanitizeBlocks(response.blocks);
 
                             if (blocks && blocks.length) {
                                 showBlocks(articleId, elements, blocks, oldBlockDates[articleId]);
@@ -165,21 +161,20 @@ function show() {
                                 storage.session.set(sessionStorageKey, oldBlockDates);
                             }
                         })
-                        .catch(function() {});
+                        .catch(() => {});
                 });
 
                 if (refreshMaxTimes) {
                     refreshMaxTimes -= 1;
-                    setTimeout(function() {
+                    setTimeout(() => {
                         show();
                     }, refreshSecs * 1000);
-                    refreshSecs = refreshSecs * refreshDecay;
+                    refreshSecs *= refreshDecay;
                 }
             }
-
         });
 }
 
 export default {
-    show: show
+    show,
 };

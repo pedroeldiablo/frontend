@@ -2,56 +2,54 @@ import config from 'common/utils/config';
 import ajax from 'common/utils/ajax';
 import map from 'lodash/collections/map';
 import isArray from 'lodash/objects/isArray';
-var canBeacon = !!navigator.sendBeacon;
+const canBeacon = !!navigator.sendBeacon;
 
 function buildCounts(keys) {
-    return map(isArray(keys) ? keys : [keys], function(key) {
-        return 'c=' + key;
-    }).join('&');
+    return map(isArray(keys) ? keys : [keys], key => `c=${key}`).join('&');
 }
 
 // note, support is reasonably limited https://developer.mozilla.org/en-US/docs/Web/API/navigator.sendBeacon
 function beaconCounts(keys) {
-    var url;
+    let url;
     if (canBeacon) {
-        url = config.page.beaconUrl + '/accept-beacon?' + buildCounts(keys);
+        url = `${config.page.beaconUrl}/accept-beacon?${buildCounts(keys)}`;
         return navigator.sendBeacon(url, '');
     }
 }
 
 export default {
-    fire: function(path) {
-        var img = new Image();
+    fire(path) {
+        const img = new Image();
         img.src = config.page.beaconUrl + path;
 
         return img;
     },
-    postJson: function(path, jsonString, forceAjax) {
-        var url = (config.page.beaconUrl || '').replace(/^\/\//, window.location.protocol + '//') + path;
+    postJson(path, jsonString, forceAjax) {
+        const url = (config.page.beaconUrl || '').replace(/^\/\//, `${window.location.protocol}//`) + path;
 
         if (canBeacon && !forceAjax) {
-            window.addEventListener('unload', function() {
+            window.addEventListener('unload', () => {
                 navigator.sendBeacon(url, jsonString);
             }, false);
         } else {
             ajax({
-                url: url,
+                url,
                 type: 'json',
                 method: 'post',
                 contentType: 'application/json',
                 data: jsonString,
-                crossOrigin: true
+                crossOrigin: true,
             });
         }
     },
-    counts: function(keys) {
+    counts(keys) {
         if (canBeacon) {
             return beaconCounts(keys);
         } else {
-            var query = buildCounts(keys);
-            return this.fire('/counts.gif?' + query);
+            const query = buildCounts(keys);
+            return this.fire(`/counts.gif?${query}`);
         }
     },
 
-    beaconCounts: beaconCounts
+    beaconCounts,
 };

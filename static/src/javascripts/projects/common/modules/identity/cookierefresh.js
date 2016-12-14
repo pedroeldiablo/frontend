@@ -2,9 +2,9 @@ import Id from 'common/modules/identity/api';
 import storage from 'common/utils/storage';
 
 function CookieRefresh() {
-    this.init = function() {
+    this.init = function () {
         if (storage.local.isStorageAvailable() && Id.isUserLoggedIn()) {
-            var lastRefresh = storage.local.get(Id.lastRefreshKey),
+            let lastRefresh = storage.local.get(Id.lastRefreshKey),
                 currentTime = new Date().getTime();
             if (this.shouldRefreshCookie(lastRefresh, currentTime)) {
                 Id.getUserFromApiWithRefreshedCookie();
@@ -13,7 +13,7 @@ function CookieRefresh() {
         }
     };
 
-    CookieRefresh.prototype.shouldRefreshCookie = function(lastRefresh, currentTime) {
+    CookieRefresh.prototype.shouldRefreshCookie = function (lastRefresh, currentTime) {
         return (!lastRefresh) || (currentTime > (parseInt(lastRefresh, 10) + (1000 * 86400 * 30)));
     };
 }

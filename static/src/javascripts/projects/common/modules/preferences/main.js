@@ -4,37 +4,37 @@ import config from 'common/utils/config';
 import history from 'common/modules/onward/history';
 import reduce from 'lodash/collections/reduce';
 import isEmpty from 'lodash/objects/isEmpty';
-export default function() {
-    var placeholder = document.getElementById('preferences-history-tags'),
+export default function () {
+    let placeholder = document.getElementById('preferences-history-tags'),
 
-        initialiseSummaryTagsSettings = function() {
-            var SummaryTagsList = React.createClass({
-                getInitialState: function() {
+        initialiseSummaryTagsSettings = function () {
+            const SummaryTagsList = React.createClass({
+                getInitialState() {
                     return {
-                        popular: history.getPopularFiltered()
+                        popular: history.getPopularFiltered(),
                     };
                 },
-                handleRemove: function(tag) {
+                handleRemove(tag) {
                     history.deleteFromSummary(tag);
                     this.setState({
                         popular: history.getPopularFiltered({
-                            flush: true
-                        })
+                            flush: true,
+                        }),
                     });
                     history.showInMegaNav();
                 },
-                render: function() {
-                    var self = this,
-                        tags = reduce(this.state.popular, function(obj, tag) {
+                render() {
+                    let self = this,
+                        tags = reduce(this.state.popular, (obj, tag) => {
                             obj[tag[0]] = React.DOM.span({
-                                    className: 'button button--small button--tag button--secondary'
-                                },
+                                className: 'button button--small button--tag button--secondary',
+                            },
                                 React.DOM.button({
                                     onClick: self.handleRemove.bind(self, tag[0]),
-                                    'data-link-name': 'remove | ' + tag[1]
+                                    'data-link-name': `remove | ${tag[1]}`,
                                 }, 'X'),
                                 React.DOM.a({
-                                    href: '/' + tag[0]
+                                    href: `/${tag[0]}`,
                                 }, tag[1])
                             );
                             return obj;
@@ -48,39 +48,39 @@ export default function() {
                     }
                     tags.helperText = React.DOM.p(null, helperText);
                     return React.DOM.div(null, tags);
-                }
+                },
             });
 
-            var SummaryTagsSettings = React.createClass({
-                getInitialState: function() {
+            const SummaryTagsSettings = React.createClass({
+                getInitialState() {
                     return {
-                        enabled: history.showInMegaNavEnabled()
+                        enabled: history.showInMegaNavEnabled(),
                     };
                 },
-                handleToggle: function() {
-                    var isEnabled = !this.state.enabled;
+                handleToggle() {
+                    const isEnabled = !this.state.enabled;
 
                     this.setState({
-                        enabled: isEnabled
+                        enabled: isEnabled,
                     });
                     history.showInMegaNavEnable(isEnabled);
                 },
-                render: function() {
-                    var self = this,
+                render() {
+                    let self = this,
                         toggleAction = this.state.enabled ? 'OFF' : 'ON';
 
                     return React.DOM.div({
-                        'data-link-name': 'suggested links'
+                        'data-link-name': 'suggested links',
                     }, [
                         React.DOM.p(null, 'These are based on the topics you visit most. You can access them at any time by opening the "all sections” menu.'),
                         this.state.enabled ? React.createElement(SummaryTagsList) : null,
                         React.DOM.button({
                             onClick: self.handleToggle,
                             className: 'button button--medium button--primary',
-                            'data-link-name': toggleAction
-                        }, 'Switch recently visited links ' + toggleAction)
+                            'data-link-name': toggleAction,
+                        }, `Switch recently visited links ${toggleAction}`),
                     ]);
-                }
+                },
             });
 
             React.render(React.createElement(SummaryTagsSettings), placeholder);
@@ -89,4 +89,4 @@ export default function() {
     if (placeholder) {
         initialiseSummaryTagsSettings();
     }
-};
+}

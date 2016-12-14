@@ -2,9 +2,9 @@ import fastdom from 'fastdom';
 import Promise from 'Promise';
 
 function promisify(fdaction) {
-    return function(fn, ctx) {
-        return new Promise(function(resolve, reject) {
-            fdaction(function() {
+    return function (fn, ctx) {
+        return new Promise((resolve, reject) => {
+            fdaction(function () {
                 try {
                     resolve(fn.call(this));
                 } catch (e) {
@@ -17,5 +17,5 @@ function promisify(fdaction) {
 
 export default {
     read: promisify(fastdom.read.bind(fastdom)),
-    write: promisify(fastdom.write.bind(fastdom))
+    write: promisify(fastdom.write.bind(fastdom)),
 };

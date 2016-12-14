@@ -18,12 +18,11 @@ import 'commercial/modules/messenger/viewport';
 import 'commercial/modules/messenger/click';
 import 'commercial/modules/messenger/background';
 export default {
-    init: init,
-    customTiming: true
+    init,
+    customTiming: true,
 };
 
 function init(moduleName) {
-
     function removeAdSlots() {
         bonzo(qwery(dfpEnv.adSlotSelector)).remove();
     }
@@ -36,8 +35,7 @@ function init(moduleName) {
         // Use Custom Timing to time the googletag code without the sonobi pre-loading.
         performanceLogging.moduleStart(moduleName);
 
-        return new Promise(function(resolve) {
-
+        return new Promise((resolve) => {
             if (dfpEnv.sonobiEnabled) {
                 // Just load googletag. Sonobi's wrapper will already be loaded, and googletag is already added to the window by sonobi.
                 require(['js!googletag.js']);
@@ -48,7 +46,7 @@ function init(moduleName) {
             }
 
             window.googletag.cmd.push = raven.wrap({
-                deep: true
+                deep: true,
             }, window.googletag.cmd.push);
 
             window.googletag.cmd.push(
@@ -61,12 +59,11 @@ function init(moduleName) {
     }
 
     if (commercialFeatures.dfpAdvertising) {
-        return prepareSonobiTag.init().then(setupAdvertising).catch(function() {
+        return prepareSonobiTag.init().then(setupAdvertising).catch(() =>
             // A promise error here, from a failed module load,
             // could be a network problem or an intercepted request.
             // Abandon the init sequence.
-            return fastdom.write(removeAdSlots);
-        });
+             fastdom.write(removeAdSlots));
     }
 
     return fastdom.write(removeAdSlots);
@@ -75,15 +72,15 @@ function init(moduleName) {
 function setListeners() {
     performanceLogging.setListeners(window.googletag);
 
-    var pubads = window.googletag.pubads();
+    const pubads = window.googletag.pubads();
     pubads.addEventListener('slotRenderEnded', raven.wrap(onSlotRender));
     pubads.addEventListener('slotOnload', raven.wrap(onSlotLoad));
 }
 
 function setPageTargeting() {
-    var pubads = window.googletag.pubads();
-    var targeting = buildPageTargeting();
-    Object.keys(targeting).forEach(function(key) {
+    const pubads = window.googletag.pubads();
+    const targeting = buildPageTargeting();
+    Object.keys(targeting).forEach((key) => {
         pubads.setTargeting(key, targeting[key]);
     });
 }

@@ -10,7 +10,8 @@ import ScoreBoard from 'common/modules/sport/score-board';
 import rhc from 'common/modules/ui/rhc';
 
 function cricket() {
-    var cricketScore, parentEl,
+    let cricketScore,
+        parentEl,
         matchDate = config.page.cricketMatchDate,
         team = config.page.cricketTeam;
 
@@ -18,14 +19,13 @@ function cricket() {
         cricketScore = new Component();
         parentEl = $('.js-cricket-score')[0];
 
-        cricketScore.endpoint = '/sport/cricket/match/' + matchDate + '/' + team + '.json';
+        cricketScore.endpoint = `/sport/cricket/match/${matchDate}/${team}.json`;
         cricketScore.fetch(parentEl, 'summary');
     }
 }
 
 function rugby() {
-
-    var pageType = '';
+    let pageType = '';
 
     if (config.page.isLiveBlog) {
         pageType = 'minbymin';
@@ -34,22 +34,21 @@ function rugby() {
     }
 
     if (config.page.rugbyMatch && pageType) {
+        const $h = $('.js-score');
 
-        var $h = $('.js-score');
-
-        var scoreBoard = new ScoreBoard({
-            pageType: pageType,
+        const scoreBoard = new ScoreBoard({
+            pageType,
             parent: $h,
             autoupdated: config.page.isLive,
             responseDataKey: 'matchSummary',
-            endpoint: config.page.rugbyMatch + '.json?page=' + encodeURIComponent(config.page.pageId)
+            endpoint: `${config.page.rugbyMatch}.json?page=${encodeURIComponent(config.page.pageId)}`,
         });
 
         // Rugby score returns the match nav too, to optimise calls.
-        scoreBoard.fetched = function(resp) {
+        scoreBoard.fetched = function (resp) {
             $('.content--liveblog').addClass('content--liveblog--rugby');
 
-            $.create(resp.nav).first().each(function(nav) {
+            $.create(resp.nav).first().each((nav) => {
                 // There ought to be exactly two tabs; match report and min-by-min
                 if ($('.tabs__tab', nav).length === 2) {
                     $('.js-sport-tabs').empty();
@@ -57,13 +56,13 @@ function rugby() {
                 }
             });
 
-            var contentString = resp.scoreEvents;
+            const contentString = resp.scoreEvents;
             if (detect.isBreakpoint({
-                    max: 'mobile'
-                })) {
-                var $scoreEventsMobile = $.create(template(resp.dropdown)({
+                max: 'mobile',
+            })) {
+                const $scoreEventsMobile = $.create(template(resp.dropdown)({
                     name: 'Score breakdown',
-                    content: contentString
+                    content: contentString,
                 }));
                 if (config.page.isLiveBlog) {
                     $scoreEventsMobile.addClass('dropdown--key-events');
@@ -71,7 +70,7 @@ function rugby() {
                 $scoreEventsMobile.addClass('dropdown--active');
                 $('.js-after-article').append($scoreEventsMobile);
             } else {
-                var $scoreEventsTabletUp = $.create(contentString);
+                const $scoreEventsTabletUp = $.create(contentString);
                 $scoreEventsTabletUp.addClass('hide-on-mobile');
 
                 $('.rugby-stats').remove();
@@ -80,32 +79,31 @@ function rugby() {
             }
 
             $('.match-stats__container').remove();
-            $.create('<div class="match-stats__container">' + resp.matchStat + '</div>').each(function(container) {
-                $('.js-chart', container).each(function(el) {
+            $.create(`<div class="match-stats__container">${resp.matchStat}</div>`).each((container) => {
+                $('.js-chart', container).each((el) => {
                     new Doughnut().render(el);
                 });
-                var extras = [];
+                const extras = [];
                 extras[0] = {
                     name: 'Match stats',
                     importance: 3,
                     content: container,
-                    ready: true
+                    ready: true,
                 };
                 renderExtras(extras);
             });
 
             $('.js-football-table').remove();
-            $.create('<div class="js-football-table" data-link-name="football-table-embed">' + resp.groupTable + '</div>').each(function(container) {
-                var extras = [];
+            $.create(`<div class="js-football-table" data-link-name="football-table-embed">${resp.groupTable}</div>`).each((container) => {
+                const extras = [];
                 extras[0] = {
                     name: 'Table',
                     importance: 3,
                     content: container,
-                    ready: true
+                    ready: true,
                 };
                 renderExtras(extras);
             });
-
         };
 
         scoreBoard.load();
@@ -114,29 +112,25 @@ function rugby() {
 
 function renderExtras(extras, dropdownTemplate) {
     // clean
-    extras = extras.filter(function(extra) {
-        return extra;
-    });
-    var ready = extras.filter(function(extra) {
-        return extra.ready === false;
-    }).length === 0;
+    extras = extras.filter(extra => extra);
+    const ready = extras.filter(extra => extra.ready === false).length === 0;
 
     if (ready) {
-        page.belowArticleVisible(function() {
-            var b;
+        page.belowArticleVisible(() => {
+            let b;
             $('.js-after-article').append(
-                $.create('<div class="football-extras"></div>').each(function(extrasContainer) {
-                    extras.forEach(function(extra, i) {
+                $.create('<div class="football-extras"></div>').each((extrasContainer) => {
+                    extras.forEach((extra, i) => {
                         if (dropdownTemplate) {
-                            $.create(dropdownTemplate).each(function(dropdown) {
+                            $.create(dropdownTemplate).each((dropdown) => {
                                 if (config.page.isLiveBlog) {
                                     $(dropdown).addClass('dropdown--key-events');
                                 }
                                 $('.dropdown__label', dropdown).append(extra.name);
                                 $('.dropdown__content', dropdown).append(extra.content);
                                 $('.dropdown__button', dropdown)
-                                    .attr('data-link-name', 'Show dropdown: ' + extra.name)
-                                    .each(function(el) {
+                                    .attr('data-link-name', `Show dropdown: ${extra.name}`)
+                                    .each((el) => {
                                         if (i === 0) {
                                             b = el;
                                         }
@@ -154,8 +148,8 @@ function renderExtras(extras, dropdownTemplate) {
             if (b) {
                 bean.fire(b, 'click');
             }
-        }, function() {
-            extras.forEach(function(extra) {
+        }, () => {
+            extras.forEach((extra) => {
                 rhc.addComponent(extra.content, extra.importance);
             });
         });
@@ -168,5 +162,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

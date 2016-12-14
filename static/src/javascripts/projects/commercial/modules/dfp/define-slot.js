@@ -6,15 +6,15 @@ import flatten from 'lodash/arrays/flatten';
 export default defineSlot;
 
 function defineSlot(adSlotNode, sizes) {
-    var slotTarget = adSlotNode.getAttribute('data-slot-target') || adSlotNode.getAttribute('data-name');
-    var adUnitOverride = urlUtils.getUrlVars()['ad-unit'];
+    const slotTarget = adSlotNode.getAttribute('data-slot-target') || adSlotNode.getAttribute('data-name');
+    const adUnitOverride = urlUtils.getUrlVars()['ad-unit'];
     // if ?ad-unit=x, use that
-    var adUnit = adUnitOverride ?
-        '/' + config.page.dfpAccountId + '/' + adUnitOverride :
+    const adUnit = adUnitOverride ?
+        `/${config.page.dfpAccountId}/${adUnitOverride}` :
         config.page.adUnit;
-    var sizeOpts = getSizeOpts(sizes);
-    var id = adSlotNode.id;
-    var slot;
+    const sizeOpts = getSizeOpts(sizes);
+    const id = adSlotNode.id;
+    let slot;
 
     if (adSlotNode.getAttribute('data-out-of-page')) {
         slot = window.googletag.defineOutOfPageSlot(adUnit, id).defineSizeMapping(sizeOpts.sizeMapping);
@@ -32,34 +32,28 @@ function defineSlot(adSlotNode, sizes) {
 }
 
 function getSizeOpts(sizes) {
-    var sizeMapping = buildSizeMapping(sizes);
+    const sizeMapping = buildSizeMapping(sizes);
     // as we're using sizeMapping, pull out all the ad sizes, as an array of arrays
-    var size = uniq(
-        flatten(sizeMapping, true, function(map) {
-            return map[1];
-        }),
-        function(size) {
-            return size[0] + '-' + size[1];
-        }
+    const size = uniq(
+        flatten(sizeMapping, true, map => map[1]),
+        size => `${size[0]}-${size[1]}`
     );
 
     return {
-        sizeMapping: sizeMapping,
-        size: size
+        sizeMapping,
+        size,
     };
 }
 
 function setTargeting(adSlotNode, slot, attribute, targetKey) {
-    var data = adSlotNode.getAttribute(attribute);
+    const data = adSlotNode.getAttribute(attribute);
     if (data) {
         slot.setTargeting(targetKey, parseKeywords(data));
     }
 }
 
 function parseKeywords(keywords) {
-    return (keywords || '').split(',').map(function(keyword) {
-        return keyword.substr(keyword.lastIndexOf('/') + 1);
-    });
+    return (keywords || '').split(',').map(keyword => keyword.substr(keyword.lastIndexOf('/') + 1));
 }
 
 /**
@@ -73,13 +67,11 @@ function parseKeywords(keywords) {
  *
  */
 function buildSizeMapping(sizes) {
-    var mapping = window.googletag.sizeMapping();
+    const mapping = window.googletag.sizeMapping();
 
     detect.breakpoints
-        .filter(function(_) {
-            return _.name in sizes;
-        })
-        .forEach(function(_) {
+        .filter(_ => _.name in sizes)
+        .forEach((_) => {
             mapping.addSize([_.width, 0], sizes[_.name]);
         });
 

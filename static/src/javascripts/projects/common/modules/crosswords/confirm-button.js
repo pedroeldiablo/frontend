@@ -1,38 +1,38 @@
 import React from 'react';
 import classNames from 'classnames';
 import assign from 'lodash/objects/assign';
-var ConfirmButton = React.createClass({
-    getInitialState: function() {
+const ConfirmButton = React.createClass({
+    getInitialState() {
         this.timeout = this.props.timeout || 2000;
         return {
-            confirming: false
+            confirming: false,
         };
     },
 
-    confirm: function() {
+    confirm() {
         if (this.state.confirming) {
             this.setState({
-                confirming: false
+                confirming: false,
             });
             this.props.onClick();
         } else {
             this.setState({
-                confirming: true
+                confirming: true,
             });
-            setTimeout(function() {
+            setTimeout(() => {
                 this.setState({
-                    confirming: false
+                    confirming: false,
                 });
-            }.bind(this), this.timeout);
+            }, this.timeout);
         }
     },
 
-    render: function() {
-        var inner = this.state.confirming ?
-            'Confirm ' + this.props.text.toLowerCase() : this.props.text;
+    render() {
+        const inner = this.state.confirming ?
+            `Confirm ${this.props.text.toLowerCase()}` : this.props.text;
 
-        var classes = {};
-        var className = classNames((
+        const classes = {};
+        const className = classNames((
             classes['crossword__controls__button--confirm'] = this.state.confirming,
             classes[this.props.className] = true,
             classes
@@ -42,11 +42,11 @@ var ConfirmButton = React.createClass({
             'button',
             assign({}, this.props, {
                 onClick: this.confirm,
-                className: className
+                className,
             }, this),
             inner
         );
-    }
+    },
 });
 
 export default ConfirmButton;

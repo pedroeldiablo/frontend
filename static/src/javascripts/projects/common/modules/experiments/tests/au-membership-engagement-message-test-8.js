@@ -6,7 +6,7 @@ import $ from 'common/utils/$';
 import config from 'common/utils/config';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
 import mediator from 'common/utils/mediator';
-export default function() {
+export default function () {
     this.id = 'AuMembEngagementMsgCopyTest8';
     this.start = '2016-11-24';
     this.expiry = '2017-1-5';
@@ -20,15 +20,15 @@ export default function() {
     this.idealOutcome = 'We will see a 50 percent uplift in conversions through the engagement banner';
     this.hypothesis = 'More persuasive copy will improve membership conversions from impressions';
 
-    this.canRun = function() {
+    this.canRun = function () {
         return config.page.edition.toLowerCase() === 'au' &&
             commercialFeatures.canReasonablyAskForMoney &&
             config.page.contentType.toLowerCase() !== 'signup';
     };
 
-    var success = function(complete) {
+    const success = function (complete) {
         if (this.canRun()) {
-            mediator.on('membership-message:display', function() {
+            mediator.on('membership-message:display', () => {
                 bean.on(qwery('#membership__engagement-message-link')[0], 'click', complete);
             });
         }
@@ -36,23 +36,23 @@ export default function() {
 
     this.variants = [{
         id: 'control',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }, {
         id: 'fearless_10',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }, {
         id: 'stories_that_matter',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }, {
         id: 'power_to_account',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }, {
         id: 'independent_journalism',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }];
-};
+}

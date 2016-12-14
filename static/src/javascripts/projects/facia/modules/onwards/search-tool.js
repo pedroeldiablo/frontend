@@ -8,7 +8,7 @@ import initial from 'lodash/arrays/initial';
 import chain from 'common/utils/chain';
 
 function SearchTool(options) {
-    var $list = null,
+    let $list = null,
         $input = null,
         oldQuery = '',
         newQuery = '',
@@ -16,36 +16,36 @@ function SearchTool(options) {
         keyCodeMap = {
             13: 'enter',
             38: 'up',
-            40: 'down'
+            40: 'down',
         },
         opts = options || {},
         $container = opts.container,
         apiUrl = opts.apiUrl;
 
     return {
-        init: function() {
+        init() {
             this.bindElements($container);
             this.bindEvents();
         },
 
-        bindElements: function(container) {
+        bindElements(container) {
             $list = $('.js-search-tool-list', container);
             $input = $('.js-search-tool-input', container);
         },
 
-        bindEvents: function() {
+        bindEvents() {
             bean.on(document.body, 'keyup', this.handleKeyEvents.bind(this));
             bean.on(document.body, 'click', this.handleClick.bind(this));
 
             mediator.on('autocomplete:toggle', this.toggleControls.bind(this));
         },
 
-        hasInputValueChanged: function() {
+        hasInputValueChanged() {
             return (oldQuery.length !== newQuery.length);
         },
 
-        handleClick: function(e) {
-            var isInput = $(e.target).hasClass('js-search-tool-input'),
+        handleClick(e) {
+            let isInput = $(e.target).hasClass('js-search-tool-input'),
                 isLink = this.isLink(e.target);
 
             if (isInput) {
@@ -61,7 +61,7 @@ function SearchTool(options) {
             }
         },
 
-        isLink: function(target) {
+        isLink(target) {
             if ($(target).hasClass('js-search-tool-link')) {
                 return target;
             } else {
@@ -69,8 +69,8 @@ function SearchTool(options) {
             }
         },
 
-        toggleControls: function(value) {
-            var $input = $('.js-search-tool-input')[0],
+        toggleControls(value) {
+            let $input = $('.js-search-tool-input')[0],
                 $location = $('.js-search-tool'),
                 $close = $('.js-close-location'),
                 $edit = $('.js-edit-location');
@@ -90,8 +90,8 @@ function SearchTool(options) {
             }
         },
 
-        pushData: function() {
-            var $active = $('.active', $list),
+        pushData() {
+            let $active = $('.active', $list),
                 data = {},
                 store = 'set';
 
@@ -104,9 +104,9 @@ function SearchTool(options) {
             }
 
             data = {
-                'id': $active.attr('data-weather-id'),
-                'city': $active.attr('data-weather-city'),
-                'store': store
+                id: $active.attr('data-weather-id'),
+                city: $active.attr('data-weather-city'),
+                store,
             };
 
             // Send data to whoever is listening
@@ -121,7 +121,7 @@ function SearchTool(options) {
             return data;
         },
 
-        getListOfResults: function(e) {
+        getListOfResults(e) {
             newQuery = e.target.value;
 
             // If we have empty input clear everything and don't fetch the data
@@ -139,22 +139,22 @@ function SearchTool(options) {
             this.fetchData();
         },
 
-        fetchData: function() {
+        fetchData() {
             return fetchJson(apiUrl + newQuery, {
-                    mode: 'cors'
-                }).then(function(positions) {
-                    this.renderList(positions, 5);
-                    oldQuery = newQuery;
-                }.bind(this))
-                .catch(function(ex) {
+                mode: 'cors',
+            }).then((positions) => {
+                this.renderList(positions, 5);
+                oldQuery = newQuery;
+            })
+                .catch((ex) => {
                     reportError(ex, {
-                        feature: 'search-tool'
+                        feature: 'search-tool',
                     });
                 });
         },
 
-        handleKeyEvents: function(e) {
-            var key = keyCodeMap[e.which || e.keyCode];
+        handleKeyEvents(e) {
+            const key = keyCodeMap[e.which || e.keyCode];
 
             // Run this function only if we are inside the input
             if (!$(e.target).hasClass('js-search-tool-input')) {
@@ -174,8 +174,8 @@ function SearchTool(options) {
             }
         },
 
-        move: function(increment) {
-            var $active = $('.active', $list),
+        move(increment) {
+            let $active = $('.active', $list),
                 id = parseInt($active.attr('id'), 10);
 
             if (isNaN(id)) {
@@ -190,13 +190,13 @@ function SearchTool(options) {
 
                 // When looping inside of the list show list item
             } else {
-                $('#' + this.getNewId(id + increment) + 'sti', $list).addClass('active');
+                $(`#${this.getNewId(id + increment)}sti`, $list).addClass('active');
                 this.setInputValue();
             }
         },
 
-        getNewId: function(id) {
-            var len = $('li', $list).length,
+        getNewId(id) {
+            let len = $('li', $list).length,
                 newId = id % len;
 
             // Make sure that we can hit saved input option which has position -1
@@ -209,24 +209,24 @@ function SearchTool(options) {
             return newId;
         },
 
-        setInputValue: function(value) {
-            var inputValue = value || $('.active', $list).attr('data-weather-city');
+        setInputValue(value) {
+            const inputValue = value || $('.active', $list).attr('data-weather-city');
 
             $input.val(inputValue);
         },
 
-        renderList: function(results, numOfResults) {
-            var docFragment = document.createDocumentFragment(),
+        renderList(results, numOfResults) {
+            let docFragment = document.createDocumentFragment(),
                 resultsToShow = results.length - numOfResults;
 
-            chain(results).and(initial, resultsToShow).and(forEach, function(item, index) {
-                var li = document.createElement('li');
+            chain(results).and(initial, resultsToShow).and(forEach, (item, index) => {
+                const li = document.createElement('li');
 
                 li.className = 'search-tool__item';
-                li.innerHTML = '<a role="button" href="#' + item.id + '"' +
-                    ' id="' + index + 'sti" class="js-search-tool-link search-tool__link' + (index === 0 ? ' active"' : '"') +
-                    ' data-link-name="weather-search-tool" data-weather-id="' + item.id + '" data-weather-city="' + item.city + '">' +
-                    item.city + ' <span class="search-tool__meta">' + item.country + '</span></a>';
+                li.innerHTML = `<a role="button" href="#${item.id}"` +
+                    ` id="${index}sti" class="js-search-tool-link search-tool__link${index === 0 ? ' active"' : '"'
+                    } data-link-name="weather-search-tool" data-weather-id="${item.id}" data-weather-city="${item.city}">${
+                    item.city} <span class="search-tool__meta">${item.country}</span></a>`;
 
                 docFragment.appendChild(li);
             });
@@ -234,13 +234,13 @@ function SearchTool(options) {
             this.clear().append(docFragment);
         },
 
-        clear: function() {
+        clear() {
             return $list.html('');
         },
 
-        destroy: function() {
+        destroy() {
             this.clear();
-        }
+        },
     };
 }
 

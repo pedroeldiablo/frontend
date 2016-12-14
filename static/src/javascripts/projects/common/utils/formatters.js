@@ -1,8 +1,10 @@
 export default {
-    integerCommas: function(val) {
+    integerCommas(val) {
         // commafy integers. see formatters.spec.js for expected input/output
-        var num = parseInt(val, 10),
-            digits, i, len;
+        let num = parseInt(val, 10),
+            digits,
+            i,
+            len;
         if (!isNaN(num)) {
             digits = num.toFixed(0).split('');
             len = digits.length;
@@ -13,5 +15,5 @@ export default {
             }
             return digits.join('');
         }
-    }
+    },
 };

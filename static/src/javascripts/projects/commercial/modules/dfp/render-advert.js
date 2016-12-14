@@ -23,9 +23,9 @@ import geoMostPopular from 'common/modules/onward/geo-most-popular';
 function addClassIfHasClass(newClassNames) {
     return function hasClass(classNames) {
         return function onAdvertRendered(_, advert) {
-            var $node = bonzo(advert.node);
+            const $node = bonzo(advert.node);
             if (classNames.some($node.hasClass.bind($node))) {
-                return fastdom.write(function() {
+                return fastdom.write(() => {
                     newClassNames.forEach($node.addClass.bind($node));
                 });
             }
@@ -33,10 +33,10 @@ function addClassIfHasClass(newClassNames) {
     };
 }
 
-var addFluid250 = addClassIfHasClass(['ad-slot--fluid250']);
-var addFluid = addClassIfHasClass(['ad-slot--fluid']);
+const addFluid250 = addClassIfHasClass(['ad-slot--fluid250']);
+const addFluid = addClassIfHasClass(['ad-slot--fluid']);
 
-var sizeCallbacks = {};
+const sizeCallbacks = {};
 
 /**
  * DFP fluid ads should use existing fluid-250 styles in the top banner position
@@ -46,8 +46,8 @@ sizeCallbacks[adSizes.fluid] = addFluid(['ad-slot']);
 /**
  * Trigger sticky scrolling for MPUs in the right-hand article column
  */
-sizeCallbacks[adSizes.mpu] = function(_, advert) {
-    var $node = bonzo(advert.node);
+sizeCallbacks[adSizes.mpu] = function (_, advert) {
+    const $node = bonzo(advert.node);
     if ($node.hasClass('ad-slot--right')) {
         stickyMpu($node);
     } else {
@@ -58,12 +58,12 @@ sizeCallbacks[adSizes.mpu] = function(_, advert) {
 /**
  * Resolve the stickyMpu.whenRendered promise
  */
-sizeCallbacks[adSizes.halfPage] = function() {
+sizeCallbacks[adSizes.halfPage] = function () {
     mediator.emit('page:commercial:sticky-mpu');
 };
 
-sizeCallbacks[adSizes.video] = function(_, advert) {
-    fastdom.write(function() {
+sizeCallbacks[adSizes.video] = function (_, advert) {
+    fastdom.write(() => {
         advert.node.classList.add('u-h');
     });
 };
@@ -73,10 +73,10 @@ sizeCallbacks[adSizes.video] = function(_, advert) {
  * and their containers closed up.
  */
 sizeCallbacks[adSizes.outOfPage] =
-    sizeCallbacks[adSizes.empty] = function(event, advert) {
+    sizeCallbacks[adSizes.empty] = function (event, advert) {
         if (!event.slot.getOutOfPage()) {
-            var $parent = bonzo(advert.node.parentNode);
-            return fastdom.write(function() {
+            const $parent = bonzo(advert.node.parentNode);
+            return fastdom.write(() => {
                 bonzo(advert.node).addClass('u-h');
                 // if in a slice, add the 'no mpu' class
                 if ($parent.hasClass('js-fc-slice-mpu-candidate')) {
@@ -89,13 +89,11 @@ sizeCallbacks[adSizes.outOfPage] =
 /**
  * Portrait adverts exclude the locally-most-popular widget
  */
-sizeCallbacks[adSizes.portrait] = function() {
+sizeCallbacks[adSizes.portrait] = function () {
     // remove geo most popular
-    geoMostPopular.whenRendered.then(function(geoMostPopular) {
-        return fastdom.write(function() {
-            bonzo(geoMostPopular.elem).remove();
-        });
-    });
+    geoMostPopular.whenRendered.then(geoMostPopular => fastdom.write(() => {
+        bonzo(geoMostPopular.elem).remove();
+    }));
 };
 
 /**
@@ -116,15 +114,11 @@ sizeCallbacks[adSizes.merchandising] = addFluid250(['ad-slot--commercial-compone
 function renderAdvert(advert, slotRenderEvent) {
     removePlaceholders(advert.node);
 
-    return applyCreativeTemplate(advert.node).then(function(isRendered) {
+    return applyCreativeTemplate(advert.node).then((isRendered) => {
         return callSizeCallback()
-            .then(function() {
-                return renderAdvertLabel(advert.node);
-            })
+            .then(() => renderAdvertLabel(advert.node))
             .then(addRenderedClass)
-            .then(function() {
-                return isRendered;
-            });
+            .then(() => isRendered);
 
         function callSizeCallback() {
             advert.size = slotRenderEvent.size.join(',');
@@ -138,20 +132,19 @@ function renderAdvert(advert, slotRenderEvent) {
         }
 
         function addRenderedClass() {
-            return isRendered ? fastdom.write(function() {
+            return isRendered ? fastdom.write(() => {
                 bonzo(advert.node).addClass('ad-slot--rendered');
             }) : Promise.resolve();
         }
-
     }).catch(raven.captureException);
 }
 
 function removePlaceholders(adSlotNode) {
-    var placeholder = qwery('.ad-slot__content--placeholder', adSlotNode);
-    var adSlotContent = qwery('div', adSlotNode);
+    const placeholder = qwery('.ad-slot__content--placeholder', adSlotNode);
+    const adSlotContent = qwery('div', adSlotNode);
 
     if (adSlotContent.length) {
-        fastdom.write(function() {
+        fastdom.write(() => {
             bonzo(placeholder).remove();
             bonzo(adSlotContent).addClass('ad-slot__content');
         });

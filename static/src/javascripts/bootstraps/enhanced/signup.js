@@ -4,33 +4,33 @@ import $ from 'common/utils/$';
 import fetch from 'common/utils/fetch';
 import config from 'common/utils/config';
 import Id from 'common/modules/identity/api';
-var classes = {
+const classes = {
     wrapper: 'js-newsletter-meta',
     signupForm: 'js-email-sub__form',
     textInput: 'js-newsletter-card__text-input',
     signupButton: 'js-newsletter-signup-button',
     styleSignup: 'newsletter-card__lozenge--submit',
     signupConfirm: 'js-signup-confirmation',
-    previewButton: 'js-newsletter-preview'
+    previewButton: 'js-newsletter-preview',
 };
 
 function hideInputAndShowPreview(el) {
-    fastdom.write(function() {
-        $('.' + classes.textInput, el).addClass('is-hidden');
-        $('.' + classes.signupButton, el).removeClass(classes.styleSignup);
-        $('.' + classes.previewButton, el).removeClass('is-hidden');
+    fastdom.write(() => {
+        $(`.${classes.textInput}`, el).addClass('is-hidden');
+        $(`.${classes.signupButton}`, el).removeClass(classes.styleSignup);
+        $(`.${classes.previewButton}`, el).removeClass('is-hidden');
     });
 }
 
 function showSignupForm(buttonEl) {
-    var form = buttonEl.form;
-    var meta = $.ancestor(buttonEl, 'js-newsletter-meta');
-    fastdom.write(function() {
-        $('.' + classes.textInput, form).removeClass('is-hidden').focus();
-        $('.' + classes.signupButton, form).addClass(classes.styleSignup);
-        $('.' + classes.previewButton, meta).addClass('is-hidden');
+    const form = buttonEl.form;
+    const meta = $.ancestor(buttonEl, 'js-newsletter-meta');
+    fastdom.write(() => {
+        $(`.${classes.textInput}`, form).removeClass('is-hidden').focus();
+        $(`.${classes.signupButton}`, form).addClass(classes.styleSignup);
+        $(`.${classes.previewButton}`, meta).addClass('is-hidden');
         buttonEl.setAttribute('type', 'submit');
-        bean.on(buttonEl, 'click', function(event) {
+        bean.on(buttonEl, 'click', (event) => {
             event.preventDefault();
             subscribeToEmail(buttonEl);
         });
@@ -38,41 +38,41 @@ function showSignupForm(buttonEl) {
 }
 
 function updateFormForLoggedIn(emailAddress, el) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         hideInputAndShowPreview(el);
-        $('.' + classes.textInput, el).val(emailAddress);
+        $(`.${classes.textInput}`, el).val(emailAddress);
     });
 }
 
 function validate(form) {
     // simplistic email address validation
-    var emailAddress = $('.' + classes.textInput, form).val();
+    const emailAddress = $(`.${classes.textInput}`, form).val();
     return typeof emailAddress === 'string' &&
         emailAddress.indexOf('@') > -1;
 }
 
 function addSubscriptionMessage(buttonEl) {
-    var meta = $.ancestor(buttonEl, classes.wrapper);
-    fastdom.write(function() {
+    const meta = $.ancestor(buttonEl, classes.wrapper);
+    fastdom.write(() => {
         $(buttonEl.form).addClass('is-hidden');
-        $('.' + classes.previewButton, meta).addClass('is-hidden');
-        $('.' + classes.signupConfirm, meta).removeClass('is-hidden');
+        $(`.${classes.previewButton}`, meta).addClass('is-hidden');
+        $(`.${classes.signupConfirm}`, meta).removeClass('is-hidden');
     });
 }
 
 function submitForm(form, buttonEl) {
-    var formQueryString =
-        'email=' + form.email.value + '&' +
-        'listId=' + form.listId.value;
+    const formQueryString =
+        `email=${form.email.value}&` +
+        `listId=${form.listId.value}`;
     return fetch(
-            config.page.ajaxUrl + '/email', {
+            `${config.page.ajaxUrl}/email`, {
                 method: 'post',
                 body: formQueryString,
                 headers: {
-                    'Accept': 'application/json'
-                }
+                    Accept: 'application/json',
+                },
             })
-        .then(function(response) {
+        .then((response) => {
             if (response.ok) {
                 addSubscriptionMessage(buttonEl);
             }
@@ -80,16 +80,16 @@ function submitForm(form, buttonEl) {
 }
 
 function subscribeToEmail(buttonEl) {
-    var form = buttonEl.form;
+    const form = buttonEl.form;
     if (validate(form)) {
         submitForm(form, buttonEl);
     }
 }
 
 function showSecondStageSignup(buttonEl) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         buttonEl.setAttribute('type', 'button');
-        bean.on(buttonEl, 'click', function() {
+        bean.on(buttonEl, 'click', () => {
             showSignupForm(buttonEl);
         });
     });
@@ -98,21 +98,20 @@ function showSecondStageSignup(buttonEl) {
 function enhanceNewsletters() {
     if (Id.getUserFromCookie() !== null) {
         // email address is not stored in the cookie, gotta go to the Api
-        Id.getUserFromApi(function(userFromId) {
+        Id.getUserFromApi((userFromId) => {
             if (userFromId && userFromId.primaryEmailAddress) {
                 updateFormForLoggedIn(userFromId.primaryEmailAddress);
-                $.forEachElement('.' + classes.signupButton, subscribeToEmail);
+                $.forEachElement(`.${classes.signupButton}`, subscribeToEmail);
             }
         });
     } else {
         hideInputAndShowPreview();
-        $.forEachElement('.' + classes.signupButton, showSecondStageSignup);
+        $.forEachElement(`.${classes.signupButton}`, showSecondStageSignup);
     }
-
 }
 
 export default {
-    init: function() {
+    init() {
         enhanceNewsletters();
-    }
+    },
 };

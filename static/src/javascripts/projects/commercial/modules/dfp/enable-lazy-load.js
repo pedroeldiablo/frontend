@@ -7,7 +7,7 @@ function enableLazyLoad() {
     if (!dfpEnv.lazyLoadEnabled) {
         dfpEnv.lazyLoadEnabled = true;
         addEventListener(window, 'scroll', lazyLoad, {
-            passive: true
+            passive: true,
         });
         lazyLoad();
     }

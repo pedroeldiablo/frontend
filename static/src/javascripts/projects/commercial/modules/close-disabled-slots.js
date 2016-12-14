@@ -4,28 +4,26 @@ import Promise from 'Promise';
 import $css from 'common/utils/$css';
 import fastdom from 'common/utils/fastdom-promise';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
-var adSlotSelector = '.js-ad-slot';
+const adSlotSelector = '.js-ad-slot';
 
 export default {
-    init: init
+    init,
 };
 
 function init() {
-
-    var modulePromises = [];
+    const modulePromises = [];
 
     // Get all ad slots
     qwery(adSlotSelector)
         // convert them to bonzo objects
         .map(bonzo)
         // remove the ones which should not be there
-        .filter(function($adSlot) {
+        .filter($adSlot =>
             // filter out (and remove) hidden ads
-            return shouldDisableAdSlot($adSlot);
-        })
-        .forEach(function($adSlot) {
+             shouldDisableAdSlot($adSlot))
+        .forEach(($adSlot) => {
             modulePromises.push(
-                fastdom.write(function() {
+                fastdom.write(() => {
                     $adSlot.remove();
                 })
             );

@@ -3,7 +3,7 @@
     Description: Used to detect various characteristics of the current browsing environment.
                  layout mode, connection speed, battery level, etc...
 */
-/*global DocumentTouch: true */
+/* global DocumentTouch: true */
 
 import mediator from 'common/utils/mediator';
 import takeWhile from 'common/utils/take-while';
@@ -12,7 +12,7 @@ import memoize from 'lodash/functions/memoize';
 import compose from 'lodash/functions/compose';
 import Promise from 'Promise';
 
-var supportsPushState,
+let supportsPushState,
     getUserAgent,
     pageVisibility = document.visibilityState ||
     document.webkitVisibilityState ||
@@ -26,31 +26,31 @@ var supportsPushState,
     breakpoints = [{
         name: 'mobile',
         isTweakpoint: false,
-        width: 0
+        width: 0,
     }, {
         name: 'mobileLandscape',
         isTweakpoint: true,
-        width: 480
+        width: 480,
     }, {
         name: 'phablet',
         isTweakpoint: true,
-        width: 660
+        width: 660,
     }, {
         name: 'tablet',
         isTweakpoint: false,
-        width: 740
+        width: 740,
     }, {
         name: 'desktop',
         isTweakpoint: false,
-        width: 980
+        width: 980,
     }, {
         name: 'leftCol',
         isTweakpoint: true,
-        width: 1140
+        width: 1140,
     }, {
         name: 'wide',
         isTweakpoint: false,
-        width: 1300
+        width: 1300,
     }],
     detect;
 
@@ -64,9 +64,9 @@ var supportsPushState,
  *       hasCrossedTheMagicLines(function(){ do stuff })
  */
 function hasCrossedBreakpoint(includeTweakpoint) {
-    var was = getBreakpoint(includeTweakpoint);
-    return function(callback) {
-        var is = getBreakpoint(includeTweakpoint);
+    let was = getBreakpoint(includeTweakpoint);
+    return function (callback) {
+        const is = getBreakpoint(includeTweakpoint);
         if (is !== was) {
             callback(is, was);
             was = is;
@@ -75,7 +75,7 @@ function hasCrossedBreakpoint(includeTweakpoint) {
 }
 
 function isReload() {
-    var perf = window.performance || window.msPerformance || window.webkitPerformance || window.mozPerformance;
+    const perf = window.performance || window.msPerformance || window.webkitPerformance || window.mozPerformance;
     if (!!perf && !!perf.navigation) {
         return perf.navigation.type === perf.navigation.TYPE_RELOAD;
     } else {
@@ -119,7 +119,7 @@ function isGuardianReferral() {
 }
 
 function socialContext() {
-    var override = /socialContext=(facebook|twitter)/.exec(window.location.hash);
+    const override = /socialContext=(facebook|twitter)/.exec(window.location.hash);
 
     if (override !== null) {
         return override[1];
@@ -132,18 +132,18 @@ function socialContext() {
     }
 }
 
-getUserAgent = (function() {
-    var ua = navigator.userAgent,
+getUserAgent = (function () {
+    let ua = navigator.userAgent,
         tem,
         M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if (/trident/i.test(M[1])) {
         tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-        return 'IE ' + (tem[1] || '');
+        return `IE ${tem[1] || ''}`;
     }
     if (M[1] === 'Chrome') {
         tem = ua.match(/\bOPR\/(\d+)/);
         if (tem !== null) {
-            return 'Opera ' + tem[1];
+            return `Opera ${tem[1]}`;
         }
     }
     M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
@@ -153,9 +153,9 @@ getUserAgent = (function() {
     }
     return {
         browser: M[0],
-        version: M[1]
+        version: M[1],
     };
-})();
+}());
 
 function hasTouchScreen() {
     return ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
@@ -176,8 +176,8 @@ function hasPushStateSupport() {
 }
 
 function getVideoFormatSupport() {
-    //https://github.com/Modernizr/Modernizr/blob/master/feature-detects/video.js
-    var elem = document.createElement('video'),
+    // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/video.js
+    let elem = document.createElement('video'),
         types = {};
 
     try {
@@ -196,14 +196,14 @@ function getOrientation() {
 }
 
 function getViewport() {
-    var w = window,
+    let w = window,
         d = document,
         e = d.documentElement,
         g = d.getElementsByTagName('body')[0];
 
     return {
         width: w.innerWidth || e.clientWidth || g.clientWidth,
-        height: w.innerHeight || e.clientHeight || g.clientHeight
+        height: w.innerHeight || e.clientHeight || g.clientHeight,
     };
 }
 
@@ -216,8 +216,8 @@ function reverseArray(arr) {
 }
 
 function getBreakpoint(includeTweakpoint) {
-    var viewportWidth = detect.getViewport().width;
-    var breakpoint;
+    const viewportWidth = detect.getViewport().width;
+    let breakpoint;
     if (includeTweakpoint) {
         breakpoint = takeWhile(isMatchingBreakpoint, breakpoints).slice(-1)[0].name;
     } else {
@@ -226,7 +226,7 @@ function getBreakpoint(includeTweakpoint) {
         //     2. we reverse the array, effectively putting any tweakpoints first
         //     3. we drop all tweakpoints from the beginning of the array
         // Then, the first item is the largest breakpoint that is not a tweakpoint
-        var algo = compose(
+        const algo = compose(
             dropWhile.bind(undefined, isTweakpoint),
             reverseArray,
             takeWhile.bind(undefined, isMatchingBreakpoint)
@@ -257,20 +257,16 @@ function isBreakpoint(criteria) {
     criteria.min = criteria.min || breakpoints[0].name;
     criteria.max = criteria.max || breakpoints[breakpoints.length - 1].name;
 
-    var currentBreakpoint = getBreakpoint(true);
+    const currentBreakpoint = getBreakpoint(true);
     // If, 1. we drop all breakpoints smaller than the breakpoint range (min)
     //     2. we reverse the array, and...
     //     3. we drop all breakpoints larger than the breakpoint range (max)
     // Then, we get the range of matching breakpoints (in reverse order but
     // it doesn't matter)
-    var algo = compose(
-        dropWhile.bind(undefined, function(_) {
-            return _ !== criteria.max;
-        }),
+    const algo = compose(
+        dropWhile.bind(undefined, _ => _ !== criteria.max),
         reverseArray,
-        dropWhile.bind(undefined, function(_) {
-            return _ !== criteria.min;
-        })
+        dropWhile.bind(undefined, _ => _ !== criteria.min)
     );
 
     return algo(breakpoints.map(getBreakpointName)).indexOf(currentBreakpoint) !== -1;
@@ -279,10 +275,10 @@ function isBreakpoint(criteria) {
 // Page Visibility
 function initPageVisibility() {
     // Taken from http://stackoverflow.com/a/1060034
-    var hidden = 'hidden';
+    const hidden = 'hidden';
 
     function onchange(evt) {
-        var v = 'visible',
+        let v = 'visible',
             h = 'hidden',
             evtMap = {
                 focus: v,
@@ -290,7 +286,7 @@ function initPageVisibility() {
                 pageshow: v,
                 blur: h,
                 focusout: h,
-                pagehide: h
+                pagehide: h,
             };
 
         evt = evt || window.event;
@@ -300,7 +296,7 @@ function initPageVisibility() {
             pageVisibility = this[hidden] ? 'hidden' : 'visible';
         }
 
-        mediator.emit('modules:detect:pagevisibility:' + pageVisibility);
+        mediator.emit(`modules:detect:pagevisibility:${pageVisibility}`);
     }
 
     // Standards:
@@ -331,8 +327,8 @@ function isEnhanced() {
     return window.guardian.isEnhanced;
 }
 
-var createSacrificialAd = memoize(function() {
-    var sacrificialAd = '<div class="ad_unit" style="position: absolute; height: 10px; top: 0; left: 0; z-index: -1;">&nbsp;</div>';
+const createSacrificialAd = memoize(() => {
+    const sacrificialAd = '<div class="ad_unit" style="position: absolute; height: 10px; top: 0; left: 0; z-index: -1;">&nbsp;</div>';
     document.body.insertAdjacentHTML('beforeend', sacrificialAd);
     return document.body.lastChild;
 });
@@ -341,12 +337,10 @@ var createSacrificialAd = memoize(function() {
 // this is soon - it's not worth refactoring them when they're off soon
 //
 // ** don't forget to remove them from the return object too **
-var adblockInUseSync = memoize(function() {
-    return window.getComputedStyle(createSacrificialAd()).display === 'none';
-});
+const adblockInUseSync = memoize(() => window.getComputedStyle(createSacrificialAd()).display === 'none');
 // end sync adblock detection
 
-var adblockInUse = new Promise(function(resolve) {
+const adblockInUse = new Promise((resolve) => {
     if (window.guardian.adBlockers.hasOwnProperty('active')) {
         // adblock detection has completed
         resolve(window.guardian.adBlockers.active);
@@ -361,32 +355,32 @@ function getReferrer() {
 }
 
 detect = {
-    hasCrossedBreakpoint: hasCrossedBreakpoint,
-    getVideoFormatSupport: getVideoFormatSupport,
-    hasTouchScreen: hasTouchScreen,
-    hasPushStateSupport: hasPushStateSupport,
-    getOrientation: getOrientation,
-    getBreakpoint: getBreakpoint,
-    getViewport: getViewport,
-    getUserAgent: getUserAgent,
-    isIOS: isIOS,
-    isAndroid: isAndroid,
-    isFireFoxOSApp: isFireFoxOSApp,
-    isFacebookApp: isFacebookApp,
-    isTwitterApp: isTwitterApp,
-    isFacebookReferral: isFacebookReferral,
-    isTwitterReferral: isTwitterReferral,
-    isGuardianReferral: isGuardianReferral,
-    socialContext: socialContext,
-    isBreakpoint: isBreakpoint,
-    isReload: isReload,
-    initPageVisibility: initPageVisibility,
-    pageVisible: pageVisible,
-    hasWebSocket: hasWebSocket,
-    breakpoints: breakpoints,
-    isEnhanced: isEnhanced,
-    adblockInUseSync: adblockInUseSync,
-    adblockInUse: adblockInUse,
-    getReferrer: getReferrer
+    hasCrossedBreakpoint,
+    getVideoFormatSupport,
+    hasTouchScreen,
+    hasPushStateSupport,
+    getOrientation,
+    getBreakpoint,
+    getViewport,
+    getUserAgent,
+    isIOS,
+    isAndroid,
+    isFireFoxOSApp,
+    isFacebookApp,
+    isTwitterApp,
+    isFacebookReferral,
+    isTwitterReferral,
+    isGuardianReferral,
+    socialContext,
+    isBreakpoint,
+    isReload,
+    initPageVisibility,
+    pageVisible,
+    hasWebSocket,
+    breakpoints,
+    isEnhanced,
+    adblockInUseSync,
+    adblockInUse,
+    getReferrer,
 };
 export default detect;

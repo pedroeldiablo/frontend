@@ -2,9 +2,7 @@ import assign from 'common/utils/assign';
 import closest from 'common/utils/closest';
 import fastdom from 'common/utils/fastdom-promise';
 import messenger from 'commercial/modules/messenger';
-messenger.register('resize', function(specs, ret, iframe) {
-    return resize(specs, iframe, closest(iframe, '.js-ad-slot'));
-});
+messenger.register('resize', (specs, ret, iframe) => resize(specs, iframe, closest(iframe, '.js-ad-slot')));
 
 export default resize;
 
@@ -13,7 +11,7 @@ function resize(specs, iframe, adSlot) {
         return null;
     }
 
-    var styles = {};
+    const styles = {};
 
     if ('width' in specs) {
         styles.width = normalise(specs.width);
@@ -23,16 +21,16 @@ function resize(specs, iframe, adSlot) {
         styles.height = normalise(specs.height);
     }
 
-    return fastdom.write(function() {
+    return fastdom.write(() => {
         assign(adSlot.style, styles);
         assign(iframe.style, styles);
     });
 }
 
 function normalise(length) {
-    var lengthRegexp = /^(\d+)(%|px|em|ex|ch|rem|vh|vw|vmin|vmax)?/;
-    var defaultUnit = 'px';
-    var matches = String(length).match(lengthRegexp);
+    const lengthRegexp = /^(\d+)(%|px|em|ex|ch|rem|vh|vw|vmin|vmax)?/;
+    const defaultUnit = 'px';
+    const matches = String(length).match(lengthRegexp);
     if (!matches) {
         return null;
     }

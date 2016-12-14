@@ -1,9 +1,9 @@
-var supportsOptions = false;
+let supportsOptions = false;
 try {
-    var opts = Object.defineProperty({}, 'passive', {
-        get: function() {
+    const opts = Object.defineProperty({}, 'passive', {
+        get() {
             supportsOptions = true;
-        }
+        },
     });
     window.addEventListener('test', null, opts);
 } catch (e) { /* noop */ }

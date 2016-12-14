@@ -4,14 +4,14 @@ import mediator from 'common/utils/mediator';
 import fastdom from 'fastdom';
 import defaults from 'lodash/objects/defaults';
 
-var paidforBandHeight;
+let paidforBandHeight;
 
 function initPaidForBand(element) {
     paidforBandHeight = 0;
     if (config.page.isAdvertisementFeature) {
-        var paidforBand = document.querySelector('.paidfor-band');
+        const paidforBand = document.querySelector('.paidfor-band');
         if (paidforBand && paidforBand !== element) {
-            fastdom.read(function() {
+            fastdom.read(() => {
                 paidforBandHeight = paidforBand.offsetHeight;
             });
         }
@@ -26,7 +26,7 @@ function Sticky(element, options) {
     this.opts = defaults(options || {}, {
         top: 0,
         containInParent: true,
-        emitMessage: false
+        emitMessage: false,
     });
 }
 
@@ -40,26 +40,27 @@ Sticky.prototype.init = function init() {
 };
 
 Sticky.prototype.updatePosition = function updatePosition() {
-    var parentRect = this.element.parentNode.getBoundingClientRect();
-    var elementHeight = this.element.offsetHeight;
-    var css = {},
-        message, stick;
+    const parentRect = this.element.parentNode.getBoundingClientRect();
+    const elementHeight = this.element.offsetHeight;
+    let css = {},
+        message,
+        stick;
 
     // have we scrolled past the element
     if (parentRect.top < this.opts.top + paidforBandHeight) {
         // make sure the element stays within its parent
-        var fixedTop = this.opts.containInParent && parentRect.bottom < this.opts.top + elementHeight ?
+        const fixedTop = this.opts.containInParent && parentRect.bottom < this.opts.top + elementHeight ?
             Math.floor(parentRect.bottom - elementHeight - this.opts.top) :
             this.opts.top;
         stick = true;
         css = {
-            top: fixedTop
+            top: fixedTop,
         };
         message = 'fixed';
     } else {
         stick = false;
         css = {
-            top: 0
+            top: 0,
         };
         message = 'unfixed';
     }
@@ -70,7 +71,7 @@ Sticky.prototype.updatePosition = function updatePosition() {
     }
 
     if (css) {
-        fastdom.write(function() {
+        fastdom.write(function () {
             if (stick) {
                 bonzo(this.element).addClass('is-sticky').css(css);
             } else {
@@ -81,7 +82,7 @@ Sticky.prototype.updatePosition = function updatePosition() {
 };
 
 Sticky.prototype.emitMessage = function emitMessage(message) {
-    mediator.emit('modules:' + this.element.id + ':' + message);
+    mediator.emit(`modules:${this.element.id}:${message}`);
 };
 
 export default Sticky;

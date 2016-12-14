@@ -18,7 +18,7 @@ import ElementInview from 'common/utils/element-inview';
 // test segment: check whether the ab_tests field contains a test with name ContributionsEpicAlwaysAskStrategy.
 // This means having showForSensitive equal to true, and the canRun() function always returning true.
 // The logic for whether the test-variant is displayed, is handled in the canBeDisplayed() function.
-export default function() {
+export default function () {
     this.id = 'ContributionsEpicAlwaysAskStrategy';
     this.start = '2016-12-06';
     this.expiry = '2017-01-06';
@@ -31,34 +31,34 @@ export default function() {
     this.audienceCriteria = 'All';
     this.dataLinkNames = '';
     this.idealOutcome = 'There are no negative effects and this is the optimum strategy!';
-    this.canRun = function() {
+    this.canRun = function () {
         return true;
     };
 
-    var makeEvent = (function(name) {
-        return this.id + ':' + name;
+    const makeEvent = (function (name) {
+        return `${this.id}:${name}`;
     }).bind(this);
 
     function makeUrl(urlPrefix, intcmp) {
-        return urlPrefix + 'INTCMP=' + intcmp;
+        return `${urlPrefix}INTCMP=${intcmp}`;
     }
 
-    var contributeUrlPrefix = 'co_global_epic_always_ask_strategy';
-    var membershipUrlPrefix = 'gdnwb_copts_mem_epic_always_ask_strategy';
+    const contributeUrlPrefix = 'co_global_epic_always_ask_strategy';
+    const membershipUrlPrefix = 'gdnwb_copts_mem_epic_always_ask_strategy';
 
-    var epicViewedEvent = makeEvent('view');
+    const epicViewedEvent = makeEvent('view');
 
-    var membershipUrl = 'https://membership.theguardian.com/supporter?';
-    var contributeUrl = 'https://contribute.theguardian.com/?';
+    const membershipUrl = 'https://membership.theguardian.com/supporter?';
+    const contributeUrl = 'https://contribute.theguardian.com/?';
 
-    var messages = {
+    const messages = {
         alwaysAsk: {
             title: 'Since you’re here …',
-            p1: '…we have a small favour to ask. More people are reading the Guardian than ever but far fewer are paying for it. And advertising revenues across the media are falling fast. So you can see why we need to ask for your help. The Guardian\'s independent, investigative journalism takes a lot of time, money and hard work to produce. But we do it because we believe our perspective matters – because it might well be your perspective, too.'
-        }
+            p1: '…we have a small favour to ask. More people are reading the Guardian than ever but far fewer are paying for it. And advertising revenues across the media are falling fast. So you can see why we need to ask for your help. The Guardian\'s independent, investigative journalism takes a lot of time, money and hard work to produce. But we do it because we believe our perspective matters – because it might well be your perspective, too.',
+        },
     };
 
-    var cta = {
+    const cta = {
         equal: {
             p2: 'If everyone who reads our reporting, who likes it, helps to pay for it, our future would be much more secure.',
             p3: '',
@@ -66,21 +66,21 @@ export default function() {
             cta2: 'Make a contribution',
             url1: makeUrl(membershipUrl, membershipUrlPrefix),
             url2: makeUrl(contributeUrl, contributeUrlPrefix),
-            hidden: ''
-        }
+            hidden: '',
+        },
     };
 
-    var componentWriter = function(component) {
-        fastdom.write(function() {
-            var submetaElement = $('.submeta');
+    const componentWriter = function (component) {
+        fastdom.write(() => {
+            const submetaElement = $('.submeta');
             if (submetaElement.length > 0) {
                 component.insertBefore(submetaElement);
-                $('.contributions__epic').each(function(element) {
+                $('.contributions__epic').each((element) => {
                     // top offset of 18 ensures view only counts when half of element is on screen
-                    var elementInview = ElementInview(element, window, {
-                        top: 18
+                    const elementInview = ElementInview(element, window, {
+                        top: 18,
                     });
-                    elementInview.on('firstview', function() {
+                    elementInview.on('firstview', () => {
                         mediator.emit(epicViewedEvent);
                     });
                 });
@@ -88,14 +88,14 @@ export default function() {
         });
     };
 
-    var registerViewListener = function(complete) {
+    const registerViewListener = function (complete) {
         mediator.on(epicViewedEvent, complete);
     };
 
-    var canBeDisplayed = function() {
-        var userHasNeverContributed = !cookies.get('gu.contributions.contrib-timestamp');
-        var worksWellWithPageTemplate = (config.page.contentType === 'Article') && !config.page.isMinuteArticle; // may render badly on other types
-        var isSensitive = config.page.isSensitive === true;
+    const canBeDisplayed = function () {
+        const userHasNeverContributed = !cookies.get('gu.contributions.contrib-timestamp');
+        const worksWellWithPageTemplate = (config.page.contentType === 'Article') && !config.page.isMinuteArticle; // may render badly on other types
+        const isSensitive = config.page.isSensitive === true;
         return userHasNeverContributed &&
             commercialFeatures.canReasonablyAskForMoney &&
             worksWellWithPageTemplate &&
@@ -105,31 +105,31 @@ export default function() {
     this.variants = [{
         id: 'control',
 
-        test: function() {},
+        test() {},
 
-        success: registerViewListener
+        success: registerViewListener,
     }, {
         id: 'alwaysAsk',
 
-        test: function() {
+        test() {
             if (canBeDisplayed()) {
-                var ctaType = cta.equal;
-                var message = messages.alwaysAsk;
-                var component = $.create(template(contributionsEpicEqualButtons, {
-                    linkUrl1: ctaType.url1 + '_always_ask',
-                    linkUrl2: ctaType.url2 + '_always_ask',
+                const ctaType = cta.equal;
+                const message = messages.alwaysAsk;
+                const component = $.create(template(contributionsEpicEqualButtons, {
+                    linkUrl1: `${ctaType.url1}_always_ask`,
+                    linkUrl2: `${ctaType.url2}_always_ask`,
                     title: message.title,
                     p1: message.p1,
                     p2: ctaType.p2,
                     p3: ctaType.p3,
                     cta1: ctaType.cta1,
                     cta2: ctaType.cta2,
-                    hidden: ctaType.hidden
+                    hidden: ctaType.hidden,
                 }));
                 componentWriter(component);
             }
         },
 
-        success: registerViewListener
+        success: registerViewListener,
     }];
-};
+}

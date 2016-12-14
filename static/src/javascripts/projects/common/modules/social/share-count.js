@@ -9,22 +9,22 @@ import template from 'common/utils/template';
 import svgs from 'common/views/svgs';
 import shareCountTemplate from 'text!common/views/content/share-count.html';
 import shareCountImmersiveTemplate from 'text!common/views/content/share-count-immersive.html';
-var shareCount = 0,
+let shareCount = 0,
     $shareCountEls = $('.js-sharecount'),
     $fullValueEls,
     $shortValueEls,
     tooltip = 'Facebook: <%=facebook%>',
     counts = {
-        facebook: 'n/a'
+        facebook: 'n/a',
     };
 
 function incrementShareCount(amount) {
     if (amount !== 0) {
         shareCount += amount;
-        var displayCount = shareCount.toFixed(0),
+        let displayCount = shareCount.toFixed(0),
             formattedDisplayCount = formatters.integerCommas(displayCount),
-            shortDisplayCount = displayCount > 10000 ? Math.round(displayCount / 1000) + 'k' : displayCount;
-        fastdom.write(function() {
+            shortDisplayCount = displayCount > 10000 ? `${Math.round(displayCount / 1000)}k` : displayCount;
+        fastdom.write(() => {
             $fullValueEls.text(formattedDisplayCount);
             $shortValueEls.text(shortDisplayCount);
         });
@@ -36,11 +36,11 @@ function updateTooltip() {
 }
 
 function addToShareCount(val) {
-    var shareSvg = svgs('share');
-    var shareTemplate = $shareCountEls.hasClass('js-sharecount-immersive') ? shareCountImmersiveTemplate : shareCountTemplate;
+    const shareSvg = svgs('share');
+    const shareTemplate = $shareCountEls.hasClass('js-sharecount-immersive') ? shareCountImmersiveTemplate : shareCountTemplate;
 
-    var html = template(shareTemplate, {
-        icon: shareSvg
+    const html = template(shareTemplate, {
+        icon: shareSvg,
     });
 
     $shareCountEls
@@ -54,28 +54,28 @@ function addToShareCount(val) {
     incrementShareCount(val);
 }
 
-export default function() {
+export default function () {
     // asking for social counts in preview "leaks" upcoming URLs to social sites.
     // when they then crawl them they get 404s which affects later sharing.
     // don't call counts in preview
     if ($shareCountEls.length && !config.page.isPreview) {
-        var url = 'http://www.theguardian.com/' + config.page.pageId;
+        const url = `http://www.theguardian.com/${config.page.pageId}`;
         try {
             ajax({
-                url: 'https://graph.facebook.com/' + url, //TODO: use recent Graph API endpoint format (versioned) https://developers.facebook.com/docs/graph-api/reference/v2.7/url
+                url: `https://graph.facebook.com/${url}`, // TODO: use recent Graph API endpoint format (versioned) https://developers.facebook.com/docs/graph-api/reference/v2.7/url
                 type: 'json',
                 method: 'get',
-                crossOrigin: true
-            }).then(function(resp) {
-                var count = resp.share && resp.share.share_count || 0;
+                crossOrigin: true,
+            }).then((resp) => {
+                const count = resp.share && resp.share.share_count || 0;
                 counts.facebook = count;
                 addToShareCount(count);
                 updateTooltip();
             });
         } catch (e) {
-            reportError(new Error('Error retrieving share counts (' + e.message + ')'), {
-                feature: 'share-count'
+            reportError(new Error(`Error retrieving share counts (${e.message})`), {
+                feature: 'share-count',
             }, false);
         }
     }
-};
+}

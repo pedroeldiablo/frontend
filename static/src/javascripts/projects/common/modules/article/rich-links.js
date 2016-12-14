@@ -16,22 +16,22 @@ import contains from 'lodash/collections/contains';
 import 'common/modules/experiments/ab';
 
 function elementIsBelowViewport(el) {
-    return fastdomPromise.read(function() {
-        var rect = el.getBoundingClientRect();
+    return fastdomPromise.read(() => {
+        const rect = el.getBoundingClientRect();
         return rect.top > (window.innerHeight || document.documentElement.clientHeight);
     });
 }
 
 function upgradeRichLink(el) {
-    var href = $('a', el).attr('href');
-    var matches = href.match(/(?:^https?:\/\/(?:www\.|m\.code\.dev-)theguardian\.com)?(\/.*)/);
-    var isOnMobile = detect.isBreakpoint({
-        max: 'mobileLandscape'
+    const href = $('a', el).attr('href');
+    const matches = href.match(/(?:^https?:\/\/(?:www\.|m\.code\.dev-)theguardian\.com)?(\/.*)/);
+    const isOnMobile = detect.isBreakpoint({
+        max: 'mobileLandscape',
     });
 
     function doUpgrade(shouldUpgrade, resp) {
         if (shouldUpgrade) {
-            return fastdom.write(function() {
+            return fastdom.write(() => {
                 $(el).html(resp.html)
                     .removeClass('element-rich-link--not-upgraded')
                     .addClass('element-rich-link--upgraded');
@@ -43,30 +43,28 @@ function upgradeRichLink(el) {
     }
 
     if (matches && matches[1]) {
-        return fetchJson('/embed/card' + matches[1] + '.json', {
-                mode: 'cors'
-            }).then(function(resp) {
-                if (resp.html) {
-
+        return fetchJson(`/embed/card${matches[1]}.json`, {
+            mode: 'cors',
+        }).then((resp) => {
+            if (resp.html) {
                     // Fastdom read the viewport height before upgrading if on mobile
-                    if (isOnMobile) {
-                        elementIsBelowViewport(el).then(function(shouldUpgrade) {
-                            doUpgrade(shouldUpgrade, resp);
-                        });
-                    } else {
-                        doUpgrade(true, resp);
-                    }
+                if (isOnMobile) {
+                    elementIsBelowViewport(el).then((shouldUpgrade) => {
+                        doUpgrade(shouldUpgrade, resp);
+                    });
+                } else {
+                    doUpgrade(true, resp);
                 }
-            })
-            .catch(function(ex) {
+            }
+        })
+            .catch((ex) => {
                 reportError(ex, {
-                    feature: 'rich-links'
+                    feature: 'rich-links',
                 });
             });
     } else {
         return Promise.resolve(null);
     }
-
 }
 
 function getSpacefinderRules() {
@@ -79,31 +77,29 @@ function getSpacefinderRules() {
         selectors: {
             ' > h2': {
                 minAbove: detect.getBreakpoint() === 'mobile' ? 20 : 0,
-                minBelow: 200
+                minBelow: 200,
             },
             ' > *:not(p):not(h2):not(blockquote)': {
                 minAbove: 35,
-                minBelow: 300
+                minBelow: 300,
             },
             ' .ad-slot': {
                 minAbove: 150,
-                minBelow: 200
+                minBelow: 200,
             },
             ' .element-rich-link': {
                 minAbove: 500,
-                minBelow: 500
-            }
-        }
+                minBelow: 500,
+            },
+        },
     };
 }
 
 function insertTagRichLink() {
-    var $insertedEl,
+    let $insertedEl,
         richLinkHrefs = $('.element-rich-link a')
-        .map(function(el) {
-            return $(el).attr('href');
-        }),
-        testIfDuplicate = function(richLinkHref) {
+        .map(el => $(el).attr('href')),
+        testIfDuplicate = function (richLinkHref) {
             // Tag-targeted rich links can be absolute
             return contains(config.page.richLink, richLinkHref);
         },
@@ -115,15 +111,15 @@ function insertTagRichLink() {
         !isSensitive &&
         !isDuplicate
     ) {
-        return spaceFiller.fillSpace(getSpacefinderRules(), function(paras) {
+        return spaceFiller.fillSpace(getSpacefinderRules(), (paras) => {
             $insertedEl = $.create(template(richLinkTagTmpl, {
-                href: config.page.richLink
+                href: config.page.richLink,
             }));
             $insertedEl.insertBefore(paras[0]);
             return $insertedEl[0];
         }, {
-            waitForAds: true
-        }).then(function(didInsert) {
+            waitForAds: true,
+        }).then((didInsert) => {
             if (didInsert) {
                 return Promise.resolve(upgradeRichLink($insertedEl[0]));
             } else {
@@ -140,7 +136,7 @@ function upgradeRichLinks() {
 }
 
 export default {
-    upgradeRichLinks: upgradeRichLinks,
-    insertTagRichLink: insertTagRichLink,
-    getSpacefinderRules: getSpacefinderRules
+    upgradeRichLinks,
+    insertTagRichLink,
+    getSpacefinderRules,
 };

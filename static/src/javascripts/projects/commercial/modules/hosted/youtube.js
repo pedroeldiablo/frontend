@@ -7,21 +7,21 @@ import detect from 'common/utils/detect';
 import mediator from 'common/utils/mediator';
 import contains from 'lodash/collections/contains';
 import forEach from 'lodash/collections/forEach';
-var eventsFired = [];
+const eventsFired = [];
 
 function isDesktop() {
     return contains(['desktop', 'leftCol', 'wide'], detect.getBreakpoint());
 }
 
 function sendPercentageCompleteEvents(atomId, youtubePlayer, playerTotalTime) {
-    var quartile = playerTotalTime / 4;
-    var playbackEvents = {
-        '25': quartile,
-        '50': quartile * 2,
-        '75': quartile * 3
+    const quartile = playerTotalTime / 4;
+    const playbackEvents = {
+        25: quartile,
+        50: quartile * 2,
+        75: quartile * 3,
     };
 
-    forEach(playbackEvents, function(value, key) {
+    forEach(playbackEvents, (value, key) => {
         if (!contains(eventsFired, key) && youtubePlayer.getCurrentTime() > value) {
             tracking.track(key, atomId);
             eventsFired.push(key);
@@ -31,53 +31,53 @@ function sendPercentageCompleteEvents(atomId, youtubePlayer, playerTotalTime) {
 }
 
 function init(el) {
-    var atomId = $(el).data('media-id');
-    var duration = $(el).data('duration');
-    var $currentTime = $('.js-youtube-current-time');
-    var playTimer;
+    const atomId = $(el).data('media-id');
+    const duration = $(el).data('duration');
+    const $currentTime = $('.js-youtube-current-time');
+    let playTimer;
 
     tracking.init(atomId);
     youtubePlayer.init(el, {
-        onPlayerStateChange: function(event) {
-            var player = event.target;
+        onPlayerStateChange(event) {
+            const player = event.target;
 
-            //show end slate when movie finishes
+            // show end slate when movie finishes
             if (event.data === window.YT.PlayerState.ENDED) {
                 tracking.track('end', atomId);
                 $currentTime.text('0:00');
                 if (nextVideoAutoplay.canAutoplay()) {
-                    //on mobile show the next video link in the end of the currently watching video
+                    // on mobile show the next video link in the end of the currently watching video
                     if (!isDesktop()) {
                         nextVideoAutoplay.triggerEndSlate();
                     }
                 }
             } else {
-                //update current time
-                var currentTime = Math.floor(player.getCurrentTime());
-                var seconds = currentTime % 60;
-                var minutes = (currentTime - seconds) / 60;
+                // update current time
+                const currentTime = Math.floor(player.getCurrentTime());
+                const seconds = currentTime % 60;
+                const minutes = (currentTime - seconds) / 60;
                 $currentTime.text(minutes + (seconds < 10 ? ':0' : ':') + seconds);
             }
 
             if (event.data === window.YT.PlayerState.PLAYING) {
                 tracking.track('play', atomId);
-                var playerTotalTime = player.getDuration();
-                playTimer = setInterval(function() {
+                const playerTotalTime = player.getDuration();
+                playTimer = setInterval(() => {
                     sendPercentageCompleteEvents(atomId, player, playerTotalTime);
                 }, 1000);
             } else {
                 clearTimeout(playTimer);
             }
         },
-        onPlayerReady: function(event) {
+        onPlayerReady(event) {
             if (nextVideoAutoplay.canAutoplay() && isDesktop()) {
                 nextVideoAutoplay.addCancelListener();
                 nextVideoAutoplay.triggerAutoplay(event.target.getCurrentTime.bind(event.target), duration);
             }
-        }
+        },
     }, el.id);
 }
 
 export default {
-    init: init
+    init,
 };

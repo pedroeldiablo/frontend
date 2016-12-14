@@ -2,17 +2,17 @@ import bean from 'bean';
 import bonzo from 'bonzo';
 import fastdom from 'fastdom';
 import $ from 'common/utils/$';
-var overlaySelector = '.u-faux-block-link__overlay',
+let overlaySelector = '.u-faux-block-link__overlay',
     hoverStateClassName = 'u-faux-block-link--hover';
 
-export default function() {
-    var showIntentToClick = function(e) {
-        fastdom.write(function() {
+export default function () {
+    const showIntentToClick = function (e) {
+        fastdom.write(() => {
             $(e.currentTarget).parent().addClass(hoverStateClassName);
         });
     };
-    var removeIntentToClick = function(e) {
-        fastdom.write(function() {
+    const removeIntentToClick = function (e) {
+        fastdom.write(() => {
             $(e.currentTarget).parent().removeClass(hoverStateClassName);
         });
     };
@@ -21,4 +21,4 @@ export default function() {
     bean.on(document.body, 'mouseenter', overlaySelector, showIntentToClick);
     // mouseout
     bean.on(document.body, 'mouseleave', overlaySelector, removeIntentToClick);
-};
+}

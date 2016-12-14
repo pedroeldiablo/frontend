@@ -3,7 +3,7 @@ import fastdom from 'common/utils/fastdom-promise';
 import QueueAsync from 'common/utils/QueueAsync';
 import Promise from 'Promise';
 import spacefinder from 'common/modules/article/spacefinder';
-var queue;
+let queue;
 
 function SpaceFiller() {
     queue = new QueueAsync(onError);
@@ -22,8 +22,8 @@ function SpaceFiller() {
  *
  * @returns {Promise} - when insertion attempt completed, resolves 'true' if inserted, or 'false' if no space found
  */
-SpaceFiller.prototype.fillSpace = function(rules, writer, options) {
-    var write = (options && options.domWriter) || fastdom.write;
+SpaceFiller.prototype.fillSpace = function (rules, writer, options) {
+    const write = (options && options.domWriter) || fastdom.write;
     return queue.add(insertNextContent);
 
     function insertNextContent() {
@@ -31,9 +31,7 @@ SpaceFiller.prototype.fillSpace = function(rules, writer, options) {
     }
 
     function onSpacesFound(paragraphs) {
-        return write(function() {
-            return writer(paragraphs);
-        });
+        return write(() => writer(paragraphs));
     }
 
     function onNoSpacesFound(ex) {

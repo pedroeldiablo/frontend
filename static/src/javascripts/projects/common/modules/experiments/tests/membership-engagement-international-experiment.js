@@ -6,7 +6,7 @@ import $ from 'common/utils/$';
 import config from 'common/utils/config';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
 import mediator from 'common/utils/mediator';
-export default function() {
+export default function () {
     this.id = 'MembershipEngagementInternationalExperiment';
     this.start = '2016-11-10';
     this.expiry = '2016-12-1';
@@ -20,15 +20,15 @@ export default function() {
     this.idealOutcome = 'More readers engage with the banner and then complete membership sign-up';
     this.hypothesis = 'Showing the banner to users who have visited us less frequently gives us a larger pool of potential supporters';
 
-    this.canRun = function() {
+    this.canRun = function () {
         return config.page.edition.toLowerCase() === 'int' &&
             commercialFeatures.canReasonablyAskForMoney &&
             config.page.contentType.toLowerCase() !== 'signup';
     };
 
-    var success = function(complete) {
+    const success = function (complete) {
         if (this.canRun()) {
-            mediator.on('membership-message:display', function() {
+            mediator.on('membership-message:display', () => {
                 bean.on(qwery('#membership__engagement-message-link')[0], 'click', complete);
             });
         }
@@ -36,11 +36,11 @@ export default function() {
 
     this.variants = [{
         id: '10th_article',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }, {
         id: '1st_article',
-        test: function() {},
-        success: success.bind(this)
+        test() {},
+        success: success.bind(this),
     }];
-};
+}

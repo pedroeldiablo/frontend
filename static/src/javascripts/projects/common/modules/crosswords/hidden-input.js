@@ -4,37 +4,37 @@ import fastdom from 'fastdom';
 import $ from 'common/utils/$';
 import scroller from 'common/utils/scroller';
 import detect from 'common/utils/detect';
-var HiddenInput = React.createClass({
+const HiddenInput = React.createClass({
 
-    getInitialState: function() {
+    getInitialState() {
         return {
-            value: this.props.value
+            value: this.props.value,
         };
     },
 
-    componentDidUpdate: function() {
+    componentDidUpdate() {
         if (detect.isBreakpoint({
-                max: 'mobile'
-            })) {
-            fastdom.read(function() {
-                var offsets = bonzo(React.findDOMNode(this.refs.input)).offset();
+            max: 'mobile',
+        })) {
+            fastdom.read(() => {
+                const offsets = bonzo(React.findDOMNode(this.refs.input)).offset();
                 scroller.scrollTo(offsets.top - offsets.height * 1.5 - $('.crossword__sticky-clue').offset().height, 250, 'easeOutQuad');
-            }.bind(this));
+            });
         }
     },
 
-    handleChange: function(event) {
+    handleChange(event) {
         this.props.onChange(event.target.value.toUpperCase());
         this.setState({
-            value: ''
+            value: '',
         });
     },
 
-    render: function() {
+    render() {
         return React.createElement(
             'div', {
                 className: 'crossword__hidden-input-wrapper',
-                ref: 'wrapper'
+                ref: 'wrapper',
             },
             React.createElement('input', {
                 type: 'text',
@@ -49,10 +49,10 @@ var HiddenInput = React.createClass({
                 autoComplete: 'off',
                 spellCheck: 'false',
                 autoCorrect: 'off',
-                ref: 'input'
+                ref: 'input',
             })
         );
-    }
+    },
 });
 
 export default HiddenInput;

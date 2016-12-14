@@ -14,7 +14,7 @@ import ajax from 'common/utils/ajax';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
 import ElementInview from 'common/utils/element-inview';
 
-export default function() {
+export default function () {
     this.id = 'ContributionsEpicUsPreEndOfYearTwo';
     this.start = '2016-12-12';
     this.expiry = '2016-12-19';
@@ -27,76 +27,75 @@ export default function() {
     this.audienceCriteria = 'All';
     this.dataLinkNames = '';
     this.idealOutcome = 'We are able to determine which Epic variant to use in the US end of year campaign';
-    this.canRun = function() {
-        var userHasNeverContributed = !cookies.get('gu.contributions.contrib-timestamp');
-        var worksWellWithPageTemplate = (config.page.contentType === 'Article') && !config.page.isMinuteArticle; // may render badly on other types
+    this.canRun = function () {
+        const userHasNeverContributed = !cookies.get('gu.contributions.contrib-timestamp');
+        const worksWellWithPageTemplate = (config.page.contentType === 'Article') && !config.page.isMinuteArticle; // may render badly on other types
         return userHasNeverContributed && commercialFeatures.canReasonablyAskForMoney && worksWellWithPageTemplate;
     };
 
-    var makeEvent = (function(name) {
-        return this.id + ':' + name;
+    const makeEvent = (function (name) {
+        return `${this.id}:${name}`;
     }).bind(this);
 
     function makeUrl(urlPrefix, intcmp) {
-        return urlPrefix + 'INTCMP=' + intcmp;
+        return `${urlPrefix}INTCMP=${intcmp}`;
     }
 
-    var contributeUrlPrefix = 'co_global_epic_us_pre_end_of_year';
-    var membershipUrlPrefix = 'gdnwb_copts_mem_epic_us_pre_end_of_year';
+    const contributeUrlPrefix = 'co_global_epic_us_pre_end_of_year';
+    const membershipUrlPrefix = 'gdnwb_copts_mem_epic_us_pre_end_of_year';
 
-    var epicInsertedEvent = makeEvent('insert');
-    var epicViewedEvent = makeEvent('view');
+    const epicInsertedEvent = makeEvent('insert');
+    const epicViewedEvent = makeEvent('view');
 
-    var membershipUrl = 'https://membership.theguardian.com/supporter?';
-    var contributeUrl = 'https://contribute.theguardian.com/?';
+    const membershipUrl = 'https://membership.theguardian.com/supporter?';
+    const contributeUrl = 'https://contribute.theguardian.com/?';
 
-    var messages = {
+    const messages = {
         control: {
             title: 'Since you’re here…',
             p1: '…we have a small favour to ask. More people are reading the Guardian than ever but far fewer are paying for it. And advertising revenues across the media are falling fast. So you can see why we need to ask for your help. The Guardian\'s independent, investigative journalism takes a lot of time, money and hard work to produce. But we do it because we believe our perspective matters – because it might well be your perspective, too.',
-            p2: 'If everyone who reads our reporting, who likes it, helps to pay for it our future would be much more secure.'
+            p2: 'If everyone who reads our reporting, who likes it, helps to pay for it our future would be much more secure.',
         },
         endOfYear: {
             title: 'As 2016 comes to a close…',
             p1: '…we would like to ask for your support. More people are reading the Guardian than ever but far fewer are paying for it. And advertising revenues across the media are falling fast. So you can see why now is the right time to ask. The Guardian\'s independent, investigative journalism takes a lot of time, money and hard work to produce. But we do it because we believe our perspective matters – because it might well be your perspective, too.',
-            p2: 'If everyone who reads our reporting – who believes in it – helps to support it, our future would be more secure.'
-        }
+            p2: 'If everyone who reads our reporting – who believes in it – helps to support it, our future would be more secure.',
+        },
     };
 
-    var cta = {
+    const cta = {
         equal: {
             p3: '',
             cta1: 'Become a Supporter',
             cta2: 'Make a contribution',
             url1: makeUrl(membershipUrl, membershipUrlPrefix),
             url2: makeUrl(contributeUrl, contributeUrlPrefix),
-            hidden: ''
-        }
+            hidden: '',
+        },
 
     };
 
-    var componentWriter = function(component) {
+    const componentWriter = function (component) {
         ajax({
             url: 'https://api.nextgen.guardianapps.co.uk/geolocation',
             method: 'GET',
             contentType: 'application/json',
-            crossOrigin: true
-        }).then(function(resp) {
+            crossOrigin: true,
+        }).then((resp) => {
             if ('country' in resp && resp.country === 'US') {
-                fastdom.write(function() {
-                    var submetaElement = $('.submeta');
+                fastdom.write(() => {
+                    const submetaElement = $('.submeta');
                     if (submetaElement.length > 0) {
                         component.insertBefore(submetaElement);
                         mediator.emit(epicInsertedEvent, component);
-                        $('.contributions__epic').each(function(element) {
+                        $('.contributions__epic').each((element) => {
                             // top offset of 18 ensures view only counts when half of element is on screen
-                            var elementInView = ElementInview(element, window, {
-                                top: 18
+                            const elementInView = ElementInview(element, window, {
+                                top: 18,
                             });
-                            elementInView.on('firstview', function() {
+                            elementInView.on('firstview', () => {
                                 mediator.emit(epicViewedEvent);
                             });
-
                         });
                     }
                 });
@@ -115,48 +114,48 @@ export default function() {
     this.variants = [{
         id: 'control',
 
-        test: function() {
-            var ctaType = cta.equal;
-            var message = messages.control;
-            var component = $.create(template(contributionsEpicEqualButtons, {
-                linkUrl1: ctaType.url1 + '_control',
-                linkUrl2: ctaType.url2 + '_control',
+        test() {
+            const ctaType = cta.equal;
+            const message = messages.control;
+            const component = $.create(template(contributionsEpicEqualButtons, {
+                linkUrl1: `${ctaType.url1}_control`,
+                linkUrl2: `${ctaType.url2}_control`,
                 title: message.title,
                 p1: message.p1,
                 p2: message.p2,
                 p3: ctaType.p3,
                 cta1: ctaType.cta1,
                 cta2: ctaType.cta2,
-                hidden: ctaType.hidden
+                hidden: ctaType.hidden,
             }));
             componentWriter(component);
         },
 
         impression: registerInsertionListener,
 
-        success: registerViewListener
+        success: registerViewListener,
     }, {
         id: 'endOfYear',
 
-        test: function() {
-            var ctaType = cta.equal;
-            var message = messages.endOfYear;
-            var component = $.create(template(contributionsEpicEqualButtons, {
-                linkUrl1: ctaType.url1 + '_end_of_year',
-                linkUrl2: ctaType.url2 + '_end_of_year',
+        test() {
+            const ctaType = cta.equal;
+            const message = messages.endOfYear;
+            const component = $.create(template(contributionsEpicEqualButtons, {
+                linkUrl1: `${ctaType.url1}_end_of_year`,
+                linkUrl2: `${ctaType.url2}_end_of_year`,
                 title: message.title,
                 p1: message.p1,
                 p2: message.p2,
                 p3: ctaType.p3,
                 cta1: ctaType.cta1,
                 cta2: ctaType.cta2,
-                hidden: ctaType.hidden
+                hidden: ctaType.hidden,
             }));
             componentWriter(component);
         },
 
         impression: registerInsertionListener,
 
-        success: registerViewListener
+        success: registerViewListener,
     }];
-};
+}

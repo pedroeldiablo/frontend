@@ -12,25 +12,25 @@ import map from 'lodash/collections/map';
 import compact from 'lodash/arrays/compact';
 import filter from 'lodash/collections/filter';
 import chain from 'common/utils/chain';
-var AnagramHelper = React.createClass({
-    getInitialState: function() {
+const AnagramHelper = React.createClass({
+    getInitialState() {
         return {
             clueInput: '',
-            showInput: true
+            showInput: true,
         };
     },
 
-    componentWillReceiveProps: function(next) {
+    componentWillReceiveProps(next) {
         // reset on clue change
         if (next.clue !== this.props.focussedEntry) {
             this.reset();
         }
     },
 
-    onClueInput: function(text) {
+    onClueInput(text) {
         if (!/\s|\d/g.test(text)) {
             this.setState({
-                clueInput: text
+                clueInput: text,
             });
         }
     },
@@ -47,104 +47,100 @@ var AnagramHelper = React.createClass({
      * @param  {[Object]} entries  array of entries (i.e. grid cells)
      * @return {[Object]}          array of shuffled letters
      */
-    shuffleWord: function(word, entries) {
-        var wordEntries = chain(entries).and(map, function(entry) {
-            return entry.value.toLowerCase();
-        }).and(filter, function(entry) {
-            return contains(word, entry);
-        }).and(compact).value().sort();
+    shuffleWord(word, entries) {
+        const wordEntries = chain(entries).and(map, entry => entry.value.toLowerCase()).and(filter, entry => contains(word, entry)).and(compact).value().sort();
 
-        return shuffle(reduce(word.trim().split('').sort(), function(acc, letter) {
-            var entered = acc.entries[0] === letter.toLowerCase();
+        return shuffle(reduce(word.trim().split('').sort(), (acc, letter) => {
+            const entered = acc.entries[0] === letter.toLowerCase();
 
             return {
                 letters: acc.letters.concat({
                     value: letter,
-                    entered: entered
+                    entered,
                 }),
-                entries: entered ? rest(acc.entries) : acc.entries
+                entries: entered ? rest(acc.entries) : acc.entries,
             };
         }, {
             letters: [],
-            entries: wordEntries
+            entries: wordEntries,
         }).letters);
     },
 
-    shuffle: function() {
+    shuffle() {
         if (this.canShuffle()) {
             this.setState({
-                showInput: false
+                showInput: false,
             });
         }
     },
 
-    reset: function() {
+    reset() {
         if (this.state.clueInput) {
             this.setState({
                 clueInput: '',
-                showInput: true
+                showInput: true,
             });
         }
     },
 
-    canShuffle: function() {
+    canShuffle() {
         return this.state.clueInput &&
             this.state.clueInput.length > 0;
     },
 
-    render: function() {
-        var closeIcon = {
-            __html: svgs('closeCentralIcon')
+    render() {
+        const closeIcon = {
+            __html: svgs('closeCentralIcon'),
         };
-        var clue = helpers.getAnagramClueData(this.props.entries, this.props.focussedEntry);
-        var cells = helpers.cellsForClue(this.props.entries, this.props.focussedEntry);
-        var entries = map(cells, function(coords) {
+        const clue = helpers.getAnagramClueData(this.props.entries, this.props.focussedEntry);
+        const cells = helpers.cellsForClue(this.props.entries, this.props.focussedEntry);
+        const entries = map(cells, function (coords) {
             return this.props.grid[coords.x][coords.y];
         }, this);
-        var letters = this.shuffleWord(this.state.clueInput, entries);
+        const letters = this.shuffleWord(this.state.clueInput, entries);
 
-        var inner = this.state.showInput ?
+        const inner = this.state.showInput ?
             React.createElement(ClueInput, {
                 value: this.state.clueInput,
-                clue: clue,
+                clue,
                 onChange: this.onClueInput,
-                onEnter: this.shuffle
+                onEnter: this.shuffle,
             }) :
             React.createElement(Ring, {
-                letters: letters
+                letters,
             });
 
         return React.createElement('div', {
-                className: 'crossword__anagram-helper-outer',
-                'data-link-name': 'Anagram Helper'
-            },
+            className: 'crossword__anagram-helper-outer',
+            'data-link-name': 'Anagram Helper',
+        },
             React.createElement('div', {
-                className: 'crossword__anagram-helper-inner'
+                className: 'crossword__anagram-helper-inner',
             }, inner),
             React.createElement('button', {
                 className: 'button button--large button--tertiary crossword__anagram-helper-close',
                 onClick: this.props.close,
                 dangerouslySetInnerHTML: closeIcon,
-                'data-link-name': 'Close'
+                'data-link-name': 'Close',
             }),
             React.createElement('button', {
-                className: 'button button--large ' + (!this.state.clueInput && 'button--tertiary'),
+                className: `button button--large ${!this.state.clueInput && 'button--tertiary'}`,
                 onClick: this.reset,
-                'data-link-name': 'Start Again'
+                'data-link-name': 'Start Again',
             }, 'start again'),
             React.createElement('button', {
-                className: 'button button--large ' + (!this.canShuffle() && 'button--tertiary'),
+                className: `button button--large ${!this.canShuffle() && 'button--tertiary'}`,
                 onClick: this.shuffle,
-                'data-link-name': 'Shuffle'
+                'data-link-name': 'Shuffle',
             }, 'shuffle'),
             React.createElement(CluePreview, {
-                clue: clue,
-                entries: entries,
-                letters: letters,
-                hasShuffled: !this.state.showInput
+                clue,
+                entries,
+                letters,
+                hasShuffled: !this.state.showInput,
             })
         );
-    }
+    },
 });
 
 export default AnagramHelper;

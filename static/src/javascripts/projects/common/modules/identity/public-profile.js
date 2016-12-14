@@ -8,18 +8,17 @@ import ActivityStream from 'common/modules/discussion/activity-stream';
 import mapValues from 'lodash/objects/mapValues';
 
 function getActivityStream(cb) {
-    var activityStream, dataOpts = {
-        userId: 'data-user-id',
-        streamType: 'data-stream-type'
-    };
-    $('.js-activity-stream').each(function(el) {
-        var opts = mapValues(dataOpts, function(key) {
-            return el.getAttribute(key);
-        });
+    let activityStream,
+        dataOpts = {
+            userId: 'data-user-id',
+            streamType: 'data-stream-type',
+        };
+    $('.js-activity-stream').each((el) => {
+        const opts = mapValues(dataOpts, key => el.getAttribute(key));
 
         opts.page = url.getUrlVars().page || 1;
 
-        (activityStream = new ActivityStream(opts)).fetch(el).then(function() {
+        (activityStream = new ActivityStream(opts)).fetch(el).then(() => {
             bonzo(el).removeClass('activity-stream--loading');
         });
     }).addClass('activity-stream--loading');
@@ -33,39 +32,39 @@ function selectTab(el) {
 }
 
 function setupActivityStreamChanger(activityStream) {
-    bean.on(document.body, 'click', '.js-activity-stream-change', function(e) {
-        var el = e.currentTarget,
+    bean.on(document.body, 'click', '.js-activity-stream-change', (e) => {
+        let el = e.currentTarget,
             streamType = el.getAttribute('data-stream-type');
         e.preventDefault();
         selectTab(el);
 
         activityStream.change({
             page: 1,
-            streamType: streamType
-        }).then(function() {
+            streamType,
+        }).then(() => {
 
         });
     });
 }
 
 function setupActivityStreamSearch(activityStream) {
-    bean.on(document.body, 'submit', '.js-activity-stream-search', function(e) {
-        var q = e.currentTarget.elements.q.value;
+    bean.on(document.body, 'submit', '.js-activity-stream-search', (e) => {
+        const q = e.currentTarget.elements.q.value;
         e.preventDefault();
         selectTab($('a[data-stream-type="discussions"]'));
         activityStream.change({
-            streamType: q !== '' ? 'search/' + encodeURIComponent(q) : 'comments'
+            streamType: q !== '' ? `search/${encodeURIComponent(q)}` : 'comments',
         });
     });
 }
 
 function init() {
-    getActivityStream(function(activityStream) {
+    getActivityStream((activityStream) => {
         setupActivityStreamChanger(activityStream);
         setupActivityStreamSearch(activityStream);
     });
 }
 
 export default {
-    init: init
+    init,
 };

@@ -3,10 +3,10 @@ import config from 'common/utils/config';
 import raven from 'common/utils/raven';
 // This should no longer be used.
 // Prefer the new 'common/utils/fetch' or 'common/utils/fetch-json' library instead, which are es6 compliant.
-var ajaxHost = config.page.ajaxUrl || '';
+let ajaxHost = config.page.ajaxUrl || '';
 
 function ajax(params) {
-    var r;
+    let r;
 
     if (!params.url.match('^(https?:)?//')) {
         params.url = ajaxHost + params.url;
@@ -15,12 +15,12 @@ function ajax(params) {
 
     r = reqwest(params);
     raven.wrap({
-        deep: true
+        deep: true,
     }, r.then);
     return r;
 }
 
-ajax.setHost = function(host) {
+ajax.setHost = function (host) {
     ajaxHost = host;
 };
 

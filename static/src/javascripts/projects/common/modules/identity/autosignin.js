@@ -9,67 +9,66 @@ import Message from 'common/modules/ui/message';
 import Toggles from 'common/modules/ui/toggles';
 
 function AutoSignin() {
-    var self = this;
+    const self = this;
     self.header = document.body;
 
-    this.init = function() {
-
+    this.init = function () {
         if (id.shouldAutoSigninInUser()) {
-            var appId = config.page.fbAppId,
+            let appId = config.page.fbAppId,
                 authorizer = new FacebookAuthorizer(appId);
 
             authorizer.getLoginStatus();
 
-            authorizer.onConnected.then(function(FB, statusResponse) {
-                authorizer.onUserDataLoaded.then(function(userData) {
+            authorizer.onConnected.then((FB, statusResponse) => {
+                authorizer.onUserDataLoaded.then((userData) => {
                     if (userData.email) {
                         self.signin(statusResponse, userData.name);
                     }
                 });
             });
 
-            authorizer.onNotLoggedIn.then(function() {
-                var today = time.currentDate();
+            authorizer.onNotLoggedIn.then(() => {
+                const today = time.currentDate();
                 id.setNextFbCheckTime(today.setDate(today.getDate() + 1));
             });
 
-            authorizer.onNotAuthorized.then(function() {
-                var today = time.currentDate();
+            authorizer.onNotAuthorized.then(() => {
+                const today = time.currentDate();
                 id.setNextFbCheckTime(today.setMonth(today.getMonth() + 1));
             });
         }
     };
 
-    this.signin = function(authResponse, name) {
+    this.signin = function (authResponse, name) {
         ajax({
-            url: config.page.idWebAppUrl + '/jsapi/facebook/autosignup',
+            url: `${config.page.idWebAppUrl}/jsapi/facebook/autosignup`,
             cache: false,
             crossOrigin: true,
             type: 'jsonp',
             data: {
                 signedRequest: authResponse.signedRequest,
-                accessToken: authResponse.accessToken
+                accessToken: authResponse.accessToken,
             },
-            success: function(response) {
+            success(response) {
                 self.welcome(name);
                 if (response.status === 'ok') {
-                    var profile = new Profile({
-                        url: config.page.idUrl
+                    const profile = new Profile({
+                        url: config.page.idUrl,
                     });
                     profile.init();
                     new Toggles().init();
                 }
-            }
+            },
         });
     };
 
-    this.welcome = function(name) {
-        var msg = '<p class="site-message__message" data-test-id="facebook-auto-sign-in-banner">' +
-            'Welcome ' + name + ', you’re signed in to the Guardian using Facebook. ' +
-            '<a data-link-name="fb auto : sign out" href="' + config.page.idUrl + '/signout"/>Sign out</a>.' +
+    this.welcome = function (name) {
+        const msg = `${'<p class="site-message__message" data-test-id="facebook-auto-sign-in-banner">' +
+            'Welcome '}${name}, you’re signed in to the Guardian using Facebook. ` +
+            `<a data-link-name="fb auto : sign out" href="${config.page.idUrl}/signout"/>Sign out</a>.` +
             '</p>';
         new Message('fbauto', {
-            important: true
+            important: true,
         }).show(msg);
     };
 }

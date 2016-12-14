@@ -4,11 +4,11 @@ import bean from 'bean';
 import fastdom from 'fastdom';
 
 export default {
-    init: init
+    init,
 };
 
 function init() {
-    var showMores = qwery('.adverts__more > summary');
+    const showMores = qwery('.adverts__more > summary');
     bean.on(document, 'click', showMores, onOpenClick);
     bean.on(document, 'click', showMores, onKeyPress(onOpenClick));
 
@@ -16,7 +16,7 @@ function init() {
 }
 
 function onKeyPress(handler) {
-    return function(event) {
+    return function (event) {
         if (event.keyCode === 0x20 || event.keyCode === 0x0D) {
             handler(event);
         }
@@ -24,15 +24,15 @@ function onKeyPress(handler) {
 }
 
 function onOpenClick(event) {
-    var summary = event.currentTarget;
-    var details = summary.parentNode;
-    var label = summary.querySelector('.js-button__label');
+    const summary = event.currentTarget;
+    const details = summary.parentNode;
+    const label = summary.querySelector('.js-button__label');
     if (details.hasAttribute('open')) {
-        fastdom.write(function() {
-            label.textContent = 'More ' + summary.getAttribute('data-text');
+        fastdom.write(() => {
+            label.textContent = `More ${summary.getAttribute('data-text')}`;
         });
     } else {
-        fastdom.write(function() {
+        fastdom.write(() => {
             label.textContent = 'Less';
         });
     }

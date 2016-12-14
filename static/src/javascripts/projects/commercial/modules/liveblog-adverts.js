@@ -8,12 +8,14 @@ import commercialFeatures from 'common/modules/commercial/commercial-features';
 import createSlot from 'common/modules/commercial/dfp/create-slot';
 import spaceFiller from 'common/modules/article/space-filler';
 import Promise from 'Promise';
-var INTERVAL = 5; // number of posts between ads
-var OFFSET = 1.5; // ratio of the screen height from which ads are loaded
-var MAX_ADS = 8; // maximum number of ads to display
+const INTERVAL = 5; // number of posts between ads
+const OFFSET = 1.5; // ratio of the screen height from which ads are loaded
+const MAX_ADS = 8; // maximum number of ads to display
 
-var slotCounter = 0,
-    isMobile, windowHeight, firstSlot;
+let slotCounter = 0,
+    isMobile,
+    windowHeight,
+    firstSlot;
 
 function startListening() {
     mediator.on('modules:autoupdate:updates', onUpdate);
@@ -24,7 +26,8 @@ function stopListening() {
 }
 
 function getSpaceFillerRules(windowHeight, update) {
-    var prevSlot, prevIndex;
+    let prevSlot,
+        prevIndex;
     update = !!update;
     return {
         bodySelector: '.js-liveblog-body',
@@ -34,7 +37,7 @@ function getSpaceFillerRules(windowHeight, update) {
         absoluteMinAbove: update ? 0 : (windowHeight * OFFSET),
         minAbove: 0,
         minBelow: 0,
-        filter: filterSlot
+        filter: filterSlot,
     };
 
     function filterSlot(slot, index) {
@@ -53,12 +56,12 @@ function getSpaceFillerRules(windowHeight, update) {
 }
 
 function insertAds(slots) {
-    for (var i = 0; i < slots.length && slotCounter < MAX_ADS; i++) {
-        var slotName = isMobile && slotCounter === 0 ?
+    for (let i = 0; i < slots.length && slotCounter < MAX_ADS; i++) {
+        const slotName = isMobile && slotCounter === 0 ?
             'top-above-nav' : isMobile ?
-            'inline' + slotCounter :
-            'inline' + (slotCounter + 1);
-        var $adSlot = bonzo(createSlot(slotName, 'liveblog-inline block'));
+            `inline${slotCounter}` :
+            `inline${slotCounter + 1}`;
+        const $adSlot = bonzo(createSlot(slotName, 'liveblog-inline block'));
         $adSlot.insertAfter(slots[i]);
         addSlot($adSlot);
         slotCounter += 1;
@@ -67,9 +70,9 @@ function insertAds(slots) {
 
 function fill(rules) {
     return spaceFiller.fillSpace(rules, insertAds)
-        .then(function(result) {
+        .then((result) => {
             if (result && slotCounter < MAX_ADS) {
-                firstSlot = document.querySelector(rules.bodySelector + ' > .ad-slot').previousSibling;
+                firstSlot = document.querySelector(`${rules.bodySelector} > .ad-slot`).previousSibling;
                 startListening();
             } else {
                 firstSlot = null;
@@ -89,13 +92,11 @@ function init() {
 
     isMobile = detect.getBreakpoint() === 'mobile';
 
-    return fastdom.read(function() {
-            return windowHeight = document.documentElement.clientHeight;
-        })
+    return fastdom.read(() => windowHeight = document.documentElement.clientHeight)
         .then(getSpaceFillerRules)
         .then(fill);
 }
 
 export default {
-    init: init
+    init,
 };

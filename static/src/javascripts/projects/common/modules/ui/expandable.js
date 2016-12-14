@@ -12,57 +12,56 @@ import bonzo from 'bonzo';
         showCount     : {Boolean} Whether to display the count in the CTA
         buttonAfterEl : {Element} Element to add the button after (defaults to last child of dom)
 */
-var Expandable = function(options) {
-
-    var opts = options || {},
+const Expandable = function (options) {
+    let opts = options || {},
         dom = $(opts.dom), // root element of the trailblock
         expanded = (opts.expanded === false) ? false : true, // true = open, false = closed
         cta = document.createElement('button'),
         showCount = (opts.showCount === false) ? false : true,
-        renderState = function() {
+        renderState = function () {
             if (expanded) {
                 dom.removeClass('shut');
             } else {
                 dom.addClass('shut');
             }
         },
-        getCount = function() {
+        getCount = function () {
             return parseInt(dom.attr('data-count'), 10);
         },
-        updateCallToAction = function() {
-            var text = 'Show ';
+        updateCallToAction = function () {
+            let text = 'Show ';
             if (showCount) {
-                text += getCount() + ' ';
+                text += `${getCount()} `;
             }
             text += (expanded) ? 'fewer' : 'more';
             cta.innerHTML = text;
-            cta.setAttribute('data-link-name', 'Show ' + ((expanded) ? 'more' : 'fewer'));
+            cta.setAttribute('data-link-name', `Show ${(expanded) ? 'more' : 'fewer'}`);
             cta.setAttribute('data-is-ajax', '1');
         },
         // Model
         model = {
 
-            toggleExpanded: function() {
+            toggleExpanded() {
                 expanded = (expanded) ? false : true;
                 renderState();
                 updateCallToAction();
             },
 
-            getCount: getCount,
+            getCount,
 
-            isOpen: function() {
+            isOpen() {
                 return (dom.hasClass('shut')) ? false : true;
-            }
+            },
         },
         // View
         view = {
 
-            updateCallToAction: updateCallToAction,
+            updateCallToAction,
 
-            renderState: renderState,
+            renderState,
 
-            renderCallToAction: function() {
-                bean.add(cta, 'click', function() {
+            renderCallToAction() {
+                bean.add(cta, 'click', () => {
                     model.toggleExpanded();
                 });
                 cta.className = 'cta';
@@ -74,19 +73,18 @@ var Expandable = function(options) {
                 view.updateCallToAction();
             },
 
-            scrollToCallToAction: function() {
+            scrollToCallToAction() {
                 // feels a bit hacky but need to give the transition time to finish before scrolling
                 if (!expanded) {
-                    window.setTimeout(function() {
+                    window.setTimeout(() => {
                         cta.scrollIntoView();
                     }, 550);
                 }
-            }
+            },
         };
 
     return {
-        init: function() {
-
+        init() {
             if (dom.hasClass('expandable-initialised') || !dom.html() || model.getCount() < 3) {
                 return false;
             }
@@ -95,7 +93,7 @@ var Expandable = function(options) {
             view.renderCallToAction();
             view.renderState();
         },
-        toggle: model.toggleExpanded
+        toggle: model.toggleExpanded,
     };
 };
 

@@ -11,33 +11,33 @@ function monthAbbr(month) {
 }
 
 function pad(n) {
-    return n < 10 ? '0' + n : n;
+    return n < 10 ? `0${n}` : n;
 }
 
 function isToday(date) {
-    var today = new Date();
+    const today = new Date();
     return date && (date.toDateString() === today.toDateString());
 }
 
 function isWithin24Hours(date) {
-    var today = new Date();
+    const today = new Date();
     return date && (date.valueOf() > today.valueOf() - (24 * 60 * 60 * 1000));
 }
 
 function isWithinSeconds(date, seconds) {
-    var today = new Date();
+    const today = new Date();
     return date && (date.valueOf() > today.valueOf() - ((seconds || 0) * 1000));
 }
 
 function isYesterday(relative) {
-    var today = new Date(),
+    let today = new Date(),
         yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
     return (relative.toDateString() === yesterday.toDateString());
 }
 
 function isWithinPastWeek(date) {
-    var weekAgo = new Date().valueOf() - (7 * 24 * 60 * 60 * 1000);
+    const weekAgo = new Date().valueOf() - (7 * 24 * 60 * 60 * 1000);
     return date.valueOf() >= weekAgo;
 }
 
@@ -49,28 +49,28 @@ function isValidDate(date) {
 }
 
 function getSuffix(type, format, value) {
-    var strs,
+    let strs,
         units = {
             s: {
-                'short': ['s'],
-                'med': ['s ago'],
-                'long': [' second ago', ' seconds ago']
+                short: ['s'],
+                med: ['s ago'],
+                long: [' second ago', ' seconds ago'],
             },
             m: {
-                'short': ['m'],
-                'med': ['m ago'],
-                'long': [' minute ago', ' minutes ago']
+                short: ['m'],
+                med: ['m ago'],
+                long: [' minute ago', ' minutes ago'],
             },
             h: {
-                'short': ['h'],
-                'med': ['h ago'],
-                'long': [' hour ago', ' hours ago']
+                short: ['h'],
+                med: ['h ago'],
+                long: [' hour ago', ' hours ago'],
             },
             d: {
-                'short': ['d'],
-                'med': ['d ago'],
-                'long': [' day ago', ' days ago']
-            }
+                short: ['d'],
+                med: ['d ago'],
+                long: [' day ago', ' days ago'],
+            },
         };
     if (units[type]) {
         strs = units[type][format];
@@ -87,7 +87,10 @@ function getSuffix(type, format, value) {
 function makeRelativeDate(epoch, opts) {
     opts = opts || {};
 
-    var minutes, hours, days, delta,
+    let minutes,
+        hours,
+        days,
+        delta,
         then = new Date(Number(epoch)),
         now = new Date(),
         format = opts.format || 'short',
@@ -101,28 +104,21 @@ function makeRelativeDate(epoch, opts) {
 
     if (delta < 0) {
         return false;
-
     } else if (opts.notAfter && delta > opts.notAfter) {
         return false;
-
     } else if (delta < 55) {
         return delta + getSuffix('s', format, delta);
-
     } else if (delta < (55 * 60)) {
         minutes = Math.round(delta / 60, 10);
         return minutes + getSuffix('m', format, minutes);
-
     } else if (isToday(then) || (extendedFormatting && isWithin24Hours(then))) {
         hours = Math.round(delta / 3600);
         return hours + getSuffix('h', format, hours);
-
     } else if (extendedFormatting && isWithinPastWeek(then)) {
         days = Math.round(delta / 3600 / 24);
         return days + getSuffix('d', format, days);
-
     } else if (isYesterday(then)) { // yesterday
-        return 'Yesterday' + withTime(then);
-
+        return `Yesterday${withTime(then)}`;
     } else if (delta < 5 * 24 * 60 * 60) { // less than 5 days
         return [dayOfWeek(then.getDay()), then.getDate(), monthAbbr(then.getMonth()), then.getFullYear()].join(' ') +
             (opts.showTime ? withTime(then) : '');
@@ -133,7 +129,7 @@ function makeRelativeDate(epoch, opts) {
 }
 
 function withTime(date) {
-    return ' ' + date.getHours() + ':' + pad(date.getMinutes());
+    return ` ${date.getHours()}:${pad(date.getMinutes())}`;
 }
 
 function findValidTimestamps() {
@@ -142,15 +138,15 @@ function findValidTimestamps() {
 }
 
 function replaceLocaleTimestamps() {
-    var cls = 'js-locale-timestamp';
-    $('.' + cls).each(function(el) {
-        var datetime,
+    const cls = 'js-locale-timestamp';
+    $(`.${cls}`).each((el) => {
+        let datetime,
             $el = bonzo(el),
             timestamp = parseInt($el.attr('data-timestamp'), 10);
 
         if (timestamp) {
             datetime = new Date(timestamp);
-            el.innerHTML = pad(datetime.getHours()) + ':' + pad(datetime.getMinutes());
+            el.innerHTML = `${pad(datetime.getHours())}:${pad(datetime.getMinutes())}`;
             $el.removeClass(cls);
         }
     });
@@ -159,8 +155,8 @@ function replaceLocaleTimestamps() {
 function replaceValidTimestamps(opts) {
     opts = opts || {};
 
-    findValidTimestamps().each(function(el) {
-        var targetEl,
+    findValidTimestamps().each((el) => {
+        let targetEl,
             $el = bonzo(el),
             // Epoch dates are more reliable, fallback to datetime for liveblog blocks
             timestamp = parseInt($el.attr('data-timestamp'), 10) || $el.attr('datetime'),
@@ -169,7 +165,7 @@ function replaceValidTimestamps(opts) {
                 // NOTE: if this is in a block (blog), assume we want added time on > 1 day old dates
                 showTime: bonzo($el.parent()).hasClass('block-time'),
                 format: $el.attr('data-relativeformat'),
-                notAfter: opts.notAfter
+                notAfter: opts.notAfter,
             });
 
         if (relativeDate) {
@@ -186,8 +182,8 @@ function replaceValidTimestamps(opts) {
 }
 
 // DEPRECATED: Bindings
-['related', 'autoupdate'].forEach(function(module) {
-    mediator.on('modules:' + module + ':render', replaceValidTimestamps);
+['related', 'autoupdate'].forEach((module) => {
+    mediator.on(`modules:${module}:render`, replaceValidTimestamps);
 });
 
 function init(opts) {
@@ -196,7 +192,7 @@ function init(opts) {
 }
 
 export default {
-    makeRelativeDate: makeRelativeDate,
-    isWithinSeconds: isWithinSeconds,
-    init: init
+    makeRelativeDate,
+    isWithinSeconds,
+    init,
 };

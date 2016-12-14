@@ -13,50 +13,50 @@ import memoize from 'lodash/functions/memoize';
 
 /* bodyAds is a counter that keeps track of the number of inline MPUs
  * inserted dynamically. */
-var bodyAds;
-var inlineAd;
-var replaceTopSlot;
-var inlineMerchRules;
-var longArticleRules;
+let bodyAds;
+let inlineAd;
+let replaceTopSlot;
+let inlineMerchRules;
+let longArticleRules;
 
 function boot() {
     bodyAds = 0;
     inlineAd = 0;
     replaceTopSlot = detect.isBreakpoint({
-        max: 'phablet'
+        max: 'phablet',
     });
 }
 
 function getRules() {
-    var prevSlot;
+    let prevSlot;
     return {
         bodySelector: '.js-article__body',
         slotSelector: ' > p',
         minAbove: detect.isBreakpoint({
-            max: 'tablet'
+            max: 'tablet',
         }) ? 300 : 700,
         minBelow: 300,
         selectors: {
             ' > h2': {
                 minAbove: detect.getBreakpoint() === 'mobile' ? 100 : 0,
-                minBelow: 250
+                minBelow: 250,
             },
             ' .ad-slot': {
                 minAbove: 500,
-                minBelow: 500
+                minBelow: 500,
             },
             ' > :not(p):not(h2):not(.ad-slot)': {
                 minAbove: 35,
-                minBelow: 400
-            }
+                minBelow: 400,
+            },
         },
-        filter: function(slot) {
+        filter(slot) {
             if (!prevSlot || Math.abs(slot.top - prevSlot.top) - adSizes.mpu.height >= this.selectors[' .ad-slot'].minBelow) {
                 prevSlot = slot;
                 return true;
             }
             return false;
-        }
+        },
     };
 }
 
@@ -80,15 +80,13 @@ function getLongArticleRules() {
 }
 
 function addInlineMerchAd(rules) {
-    spaceFiller.fillSpace(rules, function(paras) {
-        return insertAdAtPara(paras[0], 'im', 'im');
-    }, {
+    spaceFiller.fillSpace(rules, paras => insertAdAtPara(paras[0], 'im', 'im'), {
         waitForImages: true,
         waitForLinks: true,
         waitForInteractives: true,
         domWriter: detect.isBreakpoint({
-            max: 'tablet'
-        }) ? writerOverride : false
+            max: 'tablet',
+        }) ? writerOverride : false,
     });
 }
 
@@ -99,35 +97,33 @@ function addArticleAds(count, rules) {
         waitForLinks: true,
         waitForInteractives: true,
         domWriter: detect.isBreakpoint({
-            max: 'tablet'
-        }) ? writerOverride : false
+            max: 'tablet',
+        }) ? writerOverride : false,
     });
 
     function insertInlineAds(paras) {
-        var countAdded = 0;
-        var insertionArr = [];
+        let countAdded = 0;
+        const insertionArr = [];
         while (countAdded < count && paras.length) {
-            var para = paras.shift();
-            var adDefinition;
+            const para = paras.shift();
+            let adDefinition;
             if (replaceTopSlot && bodyAds === 0) {
                 adDefinition = 'top-above-nav';
             } else {
                 inlineAd += 1;
-                adDefinition = 'inline' + inlineAd;
+                adDefinition = `inline${inlineAd}`;
             }
             insertionArr.push(insertAdAtPara(para, adDefinition, 'inline'));
             bodyAds += 1;
             countAdded += 1;
         }
 
-        return Promise.all(insertionArr).then(function() {
-            return countAdded;
-        });
+        return Promise.all(insertionArr).then(() => countAdded);
     }
 }
 
 function insertAdAtPara(para, name, type) {
-    var ad = createSlot(name, type);
+    const ad = createSlot(name, type);
 
     function insertion(ad, para) {
         para.parentNode.insertBefore(ad, para);
@@ -137,14 +133,14 @@ function insertAdAtPara(para, name, type) {
     // insert ad using steady page
     // to avoid jumping the user
     if (detect.isBreakpoint({
-            max: 'tablet'
-        })) {
-        return steadyPage.insert(ad, function() {
+        max: 'tablet',
+    })) {
+        return steadyPage.insert(ad, () => {
             insertion(ad, para);
         });
     } else {
         // If we're not on mobile we insert and resolve the promise immediately
-        return new Promise(function(resolve) {
+        return new Promise((resolve) => {
             insertion(ad, para);
             resolve();
         });
@@ -169,30 +165,18 @@ function writerOverride(writerCallback) {
 // the decoupling between the spacefinder algorithm and the targeting
 // in DFP: we can only know if a slot can be removed after we have
 // received a response from DFP
-var waitForMerch = memoize(function() {
-    return trackAdRender('dfp-ad--im').then(function(isLoaded) {
-        return isLoaded ? 0 : addArticleAds(2, getRules());
-    }).then(function(countAdded) {
-        return countAdded === 2 ?
-            addArticleAds(8, getLongArticleRules()).then(function(countAdded) {
-                return 2 + countAdded;
-            }) :
-            countAdded;
-    });
-});
+const waitForMerch = memoize(() => trackAdRender('dfp-ad--im').then(isLoaded => isLoaded ? 0 : addArticleAds(2, getRules())).then(countAdded => countAdded === 2 ?
+            addArticleAds(8, getLongArticleRules()).then(countAdded => 2 + countAdded) :
+            countAdded));
 
-var insertLongAds = memoize(function() {
-    return addArticleAds(8, getLongArticleRules()).then(function(countAdded) {
-        return 2 + countAdded;
-    });
-});
+const insertLongAds = memoize(() => addArticleAds(8, getLongArticleRules()).then(countAdded => 2 + countAdded));
 
 function init() {
     if (!commercialFeatures.articleBodyAdverts) {
         return Promise.resolve(false);
     }
 
-    var rules = getRules();
+    const rules = getRules();
 
     boot();
 
@@ -200,7 +184,7 @@ function init() {
         addInlineMerchAd(getInlineMerchRules());
     }
 
-    return addArticleAds(2, rules).then(function(countAdded) {
+    return addArticleAds(2, rules).then((countAdded) => {
         if (config.page.hasInlineMerchandise && countAdded === 0) {
             waitForMerch().then(addSlots);
         } else if (countAdded === 2) {
@@ -210,10 +194,10 @@ function init() {
 }
 
 export default {
-    init: init,
+    init,
 
     '@@tests': {
-        waitForMerch: waitForMerch,
-        insertLongAds: insertLongAds
-    }
+        waitForMerch,
+        insertLongAds,
+    },
 };

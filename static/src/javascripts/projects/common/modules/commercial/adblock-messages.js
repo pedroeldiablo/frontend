@@ -16,7 +16,7 @@ function isPayingMember() {
 }
 
 function visitedMoreThanOnce() {
-    var alreadyVisited = storage.local.get('gu.alreadyVisited') || 0;
+    const alreadyVisited = storage.local.get('gu.alreadyVisited') || 0;
 
     return alreadyVisited > 1;
 }
@@ -40,6 +40,6 @@ function showAdblockMsg() {
 }
 
 export default {
-    noAdblockMsg: noAdblockMsg,
-    showAdblockMsg: showAdblockMsg
+    noAdblockMsg,
+    showAdblockMsg,
 };

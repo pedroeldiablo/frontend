@@ -7,11 +7,10 @@ function openForesee() {
 }
 
 function load() {
-
-    var isNetworkFront = config.page.contentType === 'Network Front',
+    let isNetworkFront = config.page.contentType === 'Network Front',
         isProfilePage = config.page.contentType === 'userid',
         sampleRate = detect.isBreakpoint({
-            max: 'mobile'
+            max: 'mobile',
         }) ? 0.008 : 0.006, // 0.8% mobile and 0.6% rest
         sample = Math.random() <= sampleRate,
         hasForcedOptIn = /forceForesee/.test(location.hash);
@@ -27,5 +26,5 @@ function load() {
 }
 
 export default {
-    load: load
+    load,
 };

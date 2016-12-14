@@ -4,7 +4,7 @@ import qwery from 'qwery';
 import $ from 'common/utils/$';
 import config from 'common/utils/config';
 import fastdomPromise from 'common/utils/fastdom-promise';
-export default function() {
+export default function () {
     this.id = 'EditorialEmailVariants';
     this.start = '2016-12-01';
     this.expiry = '2017-01-01';
@@ -17,37 +17,37 @@ export default function() {
     this.dataLinkNames = '';
     this.idealOutcome = 'Similar quantity of users in each list in ExactTarget';
 
-    this.canRun = function() {
+    this.canRun = function () {
         return (config.page.webTitle.toLowerCase() === 'sign up for the flyer');
     };
 
     function updateExampleUrl(exampleUrl) {
-        return fastdomPromise.write(function() {
-            var example = $('.js-email-example')[0];
+        return fastdomPromise.write(() => {
+            const example = $('.js-email-example')[0];
             example.setAttribute('href', exampleUrl);
         });
     }
 
     function enhanceWebView(emailListID) {
-        var emailForm = $('.js-email-sub__iframe')[0];
-        emailForm.setAttribute('src', 'https://www.theguardian.com/email/form/plaintone/' + emailListID);
+        const emailForm = $('.js-email-sub__iframe')[0];
+        emailForm.setAttribute('src', `https://www.theguardian.com/email/form/plaintone/${emailListID}`);
     }
 
     this.variants = [{
         id: 'The-Flyer-Cards',
-        test: function() {
-            var emailListID = 3806;
-            var exampleUrl = 'https://www.theguardian.com/email/the-flyer?format=email';
+        test() {
+            const emailListID = 3806;
+            const exampleUrl = 'https://www.theguardian.com/email/the-flyer?format=email';
             enhanceWebView(emailListID);
             updateExampleUrl(exampleUrl);
-        }
+        },
     }, {
         id: 'The-Flyer-Connected',
-        test: function() {
-            var emailListID = 3807;
-            var exampleUrl = 'https://www.theguardian.com/email/the-flyer?format=email-connected';
+        test() {
+            const emailListID = 3807;
+            const exampleUrl = 'https://www.theguardian.com/email/the-flyer?format=email-connected';
             enhanceWebView(emailListID);
             updateExampleUrl(exampleUrl);
-        }
+        },
     }];
-};
+}

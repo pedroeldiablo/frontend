@@ -8,7 +8,7 @@ Advert.stopRendering = stopRendering;
 export default Advert;
 
 function Advert(adSlotNode) {
-    var advert = {
+    const advert = {
         id: adSlotNode.id,
         node: adSlotNode,
         sizes: null,
@@ -33,19 +33,15 @@ function Advert(adSlotNode) {
             startRendering: null,
             stopRendering: null,
             loadingMethod: null,
-            lazyWaitComplete: null
-        }
+            lazyWaitComplete: null,
+        },
     };
-    advert.whenLoaded = new Promise(function(resolve) {
+    advert.whenLoaded = new Promise((resolve) => {
         advert.whenLoadedResolver = resolve;
-    }).then(function(isLoaded) {
-        return advert.isLoaded = isLoaded;
-    });
-    advert.whenRendered = new Promise(function(resolve) {
+    }).then(isLoaded => advert.isLoaded = isLoaded);
+    advert.whenRendered = new Promise((resolve) => {
         advert.whenRenderedResolver = resolve;
-    }).then(function(isRendered) {
-        return advert.isRendered = isRendered;
-    });
+    }).then(isRendered => advert.isRendered = isRendered);
 
     performanceLogging.updateAdvertMetric(advert, 'createTime', userTiming.getCurrentTime());
 

@@ -18,18 +18,16 @@ import bonzo from 'bonzo';
     </div>
 */
 
-var Tabs = function() {
+const Tabs = function () {
+    const view = {
 
-    var view = {
-
-        showTab: function(container, clickedTab, originalEvent) {
-
-            var classes = 'tabs__tab--selected tone-colour tone-accent-border',
+        showTab(container, clickedTab, originalEvent) {
+            let classes = 'tabs__tab--selected tone-colour tone-accent-border',
                 // find the active tab in the set. returns an array of 1 item, hence [0]
                 currentTab = $('.tabs__tab--selected a', container)[0],
                 // trim the leading # and find the matching panel element
-                paneToShow = container.querySelector('#' + clickedTab.getAttribute('href').substring(1)),
-                paneToHide = container.querySelector('#' + currentTab.getAttribute('href').substring(1));
+                paneToShow = container.querySelector(`#${clickedTab.getAttribute('href').substring(1)}`),
+                paneToHide = container.querySelector(`#${currentTab.getAttribute('href').substring(1)}`);
 
             // show hide stuff
             bonzo(currentTab.parentNode).removeClass(classes);
@@ -41,27 +39,24 @@ var Tabs = function() {
 
             // only do this if we know the href was a tab ID, not a URL
             originalEvent.preventDefault();
-        }
+        },
     };
 
-    this.init = function() {
-
-        Array.prototype.forEach.call(document.body.querySelectorAll('.tabs'), function(container) {
-
-            var tabSet = $('.js-tabs', container)[0],
+    this.init = function () {
+        Array.prototype.forEach.call(document.body.querySelectorAll('.tabs'), (container) => {
+            let tabSet = $('.js-tabs', container)[0],
                 vPos = 0,
                 vScroll = 0;
 
             if (tabSet) {
-
                 if (tabSet.getAttribute('data-is-bound') === true) {
                     return false;
                 }
 
                 vPos = bonzo(tabSet).offset().top;
 
-                bean.add(tabSet, 'click', function(e) {
-                    var targetElm = e.target;
+                bean.add(tabSet, 'click', (e) => {
+                    const targetElm = e.target;
                     // verify they clicked an <a> element
                     if (targetElm.nodeName.toLowerCase() === 'a') {
                         view.showTab(container, targetElm, e);

@@ -8,7 +8,6 @@ function identity(x) {
 }
 
 function lazyload(options) {
-
     /*
         Accepts these options:
 
@@ -25,25 +24,23 @@ function lazyload(options) {
         error: identity,
         always: identity,
         beforeInsert: identity,
-        force: false
+        force: false,
     }, options);
 
     if (options.url && options.container) {
-        var $container = bonzo(options.container);
+        const $container = bonzo(options.container);
         if (options.force || !$container.hasClass('lazyloaded')) {
             return ajax({
-                    url: options.url,
-                    type: 'json',
-                    crossOrigin: true
-                })
-                .then(function(resp) {
-                    return steadyPage.insert($container[0], function() {
-                        $container.html(options.beforeInsert(resp.html))
-                            .addClass('lazyloaded');
-                    }).then(function() {
-                        options.success(resp);
-                    });
-                })
+                url: options.url,
+                type: 'json',
+                crossOrigin: true,
+            })
+                .then(resp => steadyPage.insert($container[0], () => {
+                    $container.html(options.beforeInsert(resp.html))
+                        .addClass('lazyloaded');
+                }).then(() => {
+                    options.success(resp);
+                }))
                 .catch(options.error)
                 .always(options.always);
         }

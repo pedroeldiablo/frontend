@@ -7,40 +7,40 @@
  */
 import mediator from 'common/utils/mediator';
 import where from 'lodash/collections/where';
-var register = [],
+let register = [],
     startTime = Date.now();
 
 function begin(name) {
     register.push({
-        name: name,
-        status: 'unfinished'
+        name,
+        status: 'unfinished',
     });
 }
 
 function end(name) {
     where(register, {
-            name: name
-        })
-        .forEach(function(module) {
+        name,
+    })
+        .forEach((module) => {
             module.status = 'completed';
-            module.endTime = Date.now() - startTime + 'ms';
+            module.endTime = `${Date.now() - startTime}ms`;
         });
 }
 
 function error(name) {
     where(register, {
-            name: name
-        })
-        .forEach(function(module) {
+        name,
+    })
+        .forEach((module) => {
             module.status = 'failed';
-            module.endTime = Date.now() - startTime + 'ms';
+            module.endTime = `${Date.now() - startTime}ms`;
         });
 }
 
 function sendEvent() {
-    require(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], (ophan) => {
         ophan.record({
-            register: register
+            register,
         });
     });
 }
@@ -54,8 +54,8 @@ function initialise() {
 }
 
 export default {
-    initialise: initialise,
-    begin: begin,
-    end: end,
-    error: error
+    initialise,
+    begin,
+    end,
+    error,
 };

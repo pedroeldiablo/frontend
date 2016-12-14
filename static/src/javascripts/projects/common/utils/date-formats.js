@@ -6,5 +6,5 @@ function utcDateString(date) {
 }
 
 export default {
-    utcDateString: utcDateString
+    utcDateString,
 };

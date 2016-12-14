@@ -1,17 +1,16 @@
 function buildGoogleAnalyticsEvent(mediaEvent, metrics, canonicalUrl, player, eventAction, videoId) {
-
-    var category = 'media';
-    var playerName = player;
-    var action = eventAction(mediaEvent);
-    var fieldsObject = {
+    const category = 'media';
+    const playerName = player;
+    const action = eventAction(mediaEvent);
+    const fieldsObject = {
         eventCategory: category,
         eventAction: action,
         eventLabel: canonicalUrl,
         dimension19: videoId,
-        dimension20: playerName
+        dimension20: playerName,
     };
     // Increment the appropriate metric based on the event type
-    var metricId = metrics[mediaEvent.eventType];
+    const metricId = metrics[mediaEvent.eventType];
     if (metricId) {
         fieldsObject[metricId] = 1;
     }
@@ -19,7 +18,7 @@ function buildGoogleAnalyticsEvent(mediaEvent, metrics, canonicalUrl, player, ev
 }
 
 function getGoogleAnalyticsEventAction(mediaEvent) {
-    var action = mediaEvent.mediaType + ' ';
+    let action = `${mediaEvent.mediaType} `;
     if (mediaEvent.isPreroll) {
         action += 'preroll';
     } else {
@@ -29,6 +28,6 @@ function getGoogleAnalyticsEventAction(mediaEvent) {
 }
 
 export default {
-    buildGoogleAnalyticsEvent: buildGoogleAnalyticsEvent,
-    getGoogleAnalyticsEventAction: getGoogleAnalyticsEventAction
+    buildGoogleAnalyticsEvent,
+    getGoogleAnalyticsEventAction,
 };

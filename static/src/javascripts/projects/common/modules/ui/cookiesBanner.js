@@ -17,15 +17,15 @@ import mediator from 'common/utils/mediator';
  * Persist close state
  */
 function init() {
-    var geoContinentCookie = cookies.get('GU_geo_continent');
+    const geoContinentCookie = cookies.get('GU_geo_continent');
     if (geoContinentCookie && geoContinentCookie.toUpperCase() === 'EU') {
-        var EU_COOKIE_MSG = 'GU_EU_MSG',
+        let EU_COOKIE_MSG = 'GU_EU_MSG',
             euMessageCookie = cookies.get(EU_COOKIE_MSG);
         if (!euMessageCookie || euMessageCookie != 'seen') {
-            var link = 'https://www.theguardian.com/info/cookies',
-                txt = 'Welcome to the Guardian. This site uses cookies. Read <a href="' + link + '" class="cookie-message__link">our policy</a>.',
+            let link = 'https://www.theguardian.com/info/cookies',
+                txt = `Welcome to the Guardian. This site uses cookies. Read <a href="${link}" class="cookie-message__link">our policy</a>.`,
                 opts = {
-                    important: true
+                    important: true,
                 },
                 cookieLifeDays = 365,
                 msg = new Message('cookies', opts);
@@ -38,5 +38,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

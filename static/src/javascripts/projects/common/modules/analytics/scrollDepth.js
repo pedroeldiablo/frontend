@@ -18,26 +18,26 @@ function ScrollDepth(options) {
 ScrollDepth.prototype.opts = {
     changeThreshold: 10,
     isContent: false,
-    pageEl: document.body
+    pageEl: document.body,
 };
 
 ScrollDepth.prototype.data = {
     page: {
         start: new Date().getTime(),
         depth: 0,
-        duration: 0
+        duration: 0,
     },
     content: {
-        depth: 0
-    }
+        depth: 0,
+    },
 };
 
-ScrollDepth.prototype.timeSince = function(time) {
+ScrollDepth.prototype.timeSince = function (time) {
     return new Date().getTime() - time;
 };
 
-ScrollDepth.prototype.getPercentageInViewPort = function(el) {
-    var rect = el.getBoundingClientRect(),
+ScrollDepth.prototype.getPercentageInViewPort = function (el) {
+    let rect = el.getBoundingClientRect(),
         height = (window.innerHeight || document.body.clientHeight);
 
     if (rect.bottom < 0 || rect.bottom < height) {
@@ -51,14 +51,14 @@ ScrollDepth.prototype.getPercentageInViewPort = function(el) {
     }
 };
 
-ScrollDepth.prototype.isInViewport = function(el) {
-    var rect = el.getBoundingClientRect();
+ScrollDepth.prototype.isInViewport = function (el) {
+    const rect = el.getBoundingClientRect();
     return rect.top < (window.innerHeight || document.body.clientHeight) && rect.left < (window.innerWidth || document.body.clientWidth);
 };
 
-ScrollDepth.prototype.setData = function(type) {
-    var currentDepth,
-        el = this.opts[type + 'El'];
+ScrollDepth.prototype.setData = function (type) {
+    let currentDepth,
+        el = this.opts[`${type}El`];
     if (!el) {
         return false;
     }
@@ -74,15 +74,15 @@ ScrollDepth.prototype.setData = function(type) {
     }
 };
 
-ScrollDepth.prototype.hasDataChanged = function() {
-    var page = this.setData('page'),
+ScrollDepth.prototype.hasDataChanged = function () {
+    let page = this.setData('page'),
         content = (this.opts.isContent) ? this.setData('content') : false;
     if (page || content) {
         this.log();
     }
 };
 
-ScrollDepth.prototype.assertScrolling = function() {
+ScrollDepth.prototype.assertScrolling = function () {
     function timeout() {
         mediator.emit('scrolldepth:inactive');
     }
@@ -92,11 +92,11 @@ ScrollDepth.prototype.assertScrolling = function() {
     this.timeoutId = window.setTimeout(timeout.bind(this), 1000);
 };
 
-ScrollDepth.prototype.log = function() {
+ScrollDepth.prototype.log = function () {
     mediator.emit('scrolldepth:data', this.data);
 };
 
-ScrollDepth.prototype.init = function() {
+ScrollDepth.prototype.init = function () {
     mediator.on('window:throttledScroll', debounce(this.assertScrolling, 200));
     mediator.on('scrolldepth:inactive', this.hasDataChanged);
     mediator.on('module:clickstream:click', this.hasDataChanged);

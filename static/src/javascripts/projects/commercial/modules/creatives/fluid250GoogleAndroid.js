@@ -7,13 +7,12 @@ import storage from 'common/utils/storage';
 import template from 'common/utils/template';
 import fluid250GoogleAndroidTpl from 'text!commercial/views/creatives/fluid250GoogleAndroid.html';
 import addTrackingPixel from 'commercial/modules/creatives/add-tracking-pixel';
-var Fluid250GoogleAndroid = function($adSlot, params) {
+const Fluid250GoogleAndroid = function ($adSlot, params) {
     this.$adSlot = $adSlot;
     this.params = params;
 };
 
-Fluid250GoogleAndroid.prototype.create = function() {
-
+Fluid250GoogleAndroid.prototype.create = function () {
     $.create(template(fluid250GoogleAndroidTpl, this.params)).appendTo(this.$adSlot);
 
     if (this.params.trackingPixel) {

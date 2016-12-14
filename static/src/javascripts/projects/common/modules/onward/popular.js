@@ -15,31 +15,31 @@ function MostPopular() {
     // they get to comission the work to have it go through the entire tooling chain so that a section has a
     // property that tells us whether it shows most popular or not.
     // Don't even come ask...
-    var sectionsWithoutPopular = ['info', 'global'];
+    const sectionsWithoutPopular = ['info', 'global'];
     mediator.emit('register:begin', 'popular-in-section');
     this.hasSection = config.page && config.page.section && !contains(sectionsWithoutPopular, config.page.section);
-    this.endpoint = '/most-read' + (this.hasSection ? '/' + config.page.section : '') + '.json';
+    this.endpoint = `/most-read${this.hasSection ? `/${config.page.section}` : ''}.json`;
     this.$mpu = null;
 }
 
 Component.define(MostPopular);
 
-MostPopular.prototype.init = function() {
+MostPopular.prototype.init = function () {
     this.fetch(qwery('.js-popular-trails'), 'html');
 };
 
-MostPopular.prototype.mobileMaximumSlotsReached = function() {
+MostPopular.prototype.mobileMaximumSlotsReached = function () {
     return (detect.getBreakpoint() === 'mobile' && $('.ad-slot--inline').length > 1);
 };
 
-MostPopular.prototype.prerender = function() {
+MostPopular.prototype.prerender = function () {
     if (commercialFeatures.popularContentMPU && !this.mobileMaximumSlotsReached()) {
-        var $mpuEl = $('.js-fc-slice-mpu-candidate', this.elem);
+        const $mpuEl = $('.js-fc-slice-mpu-candidate', this.elem);
         this.$mpu = $mpuEl.append(createSlot('mostpop', 'container-inline'));
     }
 };
 
-MostPopular.prototype.ready = function() {
+MostPopular.prototype.ready = function () {
     if (this.$mpu) {
         addSlot($('.ad-slot', this.$mpu));
         this.$mpu.removeClass('fc-slice__item--no-mpu');

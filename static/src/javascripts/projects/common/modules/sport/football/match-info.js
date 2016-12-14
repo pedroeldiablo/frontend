@@ -5,9 +5,9 @@ import ajax from 'common/utils/ajax';
  * @param {Object} match
  * @param {string} whosCalling (url)
  */
-var MatchInfo = function(match, whosCalling) {
-    this.endpoint += (match.id ? match.id : [match.date].concat(match.teams).join('/')) +
-        '.json?page=' + encodeURIComponent(whosCalling);
+const MatchInfo = function (match, whosCalling) {
+    this.endpoint += `${match.id ? match.id : [match.date].concat(match.teams).join('/')
+        }.json?page=${encodeURIComponent(whosCalling)}`;
 };
 
 /**
@@ -18,10 +18,10 @@ MatchInfo.prototype.endpoint = '/football/api/match-nav/';
 /**
  * @return Reqwest
  */
-MatchInfo.prototype.fetch = function() {
+MatchInfo.prototype.fetch = function () {
     return ajax({
         crossOrigin: true,
-        url: this.endpoint
+        url: this.endpoint,
     });
 };
 

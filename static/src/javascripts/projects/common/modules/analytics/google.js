@@ -1,10 +1,10 @@
 import config from 'common/utils/config';
-var ga = window.ga;
-var trackerName = config.googleAnalytics.trackers.editorial;
-var send = trackerName + '.send';
+const ga = window.ga;
+const trackerName = config.googleAnalytics.trackers.editorial;
+const send = `${trackerName}.send`;
 
 function extractLinkText(el) {
-    var text;
+    let text;
     if (el && typeof el.textContent === 'string') {
         text = el.textContent.trim();
     }
@@ -13,34 +13,34 @@ function extractLinkText(el) {
 
 function trackNonClickInteraction(actionName) {
     ga(send, 'event', 'Interaction', actionName, {
-        nonInteraction: true // to avoid affecting bounce rate
+        nonInteraction: true, // to avoid affecting bounce rate
     });
 }
 
 function trackSamePageLinkClick(target, tag) {
     ga(send, 'event', 'click', 'in page', tag, {
         nonInteraction: true, // to avoid affecting bounce rate
-        dimension13: extractLinkText(target)
+        dimension13: extractLinkText(target),
     });
 }
 
 function trackExternalLinkClick(target, tag) {
     ga(send, 'event', 'click', 'external', tag, {
-        dimension13: extractLinkText(target)
+        dimension13: extractLinkText(target),
     });
 }
 
 function trackSponsorLogoLinkClick(target) {
-    var sponsorName = target.dataset.sponsor;
+    const sponsorName = target.dataset.sponsor;
     ga(send, 'event', 'click', 'sponsor logo', sponsorName, {
-        nonInteraction: true
+        nonInteraction: true,
     });
 }
 
 function trackNativeAdLinkClick(slotName, tag) {
     ga(send, 'event', 'click', 'native ad', tag, {
         nonInteraction: true,
-        dimension25: slotName
+        dimension25: slotName,
     });
 }
 
@@ -51,16 +51,16 @@ function trackPerformance(timingCategory, timingVar, timingLabel) {
     // Feature detect Navigation Timing API support.
     if (window.performance) {
         // Value must be an integer - grabs the number of milliseconds since page load
-        var timeSincePageLoad = Math.round(window.performance.now());
+        const timeSincePageLoad = Math.round(window.performance.now());
         ga(send, 'timing', timingCategory, timingVar, timeSincePageLoad, timingLabel);
     }
 }
 
 export default {
-    trackNonClickInteraction: trackNonClickInteraction,
-    trackSamePageLinkClick: trackSamePageLinkClick,
-    trackExternalLinkClick: trackExternalLinkClick,
-    trackSponsorLogoLinkClick: trackSponsorLogoLinkClick,
-    trackNativeAdLinkClick: trackNativeAdLinkClick,
-    trackPerformance: trackPerformance
+    trackNonClickInteraction,
+    trackSamePageLinkClick,
+    trackExternalLinkClick,
+    trackSponsorLogoLinkClick,
+    trackNativeAdLinkClick,
+    trackPerformance,
 };

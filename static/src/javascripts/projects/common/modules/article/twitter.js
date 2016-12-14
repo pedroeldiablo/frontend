@@ -1,4 +1,4 @@
-/*global twttr:false */
+/* global twttr:false */
 
 import bean from 'bean';
 import bonzo from 'bonzo';
@@ -9,7 +9,7 @@ import config from 'common/utils/config';
 import detect from 'common/utils/detect';
 import mediator from 'common/utils/mediator';
 import debounce from 'lodash/functions/debounce';
-var body = qwery('.js-liveblog-body, .js-article__body, .js-article__body--minute-article');
+const body = qwery('.js-liveblog-body, .js-article__body, .js-article__body--minute-article');
 
 function bootstrap() {
     mediator.on('window:throttledScroll', debounce(enhanceTweets, 200));
@@ -20,15 +20,15 @@ function enhanceTweets() {
         return;
     }
 
-    var tweetElements = qwery('blockquote.js-tweet'),
+    let tweetElements = qwery('blockquote.js-tweet'),
         viewportHeight = bonzo.viewport().height,
         scrollTop = window.pageYOffset;
 
-    tweetElements.forEach(function(element) {
-        var $el = bonzo(element),
+    tweetElements.forEach((element) => {
+        let $el = bonzo(element),
             elOffset = $el.offset();
         if (((scrollTop + (viewportHeight * 2.5)) > elOffset.top) && (scrollTop < (elOffset.top + elOffset.height))) {
-            fastdom.write(function() {
+            fastdom.write(() => {
                 $(element).removeClass('js-tweet').addClass('twitter-tweet');
                 // We only want to render tweets once the class has been added
                 renderTweets();
@@ -38,7 +38,7 @@ function enhanceTweets() {
 }
 
 function renderTweets() {
-    var scriptElement,
+    let scriptElement,
         nativeTweetElements = qwery('blockquote.twitter-tweet'),
         widgetScript = qwery('#twitter-widget');
 
@@ -59,5 +59,5 @@ function renderTweets() {
 
 export default {
     init: bootstrap,
-    enhanceTweets: enhanceTweets
+    enhanceTweets,
 };

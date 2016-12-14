@@ -11,7 +11,7 @@ import bindAll from 'lodash/functions/bindAll';
 /**
  * https://www.google.com/dfp/59666047#delivery/CreateCreativeTemplate/creativeTemplateId=10026567
  */
-var ScrollableMpu = function($adSlot, params) {
+const ScrollableMpu = function ($adSlot, params) {
     this.$adSlot = $adSlot;
     this.params = params;
 
@@ -24,23 +24,23 @@ var ScrollableMpu = function($adSlot, params) {
  */
 ScrollableMpu.hasScrollEnabled = !detect.isIOS() && !detect.isAndroid();
 
-ScrollableMpu.prototype.updateBgPosition = function() {
-    var position = window.pageYOffset - this.$scrollableMpu.offset().top;
-    fastdom.write(function() {
-        $('.creative--scrollable-mpu-image').css('background-position', '100% ' + position + 'px');
+ScrollableMpu.prototype.updateBgPosition = function () {
+    const position = window.pageYOffset - this.$scrollableMpu.offset().top;
+    fastdom.write(() => {
+        $('.creative--scrollable-mpu-image').css('background-position', `100% ${position}px`);
     });
 };
 
-ScrollableMpu.prototype.create = function() {
-    var templateOptions = {
+ScrollableMpu.prototype.create = function () {
+    const templateOptions = {
         clickMacro: this.params.clickMacro,
         destination: this.params.destination,
         image: ScrollableMpu.hasScrollEnabled ? this.params.image : this.params.staticImage,
         stillImage: ScrollableMpu.hasScrollEnabled && this.params.stillImage ?
-            '<div class="creative--scrollable-mpu-static-image" style="background-image: url(' + this.params.stillImage + ');"></div>' : '',
+            `<div class="creative--scrollable-mpu-static-image" style="background-image: url(${this.params.stillImage});"></div>` : '',
         trackingPixelImg: this.params.trackingPixel ? template(trackingPixelStr, {
-            url: encodeURI(this.params.trackingPixel)
-        }) : ''
+            url: encodeURI(this.params.trackingPixel),
+        }) : '',
     };
     this.$scrollableMpu = $.create(template(scrollableMpuTpl, templateOptions)).appendTo(this.$adSlot);
 

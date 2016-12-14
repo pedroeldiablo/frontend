@@ -6,7 +6,7 @@ export default {
      * Constructs a Date object
      * @return {?Date} the current date
      */
-    currentDate: function() {
+    currentDate() {
         return new Date();
-    }
+    },
 };

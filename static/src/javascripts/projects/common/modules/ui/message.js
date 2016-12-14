@@ -15,8 +15,8 @@ import uniq from 'lodash/arrays/uniq';
  * @param {String} id Identifier of the message
  * @param {Object=} options
  */
-var Message = function(id, options) {
-    var opts = options || {};
+const Message = function (id, options) {
+    const opts = options || {};
     this.id = id;
     this.important = opts.important || false;
     this.permanent = opts.permanent || false;
@@ -34,8 +34,8 @@ var Message = function(id, options) {
     this.$footerMessage = $('.js-footer-message');
 };
 
-Message.prototype.show = function(message) {
-    var siteMessage = $('.js-site-message');
+Message.prototype.show = function (message) {
+    const siteMessage = $('.js-site-message');
 
     if (this.pinOnHide) {
         $('.js-footer-site-message-copy').html(message);
@@ -53,7 +53,7 @@ Message.prototype.show = function(message) {
 
     // Add site modifier message
     if (this.cssModifierClass) {
-        siteMessage.addClass('site-message--' + this.cssModifierClass);
+        siteMessage.addClass(`site-message--${this.cssModifierClass}`);
     }
 
     this.$siteMessage = $('.js-site-message__message');
@@ -75,7 +75,7 @@ Message.prototype.show = function(message) {
         $('.site-message__close-btn', '.js-site-message').attr('data-link-name', this.siteMessageCloseBtn);
     }
 
-    siteMessage.addClass('site-message--' + this.type).addClass('site-message--' + this.id);
+    siteMessage.addClass(`site-message--${this.type}`).addClass(`site-message--${this.id}`);
     siteMessage.removeClass('is-hidden');
     if (this.permanent) {
         siteMessage.addClass('site-message--permanent');
@@ -96,8 +96,8 @@ Message.prototype.show = function(message) {
     return true;
 };
 
-Message.prototype.bindModalListeners = function() {
-    bean.on(document, 'click', '.js-site-message-inner', function(e) {
+Message.prototype.bindModalListeners = function () {
+    bean.on(document, 'click', '.js-site-message-inner', (e) => {
         // Suppress same-level and parent handling, but allow default click behaviour.
         // This handler must come first.
         e.stopImmediatePropagation();
@@ -106,7 +106,7 @@ Message.prototype.bindModalListeners = function() {
     bean.on(document, 'click', '.js-site-message', this.acknowledge.bind(this));
 };
 
-Message.prototype.hide = function() {
+Message.prototype.hide = function () {
     $('#header').removeClass('js-site-message');
     $('.js-site-message').addClass('is-hidden');
     if (this.pinOnHide) {
@@ -114,35 +114,35 @@ Message.prototype.hide = function() {
     }
 };
 
-Message.prototype.hasSeen = function() {
-    var messageStates = userPrefs.get(this.prefs);
+Message.prototype.hasSeen = function () {
+    const messageStates = userPrefs.get(this.prefs);
     return messageStates && messageStates.indexOf(this.id) > -1;
 };
 
-Message.prototype.remember = function() {
-    var messageStates = userPrefs.get(this.prefs) || [];
+Message.prototype.remember = function () {
+    const messageStates = userPrefs.get(this.prefs) || [];
     messageStates.push(this.id);
     userPrefs.set(this.prefs, uniq(messageStates));
 };
 
-Message.prototype.acknowledge = function() {
+Message.prototype.acknowledge = function () {
     this.remember();
     this.hide();
 };
 
-Message.prototype.updateMessageOnWidth = function() {
-    var narrowDataAttr = 'site-message-narrow',
+Message.prototype.updateMessageOnWidth = function () {
+    let narrowDataAttr = 'site-message-narrow',
         wideDataAttr = 'site-message-wide';
 
     if (this.widthBasedMessage && this.$siteMessage.length) {
         this.updateMessageFromData((detect.isBreakpoint({
-            max: 'tablet'
+            max: 'tablet',
         })) ? narrowDataAttr : wideDataAttr);
     }
 };
 
-Message.prototype.updateMessageFromData = function(dataAttr) {
-    var message = this.$siteMessage.data(dataAttr);
+Message.prototype.updateMessageFromData = function (dataAttr) {
+    const message = this.$siteMessage.data(dataAttr);
     if (message) {
         this.$siteMessage.text(message);
     }

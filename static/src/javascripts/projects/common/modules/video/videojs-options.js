@@ -1,5 +1,5 @@
 import assign from 'lodash/objects/assign';
-var defaults = {
+const defaults = {
     controls: true,
     textTrackDisplay: false,
     textTrackSettings: false,
@@ -11,17 +11,17 @@ var defaults = {
             'durationDisplay',
             'progressControl',
             'fullscreenToggle',
-            'volumeMenuButton'
-        ]
+            'volumeMenuButton',
+        ],
     },
     // `autoplay` is always set to false.
     // If you are going to set autoplay to any other value, note it breaks
     // `preload="auto"` on < Chrome 35 and `preload="metadata"` on old Safari
     autoplay: false,
     preload: 'metadata',
-    techOrder: ['html5']
+    techOrder: ['html5'],
 };
 
-export default function(overrides) {
+export default function (overrides) {
     return assign({}, defaults, overrides || {});
-};
+}

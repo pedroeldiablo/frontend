@@ -22,47 +22,46 @@ function initLoadingSpinner(player) {
 }
 
 function createVideoPlayer(el, options) {
-    var player = videojs(el, options);
+    const player = videojs(el, options);
 
     return player;
 }
 
 function addTitleBar() {
-    var data = {
+    const data = {
         webTitle: config.page.webTitle,
         pageId: config.page.pageId,
-        icon: svgs('marque36icon')
+        icon: svgs('marque36icon'),
     };
     $('.vjs-control-bar').after(template(titlebarTmpl, data));
 }
 
 function initEndSlate(player) {
-    var endSlate = new Component(),
+    let endSlate = new Component(),
         endState = 'vjs-has-ended';
 
     endSlate.endpoint = $('.js-gu-media--enhance').first().attr('data-end-slate');
 
-    endSlate.fetch(player.el(), 'html').then(function() {
-        $('.end-slate-container .fc-item__action').each(function(e) {
+    endSlate.fetch(player.el(), 'html').then(() => {
+        $('.end-slate-container .fc-item__action').each((e) => {
             e.href += '?CMP=embed_endslate';
         });
     });
 
-    player.on('ended', function() {
+    player.on('ended', () => {
         bonzo(player.el()).addClass(endState);
     });
 
-    player.on('playing', function() {
+    player.on('playing', () => {
         bonzo(player.el()).removeClass(endState);
     });
 }
 
 function initPlayer() {
-
     videojs.plugin('fullscreener', fullscreener);
 
-    bonzo(qwery('.js-gu-media--enhance')).each(function(el) {
-        var player,
+    bonzo(qwery('.js-gu-media--enhance')).each((el) => {
+        let player,
             mouseMoveIdle,
             $el = bonzo(el).addClass('vjs'),
             mediaId = $el.attr('data-media-id'),
@@ -79,16 +78,16 @@ function initPlayer() {
             plugins: {
                 embed: {
                     embeddable: guardian.config.switches.externalVideoEmbeds && guardian.config.page.embeddable,
-                    location: guardian.config.page.externalEmbedHost + '/embed/video/' + guardian.config.page.pageId
-                }
-            }
+                    location: `${guardian.config.page.externalEmbedHost}/embed/video/${guardian.config.page.pageId}`,
+                },
+            },
         }));
 
-        //Location of this is important
+        // Location of this is important
         events.handleInitialMediaError(player);
 
-        player.ready(function() {
-            var vol;
+        player.ready(() => {
+            let vol;
 
             initLoadingSpinner(player);
             addTitleBar();
@@ -106,11 +105,10 @@ function initPlayer() {
             player.fullscreener();
 
             if (config.switches.thirdPartyEmbedTracking) {
-                deferToAnalytics(function() {
+                deferToAnalytics(() => {
                     events.initOphanTracking(player, mediaId);
                     events.bindContentEvents(player);
                 });
-
             }
 
             events.addContentEvents(player, mediaId, mediaType);
@@ -118,12 +116,12 @@ function initPlayer() {
             events.bindGoogleAnalyticsEvents(player, gaEventLabel);
         });
 
-        mouseMoveIdle = debounce(function() {
+        mouseMoveIdle = debounce(() => {
             player.removeClass('vjs-mousemoved');
         }, 500);
 
         // built in vjs-user-active is buggy so using custom implementation
-        player.on('mousemove', function() {
+        player.on('mousemove', () => {
             player.addClass('vjs-mousemoved');
             mouseMoveIdle();
         });
@@ -131,5 +129,5 @@ function initPlayer() {
 }
 
 export default {
-    init: initPlayer
+    init: initPlayer,
 };

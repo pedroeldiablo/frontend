@@ -2,73 +2,73 @@ import partialRight from 'lodash/functions/partialRight';
 // We make a new chainable with each operation to prevent mutations and
 // thus allow multiple usages of a given chainable.
 
-var createObject = function(prototype) {
+const createObject = function (prototype) {
     if (Object.create) {
         return Object.create(prototype);
     } else {
-        var F = function() {};
+        const F = function () {};
         F.prototype = prototype;
         return new F();
     }
 };
 
-var makeChainable = function(value, object) {
-    var chainable = createObject(object);
+const makeChainable = function (value, object) {
+    const chainable = createObject(object);
     chainable.setValue(value);
     return chainable;
 };
 
 // Chainable prototype
-var Chainable = {
-    setValue: function(value) {
+const Chainable = {
+    setValue(value) {
         this.__value = value;
     },
-    and: function() {
+    and() {
         // Spread
-        var fn = partialRight.apply(null, arguments);
-        var newValue = fn(this.value());
+        const fn = partialRight(...arguments);
+        const newValue = fn(this.value());
         return makeChainable(newValue, this);
     },
-    value: function() {
+    value() {
         return this.__value;
     },
     // Override prototype method
-    valueOf: function() {
+    valueOf() {
         return this.value();
-    }
+    },
 };
 
 // Add array methods to chainable
 
-var immutableArrayMethods = [
+const immutableArrayMethods = [
     'concat',
     'join',
     'reverse',
-    'sort'
+    'sort',
 ];
-var mutableArrayMethods = [
+const mutableArrayMethods = [
     'slice',
     'shift',
     'pop',
     'push',
     'splice',
-    'unshift'
+    'unshift',
 ];
-immutableArrayMethods.forEach(function(methodName) {
-    Chainable[methodName] = function() {
-        var args = Array.prototype.slice.call(arguments);
-        var newValue = Array.prototype[methodName].apply(this.value(), args);
+immutableArrayMethods.forEach((methodName) => {
+    Chainable[methodName] = function () {
+        const args = Array.prototype.slice.call(arguments);
+        const newValue = Array.prototype[methodName].apply(this.value(), args);
         return makeChainable(newValue, this);
     };
 });
-mutableArrayMethods.forEach(function(methodName) {
-    Chainable[methodName] = function() {
-        var args = Array.prototype.slice.call(arguments);
+mutableArrayMethods.forEach((methodName) => {
+    Chainable[methodName] = function () {
+        const args = Array.prototype.slice.call(arguments);
         Array.prototype[methodName].apply(this.value(), args);
         return makeChainable(this.value(), this);
     };
 });
 
-export default function(value) {
+export default function (value) {
     return makeChainable(value, Chainable);
-};
+}

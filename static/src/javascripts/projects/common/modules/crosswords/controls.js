@@ -1,60 +1,60 @@
 import React from 'react';
 import ConfirmButton from './confirm-button';
-var buttonClassName = 'button button--primary';
-var buttonCurrentClassName = 'button--crossword--current';
-var buttonGenericClassName = 'button--secondary';
+const buttonClassName = 'button button--primary';
+const buttonCurrentClassName = 'button--crossword--current';
+const buttonGenericClassName = 'button--secondary';
 
-var Controls = React.createClass({
-    render: function() {
-        var hasSolutions = this.props.hasSolutions;
-        var hasFocus = this.props.clueInFocus;
-        var controls = {
+const Controls = React.createClass({
+    render() {
+        const hasSolutions = this.props.hasSolutions;
+        const hasFocus = this.props.clueInFocus;
+        const controls = {
             clue: [],
-            grid: []
+            grid: [],
         };
 
         // GRID CONTROLS
         controls.grid.unshift(React.createElement(ConfirmButton, {
-            className: buttonClassName + ' ' + buttonGenericClassName,
+            className: `${buttonClassName} ${buttonGenericClassName}`,
             onClick: this.props.onClearAll,
             key: 'clear',
             'data-link-name': 'Clear all',
-            text: 'Clear all'
+            text: 'Clear all',
         }));
 
         if (hasSolutions) {
             controls.grid.unshift(React.createElement(ConfirmButton, {
-                className: buttonClassName + ' ' + buttonGenericClassName,
+                className: `${buttonClassName} ${buttonGenericClassName}`,
                 onClick: this.props.onSolution,
                 key: 'solution',
                 'data-link-name': 'Reveal all',
-                text: 'Reveal all'
+                text: 'Reveal all',
             }));
             controls.grid.unshift(React.createElement(ConfirmButton, {
-                className: buttonClassName + ' ' + buttonGenericClassName,
+                className: `${buttonClassName} ${buttonGenericClassName}`,
                 onClick: this.props.onCheckAll,
                 key: 'checkAll',
                 'data-link-name': 'Check all',
-                text: 'Check all'
+                text: 'Check all',
             }));
         }
 
         // HIGHLIGHTED CLUE CONTROLS  - published solution
         if (hasFocus) {
             controls.clue.unshift(React.createElement('button', {
-                className: buttonClassName + ' ' + buttonCurrentClassName,
+                className: `${buttonClassName} ${buttonCurrentClassName}`,
                 onClick: this.props.onClearSingle,
                 key: 'clear-single',
-                'data-link-name': 'Clear this'
+                'data-link-name': 'Clear this',
             }, 'Clear this'));
 
             // anagram helper
             controls.clue.push(React.createElement(
                 'button', {
-                    className: buttonClassName + ' ' + buttonCurrentClassName,
+                    className: `${buttonClassName} ${buttonCurrentClassName}`,
                     onClick: this.props.onToggleAnagramHelper,
                     key: 'anagram',
-                    'data-link-name': 'Show anagram helper'
+                    'data-link-name': 'Show anagram helper',
                 },
                 'Anagram helper'
             ));
@@ -62,19 +62,19 @@ var Controls = React.createClass({
             if (hasSolutions) {
                 controls.clue.unshift(React.createElement(
                     'button', {
-                        className: buttonClassName + ' ' + buttonCurrentClassName,
+                        className: `${buttonClassName} ${buttonCurrentClassName}`,
                         onClick: this.props.onCheat,
                         key: 'cheat',
-                        'data-link-name': 'Reveal this'
+                        'data-link-name': 'Reveal this',
                     },
                     'Reveal this'
                 ));
                 controls.clue.unshift(React.createElement(
                     'button', {
-                        className: buttonClassName + ' ' + buttonCurrentClassName,
+                        className: `${buttonClassName} ${buttonCurrentClassName}`,
                         onClick: this.props.onCheck,
                         key: 'check',
-                        'data-link-name': 'Check this'
+                        'data-link-name': 'Check this',
                     },
                     'Check this'
                 ));
@@ -83,28 +83,28 @@ var Controls = React.createClass({
 
         return React.createElement(
             'div', {
-                className: 'crossword__controls'
+                className: 'crossword__controls',
             },
             React.createElement(
                 'div', {
-                    className: 'crossword__controls__clue'
+                    className: 'crossword__controls__clue',
                 },
                 controls.clue
             ),
             React.createElement(
                 'div', {
-                    className: 'crossword__controls__grid'
+                    className: 'crossword__controls__grid',
                 },
                 controls.grid
             ),
             React.createElement(
                 'div', {
-                    className: 'crossword__controls_autosave_label'
+                    className: 'crossword__controls_autosave_label',
                 },
                 'Crosswords are saved automatically'
             )
         );
-    }
+    },
 });
 
 export default Controls;

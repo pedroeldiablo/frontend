@@ -2,13 +2,13 @@ import filterPairs from 'common/utils/filterPairs';
 import mediator from 'common/utils/mediator';
 import beacon from 'common/modules/analytics/beacon';
 // Simple metrics that only target browsers that support sendBeacon
-export default function() {
+export default function () {
     if (navigator.sendBeacon) {
         // sm = simple metrics
         beacon.beaconCounts('sm-page-view');
 
-        mediator.on('module:clickstream:click', function(spec) {
-            var clickData = filterPairs([
+        mediator.on('module:clickstream:click', (spec) => {
+            const clickData = filterPairs([
                 // people who clicked something but will stay on this page
                 ['sm-interaction-on-same-page', spec.samePage],
                 // people who will view another Guardian page
@@ -18,7 +18,7 @@ export default function() {
                 // people who clicked on the "more from this series" component
                 ['sm-clicked-series-component', /\| series \|/.test(spec.tag)],
                 // people who clicked on the bottom "most popular" component (righthand popular not included)
-                ['sm-clicked-most-popular-component', /\| most popular \|/.test(spec.tag)]
+                ['sm-clicked-most-popular-component', /\| most popular \|/.test(spec.tag)],
             ]);
 
             if (clickData.length > 0) {
@@ -26,4 +26,4 @@ export default function() {
             }
         });
     }
-};
+}

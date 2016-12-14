@@ -10,9 +10,9 @@ import config from 'common/utils/config';
 import mediator from 'common/utils/mediator';
 import once from 'lodash/functions/once';
 
-var promise = shouldRemoveGeoMostPop() ?
+const promise = shouldRemoveGeoMostPop() ?
     Promise.resolve() :
-    new Promise(function(resolve, reject) {
+    new Promise((resolve, reject) => {
         mediator.on('modules:onward:geo-most-popular:ready', resolve);
         mediator.on('modules:onward:geo-most-popular:cancel', resolve);
         mediator.on('modules:onward:geo-most-popular:error', reject);
@@ -26,28 +26,28 @@ Component.define(GeoMostPopular);
 
 GeoMostPopular.prototype.endpoint = '/most-read-geo.json';
 
-GeoMostPopular.prototype.ready = function() {
+GeoMostPopular.prototype.ready = function () {
     mediator.emit('register:end', 'geo-most-popular');
     mediator.emit('modules:onward:geo-most-popular:ready', this);
 };
 
-GeoMostPopular.prototype.error = function(error) {
+GeoMostPopular.prototype.error = function (error) {
     mediator.emit('modules:onward:geo-most-popular:error', error);
 };
 
 
 function shouldRemoveGeoMostPop() {
-    var testName = 'ItsRainingInlineAds';
+    const testName = 'ItsRainingInlineAds';
     return !config.page.isImmersive && ab.testCanBeRun(testName) && ['nogeo', 'none'].indexOf(ab.getTestVariantId(testName)) > -1;
 }
 
 export default {
 
-    render: once(function() {
+    render: once(() => {
         new GeoMostPopular().fetch(qwery('.js-components-container'), 'rightHtml');
         return promise;
     }),
 
-    whenRendered: promise
+    whenRendered: promise,
 
 };

@@ -9,9 +9,9 @@ import trackAdRender from 'common/modules/commercial/dfp/track-ad-render';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
 import plistaStr from 'text!commercial/views/plista.html';
 
-var plistaTpl = template(plistaStr);
-var selectors = {
-    container: '.js-plista-container'
+const plistaTpl = template(plistaStr);
+const selectors = {
+    container: '.js-plista-container',
 };
 
 function loadInstantly() {
@@ -32,44 +32,44 @@ function shouldServe() {
 
 // a modification of the code provided by Plista; altered to be a lazy load rather than during DOM construction
 function embed(publickey, widgetName, geo, u, categories) {
-    var name = 'PLISTA_' + publickey;
-    var lib = window[name];
-    var $container = $(selectors.container);
+    const name = `PLISTA_${publickey}`;
+    const lib = window[name];
+    const $container = $(selectors.container);
 
     $container.append(plistaTpl({
-        widgetName: widgetName
+        widgetName,
     }));
     $container.css('display', 'block');
 
     if (!lib || !lib.publickey) {
         window[name] = {
-            publickey: publickey,
+            publickey,
             widgets: [{
                 name: widgetName,
-                pre: u
+                pre: u,
             }],
-            geo: geo,
-            categories: categories,
-            dataMode: 'data-display'
+            geo,
+            categories,
+            dataMode: 'data-display',
         };
-        require(['js!//static-au.plista.com/async/' + name + '.js']);
+        require([`js!//static-au.plista.com/async/${name}.js`]);
     } else {
         lib.widgets.push({
             name: widgetName,
-            pre: u
+            pre: u,
         });
     }
 }
 
 function load() {
-    fastdom.write(function() {
+    fastdom.write(() => {
         embed(config.page.plistaPublicApiKey, 'innerArticle', 'au');
     });
 }
 
-var module = {
-    load: load,
-    init: init
+const module = {
+    load,
+    init,
 };
 
 function init() {
@@ -78,7 +78,7 @@ function init() {
             module.load();
             return Promise.resolve(true);
         } else {
-            return trackAdRender('dfp-ad--merchandising-high').then(function(isLoaded) {
+            return trackAdRender('dfp-ad--merchandising-high').then((isLoaded) => {
                 if (!isLoaded) {
                     module.load();
                 }

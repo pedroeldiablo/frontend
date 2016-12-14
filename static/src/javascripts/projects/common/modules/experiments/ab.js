@@ -15,7 +15,7 @@ import ContributionsEpicAlwaysAskStrategy from 'common/modules/experiments/tests
 import UkMembershipEngagementMessageTest10 from 'common/modules/experiments/tests/uk-membership-engagement-message-test-10';
 import AuMembershipEngagementMessageTest8 from 'common/modules/experiments/tests/au-membership-engagement-message-test-8';
 import ItsRainingInlineAds from 'common/modules/experiments/tests/its-raining-inline-ads';
-var TESTS = [
+let TESTS = [
     new EditorialEmailVariants(),
     new RecommendedForYou(),
     new MembershipEngagementInternationalExperiment(),
@@ -24,35 +24,33 @@ var TESTS = [
     new ContributionsEpicAlwaysAskStrategy(),
     new UkMembershipEngagementMessageTest10(),
     new AuMembershipEngagementMessageTest8(),
-    new ItsRainingInlineAds()
+    new ItsRainingInlineAds(),
 ];
 
-var participationsKey = 'gu.ab.participations';
+const participationsKey = 'gu.ab.participations';
 
 function getParticipations() {
     return store.local.get(participationsKey) || {};
 }
 
 function isParticipating(test) {
-    var participations = getParticipations();
+    const participations = getParticipations();
     return participations[test.id];
 }
 
 function addParticipation(test, variantId) {
-    var participations = getParticipations();
+    const participations = getParticipations();
     participations[test.id] = {
-        variant: variantId
+        variant: variantId,
     };
     store.local.set(participationsKey, participations);
 }
 
 function removeParticipation(test) {
-    var participations = getParticipations();
-    var filteredParticipations = Object.keys(participations)
-        .filter(function(participation) {
-            return participation !== test.id;
-        })
-        .reduce(function(result, input) {
+    const participations = getParticipations();
+    const filteredParticipations = Object.keys(participations)
+        .filter(participation => participation !== test.id)
+        .reduce((result, input) => {
             result[input] = participations[input];
             return result;
         }, {});
@@ -62,19 +60,17 @@ function removeParticipation(test) {
 function cleanParticipations() {
     // Removes any tests from localstorage that have been
     // renamed/deleted from the backend
-    Object.keys(getParticipations()).forEach(function(k) {
-        if (typeof config.switches['ab' + k] === 'undefined') {
+    Object.keys(getParticipations()).forEach((k) => {
+        if (typeof config.switches[`ab${k}`] === 'undefined') {
             removeParticipation({
-                id: k
+                id: k,
             });
         } else {
-            var testExists = TESTS.some(function(element) {
-                return element.id === k;
-            });
+            const testExists = TESTS.some(element => element.id === k);
 
             if (!testExists) {
                 removeParticipation({
-                    id: k
+                    id: k,
                 });
             }
         }
@@ -82,9 +78,9 @@ function cleanParticipations() {
 }
 
 function getActiveTests() {
-    var now = new Date();
-    return TESTS.filter(function(test) {
-        var expired = (now - new Date(test.expiry)) > 0;
+    const now = new Date();
+    return TESTS.filter((test) => {
+        const expired = (now - new Date(test.expiry)) > 0;
         if (expired) {
             removeParticipation(test);
             return false;
@@ -94,14 +90,12 @@ function getActiveTests() {
 }
 
 function getExpiredTests() {
-    var now = new Date();
-    return TESTS.filter(function(test) {
-        return (now - new Date(test.expiry)) > 0;
-    });
+    const now = new Date();
+    return TESTS.filter(test => (now - new Date(test.expiry)) > 0);
 }
 
 function testCanBeRun(test) {
-    var expired = (new Date() - new Date(test.expiry)) > 0,
+    let expired = (new Date() - new Date(test.expiry)) > 0,
         isSensitive = config.page.isSensitive;
 
     return ((isSensitive ? test.showForSensitive : true) && isTestSwitchedOn(test)) && !expired && test.canRun();
@@ -112,31 +106,29 @@ function getId(test) {
 }
 
 function getTest(id) {
-    var testIndex = TESTS.map(getId).indexOf(id);
+    const testIndex = TESTS.map(getId).indexOf(id);
     return testIndex !== -1 ? TESTS[testIndex] : '';
 }
 
 function makeOmnitureTag() {
-    var participations = getParticipations(),
+    let participations = getParticipations(),
         tag = [];
 
     Object.keys(participations)
         .map(getTest)
         .filter(testCanBeRun)
-        .forEach(function(test) {
-            tag.push('AB | ' + test.id + ' | ' + participations[test.id].variant);
+        .forEach((test) => {
+            tag.push(`AB | ${test.id} | ${participations[test.id].variant}`);
         });
 
     Object.keys(config.tests)
-        .filter(function(k) {
-            return k.toLowerCase().indexOf('cm') === 0;
-        })
-        .forEach(function(k) {
-            tag.push('AB | ' + k + ' | variant');
+        .filter(k => k.toLowerCase().indexOf('cm') === 0)
+        .forEach((k) => {
+            tag.push(`AB | ${k} | variant`);
         });
 
-    getServerSideTests().forEach(function(testName) {
-        tag.push('AB | ' + testName + ' | inTest');
+    getServerSideTests().forEach((testName) => {
+        tag.push(`AB | ${testName} | inTest`);
     });
 
     return tag.join(',');
@@ -144,29 +136,29 @@ function makeOmnitureTag() {
 
 function abData(variantName, complete) {
     return {
-        'variantName': variantName,
-        'complete': complete
+        variantName,
+        complete,
     };
 }
 
 function getAbLoggableObject() {
     try {
-        var log = {};
+        const log = {};
 
         getActiveTests()
             .filter(not(defersImpression))
             .filter(isParticipating)
             .filter(testCanBeRun)
-            .forEach(function(test) {
-                var variant = getTestVariantId(test.id);
+            .forEach((test) => {
+                const variant = getTestVariantId(test.id);
 
                 if (variant && variant !== 'notintest') {
                     log[test.id] = abData(variant, 'false');
                 }
             });
 
-        getServerSideTests().forEach(function(test) {
-            log['ab' + test] = abData('inTest', 'false');
+        getServerSideTests().forEach((test) => {
+            log[`ab${test}`] = abData('inTest', 'false');
         });
 
         return log;
@@ -182,9 +174,9 @@ function trackEvent() {
 }
 
 function recordOphanAbEvent(data) {
-    require(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], (ophan) => {
         ophan.record({
-            abTestRegister: data
+            abTestRegister: data,
         });
     });
 }
@@ -198,10 +190,10 @@ function recordOphanAbEvent(data) {
  * @returns {Function} to fire the event
  */
 function recordTestComplete(test, variantId, complete) {
-    var data = {};
+    const data = {};
     data[test.id] = abData(variantId, String(complete));
 
-    return function() {
+    return function () {
         recordOphanAbEvent(data);
     };
 }
@@ -209,9 +201,9 @@ function recordTestComplete(test, variantId, complete) {
 // Finds variant in specific tests and runs it
 function run(test) {
     if (isParticipating(test) && testCanBeRun(test)) {
-        var participations = getParticipations(),
+        let participations = getParticipations(),
             variantId = participations[test.id].variant;
-        var variant = getVariant(test, variantId);
+        const variant = getVariant(test, variantId);
         if (variant) {
             variant.test();
         } else if (variantId === 'notintest' && test.notInTest) {
@@ -229,14 +221,14 @@ function run(test) {
  *
  * @return {String} variant ID
  */
-var variantIdFor = memoize(function(test) {
-    var smallestTestId = mvtCookie.getMvtNumValues() * test.audienceOffset;
-    var largestTestId = smallestTestId + mvtCookie.getMvtNumValues() * test.audience;
-    var mvtCookieId = mvtCookie.getMvtValue();
+const variantIdFor = memoize((test) => {
+    const smallestTestId = mvtCookie.getMvtNumValues() * test.audienceOffset;
+    const largestTestId = smallestTestId + mvtCookie.getMvtNumValues() * test.audience;
+    const mvtCookieId = mvtCookie.getMvtValue();
 
     if (mvtCookieId && mvtCookieId > smallestTestId && mvtCookieId <= largestTestId) {
         // This mvt test id is in the test range, so allocate it to a test variant.
-        var variantIds = test.variants.map(getId);
+        const variantIds = test.variants.map(getId);
 
         return variantIds[mvtCookieId % variantIds.length];
     } else {
@@ -261,11 +253,11 @@ function allocateUserToTest(test) {
  */
 function registerCompleteEvent(complete) {
     return function initListener(test) {
-        var variantId = variantIdFor(test);
+        const variantId = variantIdFor(test);
 
         if (variantId !== 'notintest') {
-            var variant = getVariant(test, variantId);
-            var listener = (complete ? variant.success : variant.impression) || noop;
+            const variant = getVariant(test, variantId);
+            const listener = (complete ? variant.success : variant.impression) || noop;
 
             try {
                 listener(recordTestComplete(test, variantId, complete));
@@ -286,22 +278,20 @@ function registerCompleteEvent(complete) {
  * @returns {boolean}
  */
 function defersImpression(test) {
-    return test.variants.every(function(variant) {
-        return typeof variant.impression === 'function';
-    });
+    return test.variants.every(variant => typeof variant.impression === 'function');
 }
 
 function isTestSwitchedOn(test) {
-    return config.switches['ab' + test.id];
+    return config.switches[`ab${test.id}`];
 }
 
 function getTestVariantId(testId) {
-    var participation = getParticipations()[testId];
+    const participation = getParticipations()[testId];
     return participation && participation.variant;
 }
 
 function setTestVariant(testId, variant) {
-    var participations = getParticipations();
+    const participations = getParticipations();
 
     if (participations[testId]) {
         participations[testId].variant = variant;
@@ -310,73 +300,69 @@ function setTestVariant(testId, variant) {
 }
 
 function shouldRunTest(id, variant) {
-    var test = getTest(id);
+    const test = getTest(id);
     return test && isParticipating(test) && getTestVariantId(id) === variant && testCanBeRun(test);
 }
 
 function getVariant(test, variantId) {
-    var index = test.variants.map(getId).indexOf(variantId);
+    const index = test.variants.map(getId).indexOf(variantId);
     return index === -1 ? null : test.variants[index];
 }
 
 // These kinds of tests are both server and client side.
 function getServerSideTests() {
-    return Object.keys(config.tests).filter(function(test) {
-        return !!config.tests[test];
-    });
+    return Object.keys(config.tests).filter(test => !!config.tests[test]);
 }
 
 function not(f) {
-    return function() {
+    return function () {
         return !f.apply(this, arguments);
     };
 }
 
-var ab = {
+const ab = {
 
-    addTest: function(test) {
+    addTest(test) {
         TESTS.push(test);
     },
 
-    clearTests: function() {
+    clearTests() {
         TESTS = [];
     },
 
-    segment: function() {
-        getActiveTests().forEach(function(test) {
+    segment() {
+        getActiveTests().forEach((test) => {
             allocateUserToTest(test);
         });
     },
 
-    forceSegment: function(testId, variant) {
-        getActiveTests().filter(function(test) {
-            return test.id === testId;
-        }).forEach(function(test) {
+    forceSegment(testId, variant) {
+        getActiveTests().filter(test => test.id === testId).forEach((test) => {
             addParticipation(test, variant);
         });
     },
 
-    forceVariantCompleteFunctions: function(testId, variantId) {
-        var test = getTest(testId);
+    forceVariantCompleteFunctions(testId, variantId) {
+        const test = getTest(testId);
 
-        var variant = test && test.variants.filter(function(v) {
-            return v.id.toLowerCase() === variantId.toLowerCase();
-        })[0];
+        const variant = test && test.variants.filter(v => v.id.toLowerCase() === variantId.toLowerCase())[0];
 
-        var impression = variant && variant.impression || noop;
-        var complete = variant && variant.success || noop;
+        const impression = variant && variant.impression || noop;
+        const complete = variant && variant.success || noop;
 
         impression(recordTestComplete(test, variantId, false));
         complete(recordTestComplete(test, variantId, true));
     },
 
-    segmentUser: function() {
-        var tokens,
+    segmentUser() {
+        let tokens,
             forceUserIntoTest = /^#ab/.test(window.location.hash);
         if (forceUserIntoTest) {
             tokens = window.location.hash.replace('#ab-', '').split(',');
-            tokens.forEach(function(token) {
-                var abParam, test, variant;
+            tokens.forEach((token) => {
+                let abParam,
+                    test,
+                    variant;
                 abParam = token.split('=');
                 test = abParam[0];
                 variant = abParam[1];
@@ -390,48 +376,44 @@ var ab = {
         cleanParticipations();
     },
 
-    run: function() {
+    run() {
         getActiveTests().forEach(run);
     },
 
-    registerCompleteEvents: function() {
+    registerCompleteEvents() {
         getActiveTests().forEach(registerCompleteEvent(true));
     },
 
-    registerImpressionEvents: function() {
+    registerImpressionEvents() {
         getActiveTests().filter(defersImpression).forEach(registerCompleteEvent(false));
     },
 
-    isEventApplicableToAnActiveTest: function(event) {
-        return Object.keys(getParticipations()).some(function(id) {
-            var listOfEventStrings = getTest(id).events;
-            return listOfEventStrings.some(function(ev) {
-                return event.indexOf(ev) === 0;
-            });
+    isEventApplicableToAnActiveTest(event) {
+        return Object.keys(getParticipations()).some((id) => {
+            const listOfEventStrings = getTest(id).events;
+            return listOfEventStrings.some(ev => event.indexOf(ev) === 0);
         });
     },
 
-    getActiveTestsEventIsApplicableTo: function(event) {
-        var eventTag = event.tag;
-        return eventTag && getActiveTests().filter(function(test) {
-            var testEvents = test.events;
-            return testEvents && testEvents.some(function(testEvent) {
-                return eventTag.indexOf(testEvent) === 0;
-            });
+    getActiveTestsEventIsApplicableTo(event) {
+        const eventTag = event.tag;
+        return eventTag && getActiveTests().filter((test) => {
+            const testEvents = test.events;
+            return testEvents && testEvents.some(testEvent => eventTag.indexOf(testEvent) === 0);
         }).map(getId);
     },
 
-    getAbLoggableObject: getAbLoggableObject,
-    getParticipations: getParticipations,
-    isParticipating: isParticipating,
-    getTest: getTest,
-    makeOmnitureTag: makeOmnitureTag,
-    trackEvent: trackEvent,
-    getExpiredTests: getExpiredTests,
-    getActiveTests: getActiveTests,
-    getTestVariantId: getTestVariantId,
-    setTestVariant: setTestVariant,
-    getVariant: getVariant,
+    getAbLoggableObject,
+    getParticipations,
+    isParticipating,
+    getTest,
+    makeOmnitureTag,
+    trackEvent,
+    getExpiredTests,
+    getActiveTests,
+    getTestVariantId,
+    setTestVariant,
+    getVariant,
 
     /**
      * check if a test can be run (i.e. is not expired and switched on)
@@ -439,7 +421,7 @@ var ab = {
      * @param  {string|Object} test   id or test object
      * @return {Boolean}
      */
-    testCanBeRun: function(test) {
+    testCanBeRun(test) {
         if (typeof test === 'string') {
             test = getTest(test);
             return test && testCanBeRun(test);
@@ -455,19 +437,19 @@ var ab = {
      * @param variant
      * @returns {*|boolean|Boolean}
      */
-    isInVariant: function(testName, variant) {
+    isInVariant(testName, variant) {
         return ab.getParticipations()[testName] &&
             (ab.getParticipations()[testName].variant === variant) &&
             ab.testCanBeRun(testName);
     },
 
-    shouldRunTest: shouldRunTest,
+    shouldRunTest,
 
     // testing
-    reset: function() {
+    reset() {
         TESTS = [];
         variantIdFor.cache = {};
-    }
+    },
 };
 
 export default ab;

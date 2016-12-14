@@ -1,11 +1,11 @@
 import storage from 'common/utils/storage';
 import time from 'common/utils/time';
 import id from 'common/modules/identity/api';
-var userSegmentsKey = 'gu.ads.userSegmentsData';
+const userSegmentsKey = 'gu.ads.userSegmentsData';
 
 function getUserSegments() {
     if (storage.local.isAvailable()) {
-        var userCookieData,
+        let userCookieData,
             userSegmentsData = storage.local.get(userSegmentsKey);
 
         if (userSegmentsData) {
@@ -24,9 +24,9 @@ function getUserSegments() {
 
 function requestUserSegmentsFromId() {
     if (storage.local.isAvailable() && (storage.local.get(userSegmentsKey) === null) && id.getUserFromCookie()) {
-        id.getUserFromApi(function(user) {
+        id.getUserFromApi((user) => {
             if (user && user.adData) {
-                var key,
+                let key,
                     userSegments = [];
                 for (key in user.adData) {
                     userSegments.push(key + user.adData[key]);
@@ -34,9 +34,9 @@ function requestUserSegmentsFromId() {
                 storage.local.set(
                     userSegmentsKey, {
                         segments: userSegments,
-                        userHash: user.id % 9999
+                        userHash: user.id % 9999,
                     }, {
-                        expires: time.currentDate().getTime() + (24 * 60 * 60 * 1000)
+                        expires: time.currentDate().getTime() + (24 * 60 * 60 * 1000),
                     }
                 );
             }
@@ -45,6 +45,6 @@ function requestUserSegmentsFromId() {
 }
 
 export default {
-    getUserSegments: getUserSegments,
-    requestUserSegmentsFromId: requestUserSegmentsFromId
+    getUserSegments,
+    requestUserSegmentsFromId,
 };

@@ -10,18 +10,18 @@ import ab from 'common/modules/experiments/ab';
 import intersection from 'lodash/arrays/intersection';
 import map from 'lodash/collections/map';
 
-var opts;
+let opts;
 
 function Related(options) {
     opts = options || {};
 }
 
-Related.prototype.popularInTagOverride = function() {
+Related.prototype.popularInTagOverride = function () {
     // whitelist of tags to override related story component with a popular-in-tag component
     if (!config.page.keywordIds) {
         return false;
     }
-    var whitelistedTags = [ // order matters here (first match wins)
+    let whitelistedTags = [ // order matters here (first match wins)
             // sport tags
             'sport/cricket', 'sport/rugby-union', 'sport/rugbyleague', 'sport/formulaone',
             'sport/tennis', 'sport/cycling', 'sport/motorsports', 'sport/golf', 'sport/horse-racing',
@@ -31,28 +31,30 @@ Related.prototype.popularInTagOverride = function() {
             'football/europeanfootball', 'football/world-cup-2014',
             // football team tags
             'football/manchester-united', 'football/chelsea', 'football/arsenal',
-            'football/manchestercity', 'football/tottenham-hotspur', 'football/liverpool'
+            'football/manchestercity', 'football/tottenham-hotspur', 'football/liverpool',
         ],
         pageTags = config.page.keywordIds.split(','),
         // if this is an advertisement feature, use the page's keyword (there'll only be one)
         popularInTags = config.page.isAdvertisementFeature ? pageTags : intersection(whitelistedTags, pageTags);
 
     if (popularInTags.length) {
-        return '/popular-in-tag/' + popularInTags[0] + '.json';
+        return `/popular-in-tag/${popularInTags[0]}.json`;
     }
 };
 
-Related.prototype.renderRelatedComponent = function() {
-    var relatedUrl, popularInTag, componentName, container,
+Related.prototype.renderRelatedComponent = function () {
+    let relatedUrl,
+        popularInTag,
+        componentName,
+        container,
         fetchRelated = config.switches.relatedContent && config.page.showRelatedContent;
     if (config.page && config.page.hasStoryPackage) {
         new Expandable({
             dom: document.body.querySelector('.related-trails'),
             expanded: false,
-            showCount: false
+            showCount: false,
         }).init();
     } else if (fetchRelated) {
-
         container = document.body.querySelector('.js-related');
 
         if (container) {
@@ -62,37 +64,33 @@ Related.prototype.renderRelatedComponent = function() {
 
             container.setAttribute('data-component', componentName);
 
-            relatedUrl = popularInTag || '/related/' + config.page.pageId + '.json';
+            relatedUrl = popularInTag || `/related/${config.page.pageId}.json`;
 
             if (opts.excludeTags && opts.excludeTags.length) {
-                relatedUrl += '?' + map(opts.excludeTags, function(tag) {
-                    return 'exclude-tag=' + tag;
-                }).join('&');
+                relatedUrl += `?${map(opts.excludeTags, tag => `exclude-tag=${tag}`).join('&')}`;
             }
 
             lazyload({
                 url: relatedUrl,
-                container: container,
-                success: function() {
-
-                    var relatedContainer = container.querySelector('.related-content');
+                container,
+                success() {
+                    const relatedContainer = container.querySelector('.related-content');
 
                     new Expandable({
                         dom: relatedContainer,
                         expanded: false,
-                        showCount: false
+                        showCount: false,
                     }).init();
                     // upgrade images
                     mediator.emit('modules:related:loaded', container);
                     mediator.emit('page:new-content', container);
                     mediator.emit('ui:images:upgradePictures', container);
                     register.end(componentName);
-
                 },
-                error: function() {
+                error() {
                     bonzo(container).remove();
                     register.error(componentName);
-                }
+                },
             });
         }
     } else {

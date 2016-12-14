@@ -10,12 +10,12 @@ import addSlot from 'common/modules/commercial/dfp/add-slot';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
 import createSlot from 'common/modules/commercial/dfp/create-slot';
 import defaults from 'lodash/objects/defaults';
-export default function(options) {
-    var adType,
+export default function (options) {
+    let adType,
         opts = defaults(
             options || {}, {
                 adSlotContainerSelector: '.js-discussion__ad-slot',
-                commentMainColumn: '.content__main-column'
+                commentMainColumn: '.content__main-column',
             }
         ),
         $adSlotContainer,
@@ -29,14 +29,14 @@ export default function(options) {
         return false;
     }
 
-    mediator.once('modules:comments:renderComments:rendered', function() {
-        idleFastdom.read(function() {
-            //if comments container is lower than 280px
+    mediator.once('modules:comments:renderComments:rendered', () => {
+        idleFastdom.read(() => {
+            // if comments container is lower than 280px
             if ($commentMainColumn.dim().height < 280) {
                 return false;
             }
 
-            idleFastdom.write(function() {
+            idleFastdom.write(() => {
                 $commentMainColumn.addClass('discussion__ad-wrapper');
 
                 if (!config.page.isLiveBlog && !config.page.isMinuteArticle) {
@@ -51,4 +51,4 @@ export default function(options) {
             });
         });
     });
-};
+}

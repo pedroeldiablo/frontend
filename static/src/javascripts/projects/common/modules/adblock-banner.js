@@ -8,24 +8,24 @@ import adblockStickyMessageCoin from 'text!common/views/commercial/adblock-stick
  * Message which is shown at the top of the page to the adblock users.
  * @constructor
  */
-var AdblockBanner = function(template, config) {
+const AdblockBanner = function (template, config) {
     this.template = template;
     this.config = config;
 
     this.templates = {
         'adblock-sticky-message': adblockStickyMessage,
-        'adblock-sticky-message-coin': adblockStickyMessageCoin
+        'adblock-sticky-message-coin': adblockStickyMessageCoin,
     };
 };
 
-AdblockBanner.prototype.renderTemplate = function() {
+AdblockBanner.prototype.renderTemplate = function () {
     return template(this.templates[this.template], this.config);
 };
 
-AdblockBanner.prototype.show = function() {
-    var bannerTmpl = this.renderTemplate();
+AdblockBanner.prototype.show = function () {
+    const bannerTmpl = this.renderTemplate();
 
-    fastdom.write(function() {
+    fastdom.write(() => {
         $('.top-banner-ad-container--desktop').after(bannerTmpl);
     });
 };

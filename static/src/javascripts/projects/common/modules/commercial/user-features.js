@@ -3,9 +3,9 @@ import config from 'common/utils/config';
 import fetchJson from 'common/utils/fetch-json';
 import storage from 'common/utils/storage';
 import identity from 'common/modules/identity/api';
-var PERSISTENCE_KEYS = {
+const PERSISTENCE_KEYS = {
     USER_FEATURES_EXPIRY_COOKIE: 'gu_user_features_expiry',
-    PAYING_MEMBER_COOKIE: 'gu_paying_member'
+    PAYING_MEMBER_COOKIE: 'gu_paying_member',
 };
 
 function UserFeatures() {
@@ -18,7 +18,7 @@ function UserFeatures() {
 /**
  * Updates the user's data in a lazy fashion
  */
-UserFeatures.prototype.refresh = function() {
+UserFeatures.prototype.refresh = function () {
     if (identity.isUserLoggedIn() && userNeedsNewFeatureData()) {
         this._requestNewData();
     } else if (userHasDataAfterSignout()) {
@@ -33,9 +33,9 @@ UserFeatures.prototype.refresh = function() {
         }
 
         function featuresDataIsOld() {
-            var featuresExpiryCookie = cookies.get(PERSISTENCE_KEYS.USER_FEATURES_EXPIRY_COOKIE);
-            var featuresExpiryTime = parseInt(featuresExpiryCookie, 10);
-            var timeNow = new Date().getTime();
+            const featuresExpiryCookie = cookies.get(PERSISTENCE_KEYS.USER_FEATURES_EXPIRY_COOKIE);
+            const featuresExpiryTime = parseInt(featuresExpiryCookie, 10);
+            const timeNow = new Date().getTime();
             return timeNow >= featuresExpiryTime;
         }
     }
@@ -50,16 +50,16 @@ UserFeatures.prototype.refresh = function() {
 };
 
 function requestNewData() {
-    fetchJson(config.page.userAttributesApiUrl + '/me/features', {
-            mode: 'cors',
-            credentials: 'include'
-        })
+    fetchJson(`${config.page.userAttributesApiUrl}/me/features`, {
+        mode: 'cors',
+        credentials: 'include',
+    })
         .then(persistResponse)
-        .catch(function() {});
+        .catch(() => {});
 }
 
 function persistResponse(JsonResponse) {
-    var expiryDate = new Date();
+    const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 1);
     cookies.add(PERSISTENCE_KEYS.USER_FEATURES_EXPIRY_COOKIE, expiryDate.getTime().toString());
     cookies.add(PERSISTENCE_KEYS.PAYING_MEMBER_COOKIE, !JsonResponse.adblockMessage);
@@ -76,7 +76,7 @@ function deleteOldData() {
  * This data may be stale; we do not wait for userFeatures.refresh()
  * @returns {boolean}
  */
-UserFeatures.prototype.isPayingMember = function() {
+UserFeatures.prototype.isPayingMember = function () {
     // If the user is logged in, but has no cookie yet, play it safe and assume they're a paying user
     return identity.isUserLoggedIn() && (cookies.get(PERSISTENCE_KEYS.PAYING_MEMBER_COOKIE) !== 'false');
 };

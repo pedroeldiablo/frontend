@@ -3,21 +3,21 @@ import config from 'common/utils/config';
 import template from 'common/utils/template';
 import addTrackingPixel from 'commercial/modules/creatives/add-tracking-pixel';
 import hostedThrasherStr from 'text!commercial/views/creatives/hosted-thrasher-multi.html';
-var hostedThrasherTemplate;
+let hostedThrasherTemplate;
 
-var HostedThrasherMulti = function($adSlot, params) {
+const HostedThrasherMulti = function ($adSlot, params) {
     this.$adSlot = $adSlot;
     this.params = params;
 };
 
-HostedThrasherMulti.prototype.create = function() {
+HostedThrasherMulti.prototype.create = function () {
     hostedThrasherTemplate = template(hostedThrasherStr);
 
-    return fastdom.write(function() {
+    return fastdom.write(function () {
         this.setAdditionalParams(this.params);
 
         this.$adSlot.append(hostedThrasherTemplate({
-            data: this.params
+            data: this.params,
         }));
         if (this.params.trackingPixel) {
             addTrackingPixel(this.$adSlot, this.params.trackingPixel + this.params.cacheBuster);
@@ -27,20 +27,20 @@ HostedThrasherMulti.prototype.create = function() {
     }, this);
 };
 
-HostedThrasherMulti.prototype.setAdditionalParams = function() {
-    for (var i = 1; i <= this.params.elementsNo; i++) {
-        var videoLength = this.params['videoLength' + i];
+HostedThrasherMulti.prototype.setAdditionalParams = function () {
+    for (let i = 1; i <= this.params.elementsNo; i++) {
+        const videoLength = this.params[`videoLength${i}`];
         if (videoLength) {
-            var seconds = videoLength % 60;
-            var minutes = (videoLength - seconds) / 60;
-            this.params['timeString' + i] = minutes + (seconds < 10 ? ':0' : ':') + seconds;
+            const seconds = videoLength % 60;
+            const minutes = (videoLength - seconds) / 60;
+            this.params[`timeString${i}`] = minutes + (seconds < 10 ? ':0' : ':') + seconds;
         }
 
-        this.params['linkTracking' + i] = 'Labs hosted container' +
-            ' | ' + config.page.edition +
-            ' | ' + config.page.section +
-            ' | ' + this.params['subHeader' + i] +
-            ' | ' + this.params.sponsorName;
+        this.params[`linkTracking${i}`] = `${'Labs hosted container' +
+            ' | '}${config.page.edition
+            } | ${config.page.section
+            } | ${this.params[`subHeader${i}`]
+            } | ${this.params.sponsorName}`;
     }
 };
 

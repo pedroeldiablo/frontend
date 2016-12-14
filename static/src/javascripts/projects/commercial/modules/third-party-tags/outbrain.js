@@ -12,79 +12,80 @@ import getCode from 'commercial/modules/third-party-tags/outbrain-codes';
 import outbrainStr from 'text!commercial/views/outbrain.html';
 import emailRunChecks from 'common/modules/email/run-checks';
 import clash from 'common/modules/experiments/ab-test-clash';
-var outbrainUrl = '//widgets.outbrain.com/outbrain.js';
-var outbrainTpl = template(outbrainStr);
+const outbrainUrl = '//widgets.outbrain.com/outbrain.js';
+const outbrainTpl = template(outbrainStr);
 
-var selectors = {
+const selectors = {
     outbrain: {
         widget: '.js-outbrain',
-        container: '.js-outbrain-container'
+        container: '.js-outbrain-container',
     },
     merchandising: {
         widget: '.js-container--commercial',
-        container: '.js-outbrain-container'
+        container: '.js-outbrain-container',
     },
     nonCompliant: {
         widget: '.js-outbrain',
-        container: '.js-outbrain-container'
-    }
+        container: '.js-outbrain-container',
+    },
 };
 
-var emailSignupPromise;
-var clashingABTestPromise;
+let emailSignupPromise;
+let clashingABTestPromise;
 
 function build(codes, breakpoint) {
-    var html = outbrainTpl({
-        widgetCode: codes.code || codes.image
+    let html = outbrainTpl({
+        widgetCode: codes.code || codes.image,
     });
     if (breakpoint !== 'mobile' && codes.text) {
         html += outbrainTpl({
-            widgetCode: codes.text
+            widgetCode: codes.text,
         });
     }
     return html;
 }
 
-var module = {
-    load: load,
-    tracking: tracking,
-    init: init
+const module = {
+    load,
+    tracking,
+    init,
 };
 
 function load(target) {
-    var slot = target in selectors ? target : 'defaults';
-    var $outbrain = $(selectors.outbrain.widget);
-    var $container = $(selectors.outbrain.container, $outbrain[0]);
-    var breakpoint = detect.getBreakpoint();
-    var widgetCodes, widgetHtml;
+    const slot = target in selectors ? target : 'defaults';
+    const $outbrain = $(selectors.outbrain.widget);
+    const $container = $(selectors.outbrain.container, $outbrain[0]);
+    const breakpoint = detect.getBreakpoint();
+    let widgetCodes,
+        widgetHtml;
 
     widgetCodes = getCode({
-        slot: slot,
+        slot,
         section: config.page.section,
-        breakpoint: breakpoint
+        breakpoint,
     });
     widgetHtml = build(widgetCodes, breakpoint);
     if ($container.length) {
-        return steadyPage.insert($container[0], function() {
+        return steadyPage.insert($container[0], () => {
             if (slot === 'merchandising') {
                 $(selectors[slot].widget).replaceWith($outbrain[0]);
             }
             $container.append(widgetHtml);
             $outbrain.css('display', 'block');
-        }).then(function() {
+        }).then(() => {
             module.tracking(widgetCodes.code || widgetCodes.image);
-            require(['js!' + outbrainUrl]);
+            require([`js!${outbrainUrl}`]);
         });
     }
 }
 
 function tracking(widgetCode) {
     // Ophan
-    require(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], (ophan) => {
         ophan.record({
             outbrain: {
-                widgetId: widgetCode
-            }
+                widgetId: widgetCode,
+            },
         });
     });
 }
@@ -107,22 +108,19 @@ function loadInstantly() {
 
 function checkDependencies() {
     return Promise.all([checkEmailSignup(), checkClashingABTest()])
-        .then(function(result) {
-
+        .then((result) => {
             function findEmail(value) {
                 return value == 'nonCompliant';
             }
 
             return result.find(findEmail);
         })
-        .catch(function() {
-            return 'nonCompliant';
-        });
+        .catch(() => 'nonCompliant');
 }
 
 function checkClashingABTest() {
     if (!clashingABTestPromise) {
-        clashingABTestPromise = new Promise(function(resolve) {
+        clashingABTestPromise = new Promise((resolve) => {
             if (clash.userIsInAClashingAbTest()) {
                 resolve('nonCompliant');
             } else {
@@ -136,7 +134,7 @@ function checkClashingABTest() {
 
 function checkEmailSignup() {
     if (!emailSignupPromise) {
-        emailSignupPromise = new Promise(function(resolve) {
+        emailSignupPromise = new Promise((resolve) => {
             if (config.switches.emailInArticleOutbrain &&
                 emailRunChecks.getEmailInserted()) {
                 // There is an email sign-up
@@ -159,35 +157,34 @@ function init() {
     ) {
         // if there is no merch component, load the outbrain widget right away
         if (loadInstantly()) {
-            return checkDependencies().then(function(widgetType) {
+            return checkDependencies().then((widgetType) => {
                 widgetType ? module.load(widgetType) : module.load();
                 return Promise.resolve(true);
             });
         }
 
-        return trackAdRender('dfp-ad--merchandising-high').then(function(isHiResLoaded) {
+        return trackAdRender('dfp-ad--merchandising-high').then(isHiResLoaded =>
             // if the high-priority merch component has loaded, we wait until
             // the low-priority one has loaded to decide if an outbrain widget is loaded
             // if it hasn't loaded, the outbrain widget is loaded at its default
             // location right away
-            return Promise.all([
-                isHiResLoaded,
-                isHiResLoaded ? trackAdRender('dfp-ad--merchandising') : true
-            ]);
-        }).then(function(args) {
-            var isHiResLoaded = args[0];
-            var isLoResLoaded = args[1];
+             Promise.all([
+                 isHiResLoaded,
+                 isHiResLoaded ? trackAdRender('dfp-ad--merchandising') : true,
+             ])).then((args) => {
+                 const isHiResLoaded = args[0];
+                 const isLoResLoaded = args[1];
 
-            if (isHiResLoaded) {
-                if (!isLoResLoaded) {
-                    module.load('merchandising');
-                }
-            } else {
-                checkDependencies().then(function(widgetType) {
-                    widgetType ? module.load(widgetType) : module.load();
-                });
-            }
-        });
+                 if (isHiResLoaded) {
+                     if (!isLoResLoaded) {
+                         module.load('merchandising');
+                     }
+                 } else {
+                     checkDependencies().then((widgetType) => {
+                         widgetType ? module.load(widgetType) : module.load();
+                     });
+                 }
+             });
     }
 
     return Promise.resolve(true);

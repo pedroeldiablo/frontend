@@ -12,18 +12,18 @@ import manualContainerButtonStr from 'text!commercial/views/creatives/manual-con
 import manualContainerCtaStr from 'text!commercial/views/creatives/manual-container-cta.html';
 import manualContainerCtaSoulmatesStr from 'text!commercial/views/creatives/manual-container-cta-soulmates.html';
 import manualContainerCtaMembershipStr from 'text!commercial/views/creatives/manual-container-cta-membership.html';
-var gimbapSimpleTpl;
-var gimbapRichmediaTpl;
-var manualCardStrs = {
+let gimbapSimpleTpl;
+let gimbapRichmediaTpl;
+const manualCardStrs = {
     'manual-card': manualCardStr,
-    'manual-card-large': manualCardLargeStr
+    'manual-card-large': manualCardLargeStr,
 };
-var manualCardTpls = {};
-var manualCardCtaTpl;
-var manualContainerButtonTpl;
-var manualContainerCtaTpl;
-var manualContainerCtaSoulmatesTpl;
-var manualContainerCtaMembershipTpl;
+const manualCardTpls = {};
+let manualCardCtaTpl;
+let manualContainerButtonTpl;
+let manualContainerCtaTpl;
+let manualContainerCtaSoulmatesTpl;
+let manualContainerCtaMembershipTpl;
 
 function preprocessGimbap(tpl) {
     tpl.params.headless = tpl.params.headless === 'true';
@@ -34,10 +34,10 @@ function preprocessGimbap(tpl) {
     tpl.params.arrowRight = (tpl.params.linksWithArrows.indexOf('yes') !== -1) ? svgs('arrowRight', ['gimbap__arrow']) : '';
 
     // Make sure we include right logo to the right card
-    tpl.params.offer1logo = tpl.params['logo' + tpl.params.offer1tone + 'horizontal'];
-    tpl.params.offer2logo = tpl.params['logo' + tpl.params.offer2tone + 'horizontal'];
-    tpl.params.offer3logo = tpl.params['logo' + tpl.params.offer3tone + 'horizontal'];
-    tpl.params.offer4logo = tpl.params['logo' + tpl.params.offer4tone + 'horizontal'];
+    tpl.params.offer1logo = tpl.params[`logo${tpl.params.offer1tone}horizontal`];
+    tpl.params.offer2logo = tpl.params[`logo${tpl.params.offer2tone}horizontal`];
+    tpl.params.offer3logo = tpl.params[`logo${tpl.params.offer3tone}horizontal`];
+    tpl.params.offer4logo = tpl.params[`logo${tpl.params.offer4tone}horizontal`];
 
     tpl.params.gimbapLogoStyle = (tpl.params.style === 'reversed') ? ' gimbap-logo--reversed' : '';
 
@@ -58,56 +58,52 @@ function preprocessGimbapSimple(tpl) {
     // SVGs
     tpl.params.marque36icon = svgs('marque36icon', ['gimbap-wrap__mainlogo']);
     tpl.params.arrowRight = (tpl.params.linksWithArrows.indexOf('yes') !== -1) ? svgs('arrowRight', ['gimbap__arrow', 'gimbap__arrow--styled']) : '';
-    tpl.params.logo = tpl.params['logo' + tpl.params.componenttone + 'horizontal'];
+    tpl.params.logo = tpl.params[`logo${tpl.params.componenttone}horizontal`];
 
     tpl.params.gimbapEffects = tpl.params.componenteffects === 'yes' ? ' ' + 'gimbap--effects' : '';
 
     tpl.params.gimbapSimple = '';
-    for (var i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 4; i++) {
         tpl.params.gimbapSimple += gimbapSimpleTpl(assign(tpl.params, {
-            offerurl: tpl.params['offer' + i + 'url'],
-            offertitle: tpl.params['offer' + i + 'title'],
-            offerimage: tpl.params['offer' + i + 'image']
+            offerurl: tpl.params[`offer${i}url`],
+            offertitle: tpl.params[`offer${i}title`],
+            offerimage: tpl.params[`offer${i}image`],
         }));
     }
 }
 
 function preprocessManualContainer(tpl) {
-    var stems = {
+    const stems = {
         jobs: 'job',
         books: 'book',
         masterclasses: 'masterclass',
         travels: 'travel',
         soulmates: 'soulmate',
         subscriptions: 'subscription',
-        networks: 'network'
+        networks: 'network',
     };
     manualContainerButtonTpl || (manualContainerButtonTpl = template(manualContainerButtonStr));
     manualCardTpls['manual-card'] || (manualCardTpls['manual-card'] = template(manualCardStrs['manual-card']));
     manualCardTpls['manual-card-large'] || (manualCardTpls['manual-card-large'] = template(manualCardStrs['manual-card-large']));
     manualCardCtaTpl || (manualCardCtaTpl = template(manualCardCtaStr));
-    tpl.params.classNames = ['manual'].concat(tpl.params.classNames).map(function(cn) {
-        return 'adverts--' + cn;
-    }).join(' ');
+    tpl.params.classNames = ['manual'].concat(tpl.params.classNames).map(cn => `adverts--${cn}`).join(' ');
     tpl.params.title || (tpl.params.title = '');
 
     if (tpl.params.isSoulmates) {
         manualContainerCtaSoulmatesTpl || (manualContainerCtaSoulmatesTpl = template(manualContainerCtaSoulmatesStr));
-        tpl.params.title = tpl.params.marque54icon + tpl.params.logosoulmates + '<span class="u-h">The Guardian Soulmates</span>';
+        tpl.params.title = `${tpl.params.marque54icon + tpl.params.logosoulmates}<span class="u-h">The Guardian Soulmates</span>`;
         tpl.params.blurb = 'Meet someone <em>worth</em> meeting';
         tpl.params.ctas = manualContainerCtaSoulmatesTpl(tpl.params);
-
     } else if (tpl.params.isMembership) {
         manualContainerCtaMembershipTpl || (manualContainerCtaMembershipTpl = template(manualContainerCtaMembershipStr));
         tpl.params.blurb = tpl.params.title;
-        tpl.params.title = tpl.params.logomembership + '<span class="u-h">The Guardian Membership</span>';
+        tpl.params.title = `${tpl.params.logomembership}<span class="u-h">The Guardian Membership</span>`;
         tpl.params.ctas = tpl.params.type === 'inline' ? null : manualContainerCtaMembershipTpl(tpl.params);
     } else if (tpl.params.type !== 'inline') {
         manualContainerCtaTpl || (manualContainerCtaTpl = template(manualContainerCtaStr));
-        tpl.params.title = tpl.params.marque54icon + tpl.params.logoguardian + '<span class="u-h">The Guardian</span>' + tpl.params.title;
+        tpl.params.title = `${tpl.params.marque54icon + tpl.params.logoguardian}<span class="u-h">The Guardian</span>${tpl.params.title}`;
         tpl.params.blurb = tpl.params.explainer || '';
         tpl.params.ctas = tpl.params.viewalltext ? manualContainerCtaTpl(tpl.params) : '';
-
     } else {
         tpl.params.title = tpl.params.marque36icon + tpl.params.component_title;
         tpl.params.blurb = tpl.params.ctas = '';
@@ -115,21 +111,21 @@ function preprocessManualContainer(tpl) {
 
     if (tpl.params.type === 'multiple') {
         tpl.params.row = true;
-        tpl.params.innards = [1, 2, 3, 4].map(function(index) {
-            var classNames = ['manual', tpl.params.toneClass.replace('commercial--tone-', '')]
+        tpl.params.innards = [1, 2, 3, 4].map((index) => {
+            const classNames = ['manual', tpl.params.toneClass.replace('commercial--tone-', '')]
                 .concat(tpl.params.prominent && index === 1 ? ['large', 'landscape', 'inverse', 'large--1x2'] : []);
-            return tpl.params['offer' + index + 'url'] ? manualCardTpls[tpl.params.prominent && index === 1 ? 'manual-card-large' : 'manual-card']({
+            return tpl.params[`offer${index}url`] ? manualCardTpls[tpl.params.prominent && index === 1 ? 'manual-card-large' : 'manual-card']({
                 clickMacro: tpl.params.clickMacro,
-                offerUrl: tpl.params['offer' + index + 'url'],
-                offerImage: tpl.params['offer' + index + 'image'],
-                offerTitle: tpl.params['offer' + index + 'title'],
-                offerText: tpl.params['offer' + index + 'meta'],
-                cta: tpl.params.showCtaLink !== 'hide-cta-link' && (tpl.params['offer' + index + 'linktext'] || tpl.params.offerLinkText) ? manualCardCtaTpl({
-                    offerLinkText: tpl.params['offer' + index + 'linktext'] || tpl.params.offerLinkText,
+                offerUrl: tpl.params[`offer${index}url`],
+                offerImage: tpl.params[`offer${index}image`],
+                offerTitle: tpl.params[`offer${index}title`],
+                offerText: tpl.params[`offer${index}meta`],
+                cta: tpl.params.showCtaLink !== 'hide-cta-link' && (tpl.params[`offer${index}linktext`] || tpl.params.offerLinkText) ? manualCardCtaTpl({
+                    offerLinkText: tpl.params[`offer${index}linktext`] || tpl.params.offerLinkText,
                     arrowRight: tpl.params.arrowRight,
-                    classNames: ''
+                    classNames: '',
                 }) : '',
-                classNames: classNames.map(getStem).concat(index > 2 ? ['hide-until-tablet'] : []).join(' ')
+                classNames: classNames.map(getStem).concat(index > 2 ? ['hide-until-tablet'] : []).join(' '),
             }) : null;
         }).filter(identity).join('');
     } else if (tpl.params.type === 'single') {
@@ -143,14 +139,14 @@ function preprocessManualContainer(tpl) {
             cta: tpl.params.showCtaLink !== 'hide-cta-link' && tpl.params.viewAllText ? manualCardCtaTpl({
                 offerLinkText: tpl.params.viewAllText,
                 arrowRight: tpl.params.arrowRight,
-                classNames: 'button--tertiary'
+                classNames: 'button--tertiary',
             }) : '',
-            classNames: ['single', 'landscape', 'large', 'inverse', tpl.params.toneClass.replace('commercial--tone-', '')].map(getStem).join(' ')
+            classNames: ['single', 'landscape', 'large', 'inverse', tpl.params.toneClass.replace('commercial--tone-', '')].map(getStem).join(' '),
         }) + manualContainerButtonTpl({
             baseUrl: tpl.params.baseUrl,
             clickMacro: tpl.params.clickMacro,
             offerLinkText: tpl.params.offerLinkText,
-            arrowRight: tpl.params.arrowRight
+            arrowRight: tpl.params.arrowRight,
         });
     } else {
         tpl.params.row = false;
@@ -163,14 +159,14 @@ function preprocessManualContainer(tpl) {
             cta: tpl.params.show_button === 'no' ? '' : manualCardCtaTpl({
                 offerLinkText: 'Click here',
                 arrowRight: tpl.params.arrowRight,
-                classNames: 'button--primary'
+                classNames: 'button--primary',
             }),
-            classNames: ['inline', tpl.params.toneClass.replace('commercial--tone-', '')].map(getStem).join(' ')
+            classNames: ['inline', tpl.params.toneClass.replace('commercial--tone-', '')].map(getStem).join(' '),
         });
     }
 
     function getStem(cn) {
-        return 'advert--' + (stems[cn] || cn);
+        return `advert--${stems[cn] || cn}`;
     }
 }
 
@@ -180,7 +176,7 @@ function preprocessGimbapRichmedia(tpl) {
     }
     // SVGs
     tpl.params.marque36icon = svgs('marque36icon', ['gimbap-wrap__mainlogo']);
-    tpl.params.logo = tpl.params['logo' + tpl.params.componenttone + 'horizontal'];
+    tpl.params.logo = tpl.params[`logo${tpl.params.componenttone}horizontal`];
     tpl.params.iconClock = svgs('iconClock', ['gimbap-richmedia__icon']);
     tpl.params.iconLocation = svgs('iconLocation', ['gimbap-richmedia__icon']);
     tpl.params.iconBasket = svgs('iconBasket', ['gimbap-richmedia__icon']);
@@ -188,25 +184,25 @@ function preprocessGimbapRichmedia(tpl) {
     tpl.params.gimbapEffects = tpl.params.componenteffects === 'yes' ? ' ' + 'gimbap--effects' : '';
 
     tpl.params.gimbapRichmedia = '';
-    for (var i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 2; i++) {
         tpl.params.gimbapRichmedia += gimbapRichmediaTpl(assign(tpl.params, {
-            offerurl: tpl.params['offer' + i + 'url'],
-            offertitle: tpl.params['offer' + i + 'title'],
-            offerimage: tpl.params['offer' + i + 'image'],
-            offerHighlight: tpl.params['offer' + i + 'highlight'],
-            offerTitle: tpl.params['offer' + i + 'title'],
-            offerHeadline: tpl.params['offer' + i + 'headline'],
-            offerDate: tpl.params['offer' + i + 'date'],
-            offerPlace: tpl.params['offer' + i + 'place'],
-            offerPrice: tpl.params['offer' + i + 'price'] !== '0' ? tpl.params['offer' + i + 'price'] : '',
-            offerDiscount: tpl.params['offer' + i + 'discount']
+            offerurl: tpl.params[`offer${i}url`],
+            offertitle: tpl.params[`offer${i}title`],
+            offerimage: tpl.params[`offer${i}image`],
+            offerHighlight: tpl.params[`offer${i}highlight`],
+            offerTitle: tpl.params[`offer${i}title`],
+            offerHeadline: tpl.params[`offer${i}headline`],
+            offerDate: tpl.params[`offer${i}date`],
+            offerPlace: tpl.params[`offer${i}place`],
+            offerPrice: tpl.params[`offer${i}price`] !== '0' ? tpl.params[`offer${i}price`] : '',
+            offerDiscount: tpl.params[`offer${i}discount`],
         }));
     }
 }
 
 export default {
-    'gimbap': preprocessGimbap,
+    gimbap: preprocessGimbap,
     'gimbap-simple': preprocessGimbapSimple,
     'gimbap-richmedia': preprocessGimbapRichmedia,
-    'manual-container': preprocessManualContainer
+    'manual-container': preprocessManualContainer,
 };

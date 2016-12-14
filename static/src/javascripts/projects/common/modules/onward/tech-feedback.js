@@ -12,37 +12,33 @@ import keys from 'lodash/objects/keys';
 import cookies from 'common/utils/cookies';
 
 function objToString(obj) {
-    return reduce(obj, function(str, value, key) {
-        return str + key + ': ' + value + '\n';
-    }, '');
+    return reduce(obj, (str, value, key) => `${str + key}: ${value}\n`, '');
 }
 
 function objToHash(obj) {
-    return reduce(obj, function(str, value, key) {
-        return str + '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
-    }, '');
+    return reduce(obj, (str, value, key) => `${str}&${encodeURIComponent(key)}=${encodeURIComponent(value)}`, '');
 }
 
 function addEmailValuesToHash(storedValues) {
-    return function(link) {
-        return function() {
-            var oldHref = link.attr('href');
-            var props = {
+    return function (link) {
+        return function () {
+            const oldHref = link.attr('href');
+            const props = {
                 page: window.location,
                 width: window.innerWidth,
-                ads: getCreativeIDs().join(' ')
+                ads: getCreativeIDs().join(' '),
             };
-            var body = objToHash(assign(props, storedValues));
-            link.attr('href', oldHref + '#' + body.substring(1));
+            const body = objToHash(assign(props, storedValues));
+            link.attr('href', `${oldHref}#${body.substring(1)}`);
         };
     };
 }
 
 function addEmailHeaders(storedValues) {
-    return function(link) {
-        return function() {
-            var oldHref = link.attr('href');
-            var props = {
+    return function (link) {
+        return function () {
+            const oldHref = link.attr('href');
+            const props = {
                 browser: window.navigator.userAgent,
                 page: window.location,
                 width: window.innerWidth,
@@ -51,27 +47,28 @@ function addEmailHeaders(storedValues) {
                 ophanId: config.ophan.pageViewId,
                 gu_u: cookies.get('GU_U'),
                 payingMember: cookies.get('gu_paying_member'),
-                abTests: summariseAbTests(ab.getParticipations())
+                abTests: summariseAbTests(ab.getParticipations()),
             };
-            var body = '\r\n\r\n\r\n\r\n------------------------------\r\nAdditional technical data about your request - please do not edit:\r\n\r\n' + objToString(assign(props, storedValues)) + '\r\n\r\n';
-            link.attr('href', oldHref + '?body=' + encodeURIComponent(body));
+            const body = `\r\n\r\n\r\n\r\n------------------------------\r\nAdditional technical data about your request - please do not edit:\r\n\r\n${objToString(assign(props, storedValues))}\r\n\r\n`;
+            link.attr('href', `${oldHref}?body=${encodeURIComponent(body)}`);
         };
     };
 }
 
 function registerHandler(selector, addEmailHeaders) {
-    var link = $(selector);
+    const link = $(selector);
 
     if (link.length) {
-        for (var i = 0; i < link.length; ++i)
+        for (let i = 0; i < link.length; ++i) {
             bean.on(link[i], 'click', addEmailHeaders(link));
+        }
     }
 }
 
 function getValuesFromHash(hash) {
-    var pairs = hash.substring(1).split('&');
-    return reduce(pairs, function(accu, pairJoined) {
-        var pair = pairJoined.split('='),
+    const pairs = hash.substring(1).split('&');
+    return reduce(pairs, (accu, pairJoined) => {
+        let pair = pairJoined.split('='),
             object = {};
         if (!!pair[0] && !!pair[1]) {
             object[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
@@ -83,13 +80,13 @@ function getValuesFromHash(hash) {
 }
 
 function summariseAbTests(testParticipations) {
-    var tests = keys(testParticipations);
+    const tests = keys(testParticipations);
     if (tests.length === 0) {
         return 'No tests running';
     } else {
-        return map(tests, function(testKey) {
-            var test = testParticipations[testKey];
-            return testKey + '=' + test.variant;
+        return map(tests, (testKey) => {
+            const test = testParticipations[testKey];
+            return `${testKey}=${test.variant}`;
         }).join(', ');
     }
 }
@@ -98,8 +95,8 @@ function summariseAbTests(testParticipations) {
  * the link in the footer adds some of the values to the hash so feedback can use it later.  Those values
  * override those at the time the email is sent.
  */
-export default function() {
-    var storedValues = getValuesFromHash(window.location.hash);
+export default function () {
+    const storedValues = getValuesFromHash(window.location.hash);
     registerHandler('.js-tech-feedback-report', addEmailValuesToHash(storedValues));
     registerHandler('.js-tech-feedback-mailto', addEmailHeaders(storedValues));
     registerHandler('[href=mailto:userhelp@theguardian.com]', addEmailHeaders(storedValues));
@@ -108,4 +105,4 @@ export default function() {
     // Exposed for testing
     this.getValuesFromHash = getValuesFromHash;
     this.summariseAbTests = summariseAbTests;
-};
+}

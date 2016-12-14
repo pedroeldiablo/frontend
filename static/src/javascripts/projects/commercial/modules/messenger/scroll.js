@@ -5,21 +5,22 @@ import fastdom from 'common/utils/fastdom-promise';
 import messenger from 'commercial/modules/messenger';
 // An intersection observer will allow us to efficiently send slot
 // coordinates for only those that are in the viewport.
-var w = window;
-var useIO = 'IntersectionObserver' in w;
-var taskQueued = false;
-var iframes = {};
-var iframeCounter = 0;
-var observer, visibleIframeIds;
+let w = window;
+let useIO = 'IntersectionObserver' in w;
+let taskQueued = false;
+let iframes = {};
+let iframeCounter = 0;
+let observer,
+    visibleIframeIds;
 
 messenger.register('scroll', onMessage, {
-    persist: true
+    persist: true,
 });
 
 export default {
-    addScrollListener: addScrollListener,
-    removeScrollListener: removeScrollListener,
-    reset: reset
+    addScrollListener,
+    removeScrollListener,
+    reset,
 };
 
 function reset(window_) {
@@ -41,7 +42,7 @@ function onMessage(respond, start, iframe) {
 function addScrollListener(iframe, respond) {
     if (iframeCounter === 0) {
         addEventListener(w, 'scroll', onScroll, {
-            passive: true
+            passive: true,
         });
         if (useIO) {
             observer = new w.IntersectionObserver(onIntersect);
@@ -54,7 +55,7 @@ function addScrollListener(iframe, respond) {
         // observing it, the onIntercept callback will be triggered if it
         // is already in the viewport
         visible: !useIO,
-        respond: respond
+        respond,
     };
     iframeCounter += 1;
 
@@ -62,10 +63,8 @@ function addScrollListener(iframe, respond) {
         observer.observe(iframe);
     }
 
-    fastdom.read(function() {
-            return iframe.getBoundingClientRect();
-        })
-        .then(function(domRect) {
+    fastdom.read(() => iframe.getBoundingClientRect())
+        .then((domRect) => {
             sendCoordinates(iframe.id, domRect);
         });
 }
@@ -90,25 +89,25 @@ function removeScrollListener(iframe) {
 
 function onScroll() {
     if (!taskQueued) {
-        var viewport = detect.getViewport();
+        const viewport = detect.getViewport();
         taskQueued = true;
 
-        return fastdom.read(function() {
+        return fastdom.read(() => {
             taskQueued = false;
 
-            var iframeIds = Object.keys(iframes);
+            const iframeIds = Object.keys(iframes);
 
             if (useIO) {
                 visibleIframeIds
                     .map(getDimensions)
-                    .forEach(function(data) {
+                    .forEach((data) => {
                         sendCoordinates(data[0], data[1]);
                     });
             } else {
                 iframeIds
                     .map(getDimensions)
                     .filter(isIframeInViewport, viewport)
-                    .forEach(function(data) {
+                    .forEach((data) => {
                         sendCoordinates(data[0], data[1]);
                     });
             }
@@ -126,12 +125,8 @@ function getDimensions(id) {
 
 function onIntersect(changes) {
     visibleIframeIds = changes
-        .filter(function(_) {
-            return _.intersectionRatio > 0;
-        })
-        .map(function(_) {
-            return _.target.id;
-        });
+        .filter(_ => _.intersectionRatio > 0)
+        .map(_ => _.target.id);
 }
 
 // Instances of classes bound to the current view are not serialised correctly
@@ -144,7 +139,7 @@ function domRectToRect(rect) {
         top: rect.top,
         bottom: rect.bottom,
         left: rect.left,
-        right: rect.right
+        right: rect.right,
     };
 }
 

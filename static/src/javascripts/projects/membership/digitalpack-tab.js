@@ -5,7 +5,7 @@ import config from 'common/utils/config';
 import formatters from 'membership/formatters';
 import stripe from 'membership/stripe';
 
-var PACKAGE_COST = '.js-dig-package-cost',
+let PACKAGE_COST = '.js-dig-package-cost',
     PAYMENT_FORM = '.js-dig-card-details',
     SUBSCRIBER_ID = '.js-dig-subscriber-id',
     REMAINING_TRIAL_LENGTH = '.js-dig-remaining-trial-length',
@@ -29,11 +29,11 @@ var PACKAGE_COST = '.js-dig-package-cost',
 function fetchUserDetails() {
     ajax({
 
-        url: config.page.userAttributesApiUrl + '/me/mma-digitalpack',
+        url: `${config.page.userAttributesApiUrl}/me/mma-digitalpack`,
         crossOrigin: true,
         withCredentials: true,
-        method: 'get'
-    }).then(function(resp) {
+        method: 'get',
+    }).then((resp) => {
         if (resp && resp.subscription) {
             hideLoader();
             populateUserDetails(resp);
@@ -57,18 +57,18 @@ function hideLoader() {
  * }} userDetails
  */
 function populateUserDetails(userDetails) {
-    var glyph = userDetails.subscription.plan.currency;
+    const glyph = userDetails.subscription.plan.currency;
     $(SUBSCRIBER_ID).text(userDetails.subscription.subscriberId);
     $(DIGITALPACK_PRODUCT).text(userDetails.subscription.plan.name);
     $(PACKAGE_COST).text(formatters.formatAmount(userDetails.subscription.plan.amount, glyph));
     $(DETAILS_JOIN_DATE).text(formatters.formatDate(userDetails.joinDate));
-    $(PACKAGE_INTERVAL).text(userDetails.subscription.plan.interval + 'ly');
+    $(PACKAGE_INTERVAL).text(`${userDetails.subscription.plan.interval}ly`);
     $(PACKAGE_CURRENT_PERIOD_START).text(formatters.formatDate(userDetails.subscription.start));
     $(PACKAGE_CURRENT_PERIOD_END).text(formatters.formatDate(userDetails.subscription.end));
     $(PACKAGE_CURRENT_RENEWAL_DATE).text(formatters.formatDate(userDetails.subscription.renewalDate));
-    var trialLeft = userDetails.subscription.trialLength;
+    const trialLeft = userDetails.subscription.trialLength;
     if (trialLeft > 0) {
-        $(REMAINING_TRIAL_LENGTH).text(trialLeft + ' day' + (trialLeft != 1 ? 's' : ''));
+        $(REMAINING_TRIAL_LENGTH).text(`${trialLeft} day${trialLeft != 1 ? 's' : ''}`);
         $(REMAINING_TRIAL_LENGTH_CONTAINER).removeClass(IS_HIDDEN_CLASSNAME);
     }
 
@@ -92,5 +92,5 @@ function displayDigitalPackUpSell() {
 }
 
 export default {
-    init: fetchUserDetails
+    init: fetchUserDetails,
 };

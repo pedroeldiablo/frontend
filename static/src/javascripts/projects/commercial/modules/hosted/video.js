@@ -14,7 +14,7 @@ import videojsOptions from 'common/modules/video/videojs-options';
 import fullscreener from 'common/modules/media/videojs-plugins/fullscreener';
 import contains from 'lodash/collections/contains';
 import loadingTmpl from 'text!common/views/ui/loading.html';
-var player;
+let player;
 
 function isDesktop() {
     return contains(['desktop', 'leftCol', 'wide'], detect.getBreakpoint());
@@ -41,12 +41,12 @@ function upgradeVideoPlayerAccessibility(player) {
 }
 
 function init() {
-    return new Promise(function(resolve) {
-        require(['bootstraps/enhanced/media/main'], function() {
-            require(['bootstraps/enhanced/media/video-player'], function(videojs) {
-                var $videoEl = $('.vjs-hosted__video');
-                var $inlineVideoEl = $('video');
-                var $youtubeIframe = $('.js-hosted-youtube-video');
+    return new Promise((resolve) => {
+        require(['bootstraps/enhanced/media/main'], () => {
+            require(['bootstraps/enhanced/media/video-player'], (videojs) => {
+                let $videoEl = $('.vjs-hosted__video');
+                const $inlineVideoEl = $('video');
+                const $youtubeIframe = $('.js-hosted-youtube-video');
 
                 if ($youtubeIframe.length === 0 && $videoEl.length === 0) {
                     if ($inlineVideoEl.length === 0) {
@@ -57,8 +57,8 @@ function init() {
                     }
                 }
 
-                $videoEl.each(function(el) {
-                    var mediaId = $videoEl.attr('data-media-id');
+                $videoEl.each(function (el) {
+                    const mediaId = $videoEl.attr('data-media-id');
                     player = videojs(el, videojsOptions());
                     player.guMediaType = 'video';
                     videojs.plugin('fullscreener', fullscreener);
@@ -66,9 +66,9 @@ function init() {
                     events.addContentEvents(player, mediaId, player.guMediaType);
                     events.bindGoogleAnalyticsEvents(player, window.location.pathname);
 
-                    player.ready(function() {
-                        var vol;
-                        var player = this;
+                    player.ready(function () {
+                        let vol;
+                        const player = this;
                         initLoadingSpinner(player);
                         upgradeVideoPlayerAccessibility(player);
 
@@ -81,25 +81,25 @@ function init() {
 
                         player.fullscreener();
 
-                        deferToAnalytics(function() {
+                        deferToAnalytics(() => {
                             events.initOphanTracking(player, mediaId);
                             events.bindGlobalEvents(player);
                             events.bindContentEvents(player);
                         });
 
-                        player.on('error', function() {
-                            var err = player.error();
+                        player.on('error', () => {
+                            const err = player.error();
                             if (err && 'message' in err && 'code' in err) {
                                 reportError(new Error(err.message), {
                                     feature: 'hosted-player',
-                                    vjsCode: err.code
+                                    vjsCode: err.code,
                                 }, false);
                             }
                         });
                     });
 
                     if (nextVideoAutoplay.canAutoplay()) {
-                        //on desktop show the next video link 10 second before the end of the currently watching video
+                        // on desktop show the next video link 10 second before the end of the currently watching video
                         if (isDesktop()) {
                             nextVideoAutoplay.addCancelListener();
                             player && player.one('timeupdate', nextVideoAutoplay.triggerAutoplay.bind(this, player.currentTime.bind(player), parseInt($videoEl.data('duration'), 10)));
@@ -109,7 +109,7 @@ function init() {
                     }
                 });
 
-                $youtubeIframe.each(function(el) {
+                $youtubeIframe.each((el) => {
                     hostedYoutube.init(el);
                 });
 
@@ -120,5 +120,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

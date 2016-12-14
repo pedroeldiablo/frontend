@@ -9,59 +9,59 @@ import getSection from 'commercial/modules/third-party-tags/outbrain-sections';
    2. merchandising: these are the codes when the widget replaces the low-
     priority merchandising component
 */
-var outbrainCodes = {
+const outbrainCodes = {
     defaults: {
         news: {
             mobile: {
-                code: 'MB_4'
+                code: 'MB_4',
             },
             desktop: {
                 image: 'AR_12',
-                text: 'AR_14'
+                text: 'AR_14',
             },
             tablet: {
                 image: 'MB_6',
-                text: 'MB_8'
-            }
+                text: 'MB_8',
+            },
         },
         defaults: {
             mobile: {
-                code: 'MB_5'
+                code: 'MB_5',
             },
             desktop: {
                 image: 'AR_13',
-                text: 'AR_15'
+                text: 'AR_15',
             },
             tablet: {
                 image: 'MB_7',
-                text: 'MB_9'
-            }
-        }
+                text: 'MB_9',
+            },
+        },
     },
 
     merchandising: {
         mobile: {
-            code: 'MB_10'
+            code: 'MB_10',
         },
         desktop: {
-            code: 'AR_28'
+            code: 'AR_28',
         },
         tablet: {
-            code: 'MB_11'
-        }
+            code: 'MB_11',
+        },
     },
 
     nonCompliant: {
         mobile: {
-            code: 'MB_10'
+            code: 'MB_10',
         },
         desktop: {
-            code: 'AR_28'
+            code: 'AR_28',
         },
         tablet: {
-            code: 'MB_11'
-        }
-    }
+            code: 'MB_11',
+        },
+    },
 };
 
 function getCode(data) {

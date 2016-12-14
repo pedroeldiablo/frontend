@@ -6,19 +6,19 @@ import addTrackingPixel from 'commercial/modules/creatives/add-tracking-pixel';
 import frameStr from 'text!commercial/views/creatives/frame.html';
 import labelStr from 'text!commercial/views/creatives/gustyle-label.html';
 
-var Frame = function($adSlot, params) {
+const Frame = function ($adSlot, params) {
     this.$adSlot = $adSlot;
     this.params = params;
 };
 
-Frame.prototype.create = function() {
+Frame.prototype.create = function () {
     this.params.externalLinkIcon = svgs('externalLink', ['gu-external-icon']);
     this.params.target = this.params.newWindow === 'yes' ? '_blank' : '_self';
 
-    var frameMarkup = template(frameStr, {
-        data: this.params
+    const frameMarkup = template(frameStr, {
+        data: this.params,
     });
-    var labelMarkup = template(labelStr, {
+    const labelMarkup = template(labelStr, {
         data: {
             buttonTitle: 'Ad',
             infoTitle: 'Advertising on the Guardian',
@@ -26,10 +26,10 @@ Frame.prototype.create = function() {
             infoLinkText: 'Learn more about how advertising supports the Guardian.',
             infoLinkUrl: 'https://www.theguardian.com/advertising-on-the-guardian',
             icon: svgs('arrowicon', ['gu-comlabel__icon']),
-            dataAttr: this.$adSlot[0].id
-        }
+            dataAttr: this.$adSlot[0].id,
+        },
     });
-    return fastdom.write(function() {
+    return fastdom.write(function () {
         this.$adSlot[0].insertAdjacentHTML('beforeend', frameMarkup);
         this.$adSlot[0].lastElementChild.insertAdjacentHTML('afterbegin', labelMarkup);
         this.$adSlot.addClass('ad-slot--frame');

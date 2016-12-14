@@ -1,26 +1,26 @@
 import config from 'common/utils/config';
 import urlUtils from 'common/utils/url';
 
-var gatewayUrl = '//pq-direct.revsci.net/pql';
-var sectionPlacements = {
+const gatewayUrl = '//pq-direct.revsci.net/pql';
+const sectionPlacements = {
     sport: ['FKSWod', '2xivTZ', 'MTLELH'],
     football: ['6FaXJO', 'ORE2W-', 'MTLELH'],
     lifeandstyle: ['TQV1_5', 'J0tykU', 'kLC9nW', 'MTLELH'],
     technology: ['9a9VRE', 'TL3gqK', 'MTLELH'],
     fashion: ['TQV1_5', 'J0tykU', 'kLC9nW', 'MTLELH'],
     news: ['eMdl6Y', 'mMYVrM', 'MTLELH'],
-    'default': ['FLh9mM', 'c7Zrhu', 'Y1C40a', 'LtKGsC', 'MTLELH']
+    default: ['FLh9mM', 'c7Zrhu', 'Y1C40a', 'LtKGsC', 'MTLELH'],
 };
-var section = sectionPlacements[config.page.section] ? config.page.section : 'default';
-var audienceSciencePqlUrl = getUrl();
+let section = sectionPlacements[config.page.section] ? config.page.section : 'default';
+const audienceSciencePqlUrl = getUrl();
 
 function getUrl() {
-    var placements = sectionPlacements[section];
-    var query = urlUtils.constructQuery({
+    const placements = sectionPlacements[section];
+    const query = urlUtils.constructQuery({
         placementIdList: placements.join(','),
-        cb: new Date().getTime()
+        cb: new Date().getTime(),
     });
-    return gatewayUrl + '?' + query;
+    return `${gatewayUrl}?${query}`;
 }
 
 function onLoad() {
@@ -31,14 +31,10 @@ function onLoad() {
 }
 
 function getSegments() {
-    var placements = window.asiPlacements || {};
+    const placements = window.asiPlacements || {};
     return Object.keys(placements)
-        .filter(function(placement) {
-            return placements[placement].default;
-        })
-        .map(function(placement) {
-            return 'pq_' + placement;
-        });
+        .filter(placement => placements[placement].default)
+        .map(placement => `pq_${placement}`);
 }
 
 function setAudienceScienceKeys() {
@@ -48,7 +44,7 @@ function setAudienceScienceKeys() {
 // Remove all Audience Science related targeting keys as soon as we recieve
 // an AS creative (will get called by the creative itself)
 function setAudienceScienceCallback() {
-    window.onAudienceScienceCreativeLoaded = function() {
+    window.onAudienceScienceCreativeLoaded = function () {
         getSegments().forEach(removeKey);
     };
 }
@@ -64,9 +60,9 @@ function removeKey(key) {
 export default {
     shouldRun: config.page.edition === 'UK' && config.switches.audienceScienceGateway,
     url: audienceSciencePqlUrl,
-    reset: function() {
+    reset() {
         section = sectionPlacements[config.page.section] ? config.page.section : 'default';
     },
-    onLoad: onLoad,
-    getSegments: getSegments
+    onLoad,
+    getSegments,
 };

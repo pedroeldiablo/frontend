@@ -20,33 +20,31 @@ import plista from 'commercial/modules/third-party-tags/plista';
 import externalContentContainerStr from 'text!common/views/commercial/external-content.html';
 
 function loadExternalContentWidget() {
-
-    var externalTpl = template(externalContentContainerStr);
-    var documentAnchorClass = '.js-external-content-widget-anchor';
+    const externalTpl = template(externalContentContainerStr);
+    const documentAnchorClass = '.js-external-content-widget-anchor';
 
     function renderWidgetContainer(widgetType) {
         $(documentAnchorClass).append(externalTpl({
-            widgetType: widgetType
+            widgetType,
         }));
     }
 
-    var isMobileOrTablet = ['mobile', 'tablet'].indexOf(detect.getBreakpoint(false)) >= 0;
-    var shouldIgnoreSwitch = isMobileOrTablet || config.page.section === 'world' || config.page.edition.toLowerCase() !== 'au';
-    var shouldServePlista = config.switches.plistaForOutbrainAu && !shouldIgnoreSwitch;
+    const isMobileOrTablet = ['mobile', 'tablet'].indexOf(detect.getBreakpoint(false)) >= 0;
+    const shouldIgnoreSwitch = isMobileOrTablet || config.page.section === 'world' || config.page.edition.toLowerCase() !== 'au';
+    const shouldServePlista = config.switches.plistaForOutbrainAu && !shouldIgnoreSwitch;
 
     if (shouldServePlista) {
-        fastdom.write(function() {
+        fastdom.write(() => {
             renderWidgetContainer('plista');
         }).then(plista.init);
     } else {
-        fastdom.write(function() {
+        fastdom.write(() => {
             renderWidgetContainer('outbrain');
         }).then(outbrain.init);
     }
 }
 
 function init() {
-
     if (!commercialFeatures.thirdPartyTags) {
         return Promise.resolve(false);
     }
@@ -59,15 +57,13 @@ function init() {
 }
 
 function loadOther() {
-    var services = [
+    const services = [
         audienceSciencePql,
         audienceScienceGateway,
         imrWorldwide,
         remarketing,
-        krux
-    ].filter(function(_) {
-        return _.shouldRun;
-    });
+        krux,
+    ].filter(_ => _.shouldRun);
 
     if (services.length) {
         insertScripts(services);
@@ -75,11 +71,11 @@ function loadOther() {
 }
 
 function insertScripts(services) {
-    var ref = document.scripts[0];
-    var frag = document.createDocumentFragment();
+    const ref = document.scripts[0];
+    const frag = document.createDocumentFragment();
     while (services.length) {
-        var service = services.shift();
-        var script = document.createElement('script');
+        const service = services.shift();
+        const script = document.createElement('script');
         script.src = service.url;
         script.onload = service.onLoad;
         frag.appendChild(script);
@@ -88,5 +84,5 @@ function insertScripts(services) {
 }
 
 export default {
-    init: init
+    init,
 };

@@ -1,4 +1,4 @@
-/*eslint-disable no-new*/
+/* eslint-disable no-new*/
 /* TODO - fix module constructors */
 import fastdom from 'fastdom';
 import bean from 'bean';
@@ -53,16 +53,16 @@ import email from 'common/modules/email/email';
 import emailArticle from 'common/modules/email/email-article';
 import identity from 'bootstraps/enhanced/identity-common';
 import forEach from 'lodash/collections/forEach';
-var modules = {
-    initialiseTopNavItems: function() {
-        var profile,
+const modules = {
+    initialiseTopNavItems() {
+        let profile,
             search = new Search(),
             header = document.getElementById('header');
 
         if (header) {
             if (config.switches.idProfileNavigation) {
                 profile = new Profile({
-                    url: config.page.idUrl
+                    url: config.page.idUrl,
                 });
                 profile.init();
             }
@@ -71,70 +71,70 @@ var modules = {
         search.init(header);
     },
 
-    initialiseNavigation: function() {
+    initialiseNavigation() {
         navigation.init();
     },
 
-    showTabs: function() {
-        var tabs = new Tabs();
-        ['modules:popular:loaded', 'modules:geomostpopular:ready'].forEach(function(event) {
-            mediator.on(event, function(el) {
+    showTabs() {
+        const tabs = new Tabs();
+        ['modules:popular:loaded', 'modules:geomostpopular:ready'].forEach((event) => {
+            mediator.on(event, (el) => {
                 tabs.init(el);
             });
         });
     },
 
-    showToggles: function() {
-        var toggles = new Toggles();
+    showToggles() {
+        const toggles = new Toggles();
         toggles.init(document);
         toggles.reset();
         Dropdowns.init();
     },
 
-    showRelativeDates: function() {
-        var dates = RelativeDates;
+    showRelativeDates() {
+        const dates = RelativeDates;
         dates.init();
     },
 
-    initClickstream: function() {
+    initClickstream() {
         new Clickstream({
-            filter: ['a', 'button']
+            filter: ['a', 'button'],
         });
     },
 
-    showAdblockMessage: function() {
+    showAdblockMessage() {
         donotUseAdblock.init();
     },
 
-    loadAnalytics: function() {
+    loadAnalytics() {
         interactionTracking.init();
         if (config.switches.ophan) {
-            require(['ophan/ng'], function(ophan) {
+            require(['ophan/ng'], (ophan) => {
                 if (config.switches.scrollDepth) {
                     mediator.on('scrolldepth:data', ophan.record);
 
                     new ScrollDepth({
-                        isContent: /Article|LiveBlog/.test(config.page.contentType)
+                        isContent: /Article|LiveBlog/.test(config.page.contentType),
                     });
                 }
             });
         }
     },
 
-    cleanupCookies: function() {
+    cleanupCookies() {
         cookies.cleanUp(['mmcore.pd', 'mmcore.srv', 'mmid', 'GU_ABFACIA', 'GU_FACIA', 'GU_ALPHA', 'GU_ME', 'at', 'gu_adfree_user']);
     },
 
-    cleanupLocalStorage: function() {
-        var deprecatedKeys = [
+    cleanupLocalStorage() {
+        const deprecatedKeys = [
             'gu.subscriber',
             'gu.contributor',
-            'gu.abb3.exempt'
+            'gu.abb3.exempt',
         ];
         forEach(deprecatedKeys, storage.remove);
     },
 
-    updateHistory: function() {
+    updateHistory() {
         if (config.page.contentType !== 'Network Front') {
             history.logSummary(config.page);
         }
@@ -142,83 +142,83 @@ var modules = {
         history.logHistory(config.page);
     },
 
-    showHistoryInMegaNav: function() {
+    showHistoryInMegaNav() {
         if (config.switches.historyTags) {
-            mediator.once('modules:nav:open', function() {
+            mediator.once('modules:nav:open', () => {
                 history.showInMegaNav();
             });
         }
     },
 
-    initAutoSignin: function() {
+    initAutoSignin() {
         if (config.switches.facebookAutosignin && detect.getBreakpoint() !== 'mobile') {
             new AutoSignin().init();
         }
     },
 
-    idCookieRefresh: function() {
+    idCookieRefresh() {
         if (config.switches.idCookieRefresh) {
             new CookieRefresh().init();
         }
     },
 
-    windowEventListeners: function() {
-        ['resize', 'scroll', 'orientationchange'].forEach(function(event) {
-            bean.on(window, event, mediator.emit.bind(mediator, 'window:' + event));
+    windowEventListeners() {
+        ['resize', 'scroll', 'orientationchange'].forEach((event) => {
+            bean.on(window, event, mediator.emit.bind(mediator, `window:${event}`));
         });
     },
 
-    checkIframe: function() {
+    checkIframe() {
         if (window.self !== window.top) {
             $('html').addClass('iframed');
         }
     },
 
-    runForseeSurvey: function() {
+    runForseeSurvey() {
         if (config.switches.foresee) {
             Foresee.load();
         }
     },
 
-    startRegister: function() {
+    startRegister() {
         register.initialise();
     },
 
-    showMoreTagsLink: function() {
+    showMoreTagsLink() {
         new MoreTags().init();
     },
 
-    initDiscussion: function() {
+    initDiscussion() {
         if (config.switches.discussion) {
             CommentCount.init();
         }
     },
 
-    testCookie: function() {
-        var queryParams = url.getUrlVars();
+    testCookie() {
+        const queryParams = url.getUrlVars();
         if (queryParams.test) {
             cookies.addSessionCookie('GU_TEST', encodeURIComponent(queryParams.test));
         }
     },
 
-    initOpenOverlayOnClick: function() {
-        var offset;
+    initOpenOverlayOnClick() {
+        let offset;
 
-        bean.on(document.body, 'click', '[data-open-overlay-on-click]', function(e) {
-            var elId = bonzo(e.currentTarget).data('open-overlay-on-click');
+        bean.on(document.body, 'click', '[data-open-overlay-on-click]', (e) => {
+            const elId = bonzo(e.currentTarget).data('open-overlay-on-click');
             offset = document.body.scrollTop;
             bonzo(document.body).addClass('has-overlay');
-            $('#' + elId).addClass('overlay--open').appendTo(document.body);
+            $(`#${elId}`).addClass('overlay--open').appendTo(document.body);
         });
 
-        bean.on(document.body, 'click', '.js-overlay-close', function(e) {
-            var overlay = $.ancestor(e.target, 'overlay');
+        bean.on(document.body, 'click', '.js-overlay-close', (e) => {
+            const overlay = $.ancestor(e.target, 'overlay');
             if (overlay) {
                 bonzo(overlay).removeClass('overlay--open');
             }
             bonzo(document.body).removeClass('has-overlay');
             if (offset) {
-                window.setTimeout(function() {
+                window.setTimeout(() => {
                     document.body.scrollTop = offset;
                     offset = null;
                 }, 1);
@@ -226,48 +226,48 @@ var modules = {
         });
     },
 
-    loadBreakingNews: function() {
+    loadBreakingNews() {
         if (config.switches.breakingNews && config.page.section !== 'identity' && !config.page.isHosted) {
-            breakingNews().catch(function() {
+            breakingNews().catch(() => {
                 // breaking news may not load if local storage is unavailable - this is fine
             });
         }
     },
 
-    runCssLogging: function() {
+    runCssLogging() {
         if (config.switches.cssLogging) {
             logCss();
         }
     },
 
-    initPublicApi: function() {
+    initPublicApi() {
         // BE CAREFUL what you expose here...
         window.guardian.api = {
-            logCss: logCss
+            logCss,
         };
     },
 
-    initPinterest: function() {
+    initPinterest() {
         if (/Article|LiveBlog|Gallery|Video/.test(config.page.contentType)) {
             pinterest();
         }
     },
 
 
-    saveForLater: function() {
+    saveForLater() {
         if (config.switches.saveForLater) {
-            var saveForLater = new SaveForLater();
+            const saveForLater = new SaveForLater();
             saveForLater.conditionalInit();
         }
     },
 
-    membershipEngagementBanner: function() {
+    membershipEngagementBanner() {
         if (config.switches.membershipEngagementBanner) {
             membershipEngagementBanner.init();
         }
     },
 
-    initEmail: function() {
+    initEmail() {
         // Initalise email embedded in page
         email.init();
 
@@ -277,20 +277,20 @@ var modules = {
         }
 
         // Initalise email forms in iframes
-        forEach(document.getElementsByClassName('js-email-sub__iframe'), function(el) {
+        forEach(document.getElementsByClassName('js-email-sub__iframe'), (el) => {
             email.init(el);
         });
 
         // Listen for interactive load event and initalise forms
-        bean.on(window, 'interactive-loaded', function() {
-            forEach(qwery('.guInteractive .js-email-sub__iframe'), function(el) {
+        bean.on(window, 'interactive-loaded', () => {
+            forEach(qwery('.guInteractive .js-email-sub__iframe'), (el) => {
                 email.init(el);
             });
         });
-    }
+    },
 };
 export default {
-    init: function() {
+    init() {
         forEach(robust.makeBlocks([
 
             // Analytics comes at the top. If you think your thing is more important then please think again...
@@ -335,10 +335,10 @@ export default {
             ['c-show-membership-engagement-banner', modules.membershipEngagementBanner],
             ['c-email', modules.initEmail],
             ['c-user-features', userFeatures.refresh.bind(userFeatures)],
-            ['c-membership', membership]
+            ['c-membership', membership],
 
-        ]), function(fn) {
+        ]), (fn) => {
             fn();
         });
-    }
+    },
 };

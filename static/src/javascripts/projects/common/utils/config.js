@@ -1,4 +1,4 @@
-/*global guardian:false */
+/* global guardian:false */
 
 /*
  Common functions to simplify access to page data
@@ -6,7 +6,7 @@
 import pad from 'common/utils/pad';
 import urlUtils from 'common/utils/url';
 import assign from 'common/utils/assign';
-var config = guardian.config,
+let config = guardian.config,
     adUnitOverride = urlUtils.getUrlVars()['ad-unit'];
 
 if (adUnitOverride) {
@@ -14,40 +14,36 @@ if (adUnitOverride) {
 }
 
 export default assign({
-    hasTone: function(name) {
+    hasTone(name) {
         return (this.page.tones || '').indexOf(name) > -1;
     },
-    hasSeries: function(name) {
+    hasSeries(name) {
         return (this.page.series || '').indexOf(name) > -1;
     },
-    referencesOfType: function(name) {
-        return (this.page.references || []).filter(function(reference) {
-            return typeof reference[name] !== 'undefined';
-        }).map(function(reference) {
-            return reference[name];
-        });
+    referencesOfType(name) {
+        return (this.page.references || []).filter(reference => typeof reference[name] !== 'undefined').map(reference => reference[name]);
     },
-    referenceOfType: function(name) {
+    referenceOfType(name) {
         return this.referencesOfType(name)[0];
     },
 
     // the date nicely formatted and padded for use as part of a url
     // looks like    2012/04/31
-    webPublicationDateAsUrlPart: function() {
+    webPublicationDateAsUrlPart() {
         if (this.page.webPublicationDate) {
-            var pubDate = new Date(this.page.webPublicationDate);
-            return pubDate.getFullYear() + '/' +
-                pad(pubDate.getMonth() + 1, 2) + '/' +
-                pad(pubDate.getDate(), 2);
+            const pubDate = new Date(this.page.webPublicationDate);
+            return `${pubDate.getFullYear()}/${
+                pad(pubDate.getMonth() + 1, 2)}/${
+                pad(pubDate.getDate(), 2)}`;
         }
     },
 
     // returns 2014/apr/22
-    dateFromSlug: function() {
-        var s = this.page.pageId.match(/\d{4}\/\w{3}\/\d{2}/);
+    dateFromSlug() {
+        const s = this.page.pageId.match(/\d{4}\/\w{3}\/\d{2}/);
         return s ? s[0] : null;
     },
 
-    isMedia: ['Video', 'Audio'].indexOf(config.page.contentType) > -1
+    isMedia: ['Video', 'Audio'].indexOf(config.page.contentType) > -1,
 
 }, config);

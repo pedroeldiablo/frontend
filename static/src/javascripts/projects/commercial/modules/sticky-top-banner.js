@@ -6,29 +6,36 @@ import closest from 'common/utils/closest';
 import fastdom from 'common/utils/fastdom-promise';
 import trackAdRender from 'common/modules/commercial/dfp/track-ad-render';
 import messenger from 'commercial/modules/messenger';
-var topSlotId = 'dfp-ad--top-above-nav';
-var updateQueued = false;
-var win, header, headerHeight, topSlot, topSlotHeight, topSlotStyles, stickyBanner, scrollY;
+const topSlotId = 'dfp-ad--top-above-nav';
+let updateQueued = false;
+let win,
+    header,
+    headerHeight,
+    topSlot,
+    topSlotHeight,
+    topSlotStyles,
+    stickyBanner,
+    scrollY;
 
 export default {
-    init: init,
-    update: update,
+    init,
+    update,
     resize: resizeStickyBanner,
-    onScroll: onScroll
+    onScroll,
 };
 
 function init(moduleName, _window) {
     win = _window || window;
     topSlot = document.getElementById(topSlotId);
     if (topSlot && detect.isBreakpoint({
-            min: 'desktop'
-        })) {
+        min: 'desktop',
+    })) {
         header = document.getElementById('header');
         stickyBanner = topSlot.parentNode;
 
         // First, let's assign some default values so that everything
         // is in good order before we start animating changes in height
-        var promise = initState()
+        const promise = initState()
             // Second, start listening for height and scroll changes
             .then(setupListeners);
         promise.then(onFirstRender);
@@ -40,16 +47,14 @@ function init(moduleName, _window) {
 }
 
 function initState() {
-    return fastdom.read(function() {
-            headerHeight = header.offsetHeight;
-            return topSlot.offsetHeight;
-        })
-        .then(function(currentHeight) {
-            return Promise.all([
-                resizeStickyBanner(currentHeight),
-                onScroll()
-            ]);
-        });
+    return fastdom.read(() => {
+        headerHeight = header.offsetHeight;
+        return topSlot.offsetHeight;
+    })
+        .then(currentHeight => Promise.all([
+            resizeStickyBanner(currentHeight),
+            onScroll(),
+        ]));
 }
 
 // Register a message listener for when the creative wants to resize
@@ -60,18 +65,16 @@ function setupListeners() {
     messenger.register('resize', onResize);
     if (!config.page.hasSuperStickyBanner) {
         addEventListener(win, 'scroll', onScroll, {
-            passive: true
+            passive: true,
         });
     }
 }
 
 function onFirstRender() {
     trackAdRender(topSlotId)
-        .then(function(isRendered) {
+        .then((isRendered) => {
             if (isRendered) {
-                fastdom.read(function() {
-                        return topSlot.offsetHeight;
-                    })
+                fastdom.read(() => topSlot.offsetHeight)
                     .then(resizeStickyBanner);
             }
         });
@@ -85,10 +88,10 @@ function onResize(specs, _, iframe) {
 }
 
 function update(newHeight) {
-    return fastdom.read(function() {
-            topSlotStyles || (topSlotStyles = win.getComputedStyle(topSlot));
-            return newHeight + parseInt(topSlotStyles.paddingTop) + parseInt(topSlotStyles.paddingBottom);
-        })
+    return fastdom.read(() => {
+        topSlotStyles || (topSlotStyles = win.getComputedStyle(topSlot));
+        return newHeight + parseInt(topSlotStyles.paddingTop) + parseInt(topSlotStyles.paddingBottom);
+    })
         .then(resizeStickyBanner);
 }
 
@@ -96,16 +99,16 @@ function onScroll() {
     scrollY = win.pageYOffset;
     if (!updateQueued) {
         updateQueued = true;
-        return fastdom.write(function() {
-                updateQueued = false;
-                if (headerHeight < scrollY) {
-                    stickyBanner.style.position = 'absolute';
-                    stickyBanner.style.top = headerHeight + 'px';
-                } else {
-                    stickyBanner.style.position =
+        return fastdom.write(() => {
+            updateQueued = false;
+            if (headerHeight < scrollY) {
+                stickyBanner.style.position = 'absolute';
+                stickyBanner.style.top = `${headerHeight}px`;
+            } else {
+                stickyBanner.style.position =
                         stickyBanner.style.top = null;
-                }
-            })
+            }
+        })
             .then(setupAnimation);
     }
 }
@@ -114,7 +117,7 @@ function onScroll() {
 // them for a better experience. We only do this if the slot is in view
 // though.
 function setupAnimation() {
-    return fastdom.write(function() {
+    return fastdom.write(() => {
         if (scrollY <= headerHeight) {
             header.classList.add('l-header--animate');
             stickyBanner.classList.add('sticky-top-banner-ad--animate');
@@ -132,10 +135,10 @@ function setupAnimation() {
 // user has scrolled past the header.
 function resizeStickyBanner(newHeight) {
     if (topSlotHeight !== newHeight) {
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             stickyBanner.classList.add('sticky-top-banner-ad');
             stickyBanner.style.height =
-                header.style.marginTop = newHeight + 'px';
+                header.style.marginTop = `${newHeight}px`;
 
             if (topSlotHeight !== undefined && headerHeight <= scrollY) {
                 win.scrollBy(0, newHeight - topSlotHeight);

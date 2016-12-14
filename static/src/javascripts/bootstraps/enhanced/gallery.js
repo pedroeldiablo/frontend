@@ -7,10 +7,10 @@ import mediator from 'common/utils/mediator';
 import Component from 'common/modules/component';
 import trail from 'bootstraps/enhanced/trail';
 import debounce from 'lodash/functions/debounce';
-var verticallyResponsiveImages = function() {
-        var setHeight = function() {
+let verticallyResponsiveImages = function () {
+        const setHeight = function () {
             if (!bonzo(document.body).hasClass('has-overlay')) {
-                var $imgs = $('.js-gallery-img'),
+                let $imgs = $('.js-gallery-img'),
                     min = 300, // stops images getting too small
                     max = $imgs.parent().dim().width, // portrait images shouldn't be taller than landscapes are wide
                     height = Math.max(min, Math.min(max, window.innerHeight * 0.9));
@@ -26,21 +26,21 @@ var verticallyResponsiveImages = function() {
         mediator.addListeners({
             'window:resize': debounce(setHeight, 200),
             'window:orientationchange': debounce(setHeight, 200),
-            'ui:images:vh': setHeight
+            'ui:images:vh': setHeight,
         });
     },
-    transcludeMostPopular = function() {
-        var mostViewed = new Component(),
+    transcludeMostPopular = function () {
+        let mostViewed = new Component(),
             container = qwery('.js-gallery-most-popular')[0];
 
         mostViewed.manipulationType = 'html';
         mostViewed.endpoint = '/gallery/most-viewed.json';
-        mostViewed.ready = function() {
+        mostViewed.ready = function () {
             mediator.emit('page:new-content', container);
         };
         mostViewed.fetch(container, 'html');
     },
-    ready = function() {
+    ready = function () {
         trail();
         verticallyResponsiveImages();
 
@@ -53,5 +53,5 @@ var verticallyResponsiveImages = function() {
     };
 
 export default {
-    init: ready
+    init: ready,
 };

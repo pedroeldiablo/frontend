@@ -1,5 +1,5 @@
 import config from 'common/utils/config';
-var dfpEnv = {
+const dfpEnv = {
     /* renderStartTime: integer. Point in time when DFP kicks in */
     renderStartTime: -1,
 
@@ -34,9 +34,9 @@ var dfpEnv = {
     adverts: null,
 
     /* shouldLazyLoad: () -> boolean. Determines whether ads should be lazy loaded */
-    shouldLazyLoad: function() {
+    shouldLazyLoad() {
         // We do not want lazy loading on pageskins because it messes up the roadblock
         return !config.page.hasPageSkin;
-    }
+    },
 };
 export default dfpEnv;

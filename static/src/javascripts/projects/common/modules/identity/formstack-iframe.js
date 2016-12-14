@@ -3,16 +3,15 @@ import $ from 'common/utils/$';
 import mediator from 'common/utils/mediator';
 
 function FormstackIframe(el, config) {
+    const self = this;
 
-    var self = this;
-
-    self.init = function() {
+    self.init = function () {
         // Setup postMessage listener for events from "modules/identity/formstack"
-        bean.on(window, 'message', function(event) {
+        bean.on(window, 'message', (event) => {
             if (event.origin === config.page.idUrl) {
                 self.onMessage(event);
             } else {
-                return;
+
             }
         });
 
@@ -20,13 +19,13 @@ function FormstackIframe(el, config) {
 
         // Listen for load of form confirmation or error page,
         // which has no form, so won't instantiate the Formstack module
-        bean.on(el, 'load', function() {
+        bean.on(el, 'load', () => {
             self.show();
             self.refreshHeight();
         });
     };
 
-    self.onMessage = function(event) {
+    self.onMessage = function (event) {
         switch (event.data) {
             case 'ready':
                 self.show();
@@ -43,30 +42,29 @@ function FormstackIframe(el, config) {
         }
     };
 
-    self.refreshHeight = function(reset) {
+    self.refreshHeight = function (reset) {
         if (reset) {
             // If a height is set on the iframe, the following calculation
             // will be at least that height, optionally reset first
             $(el).css({
-                'height': 0
+                height: 0,
             });
         }
 
-        var iframe = el.contentWindow.document,
+        let iframe = el.contentWindow.document,
             body = iframe.body,
             html = iframe.documentElement,
             height = Math.max(body.scrollHeight, body.offsetHeight,
                 html.clientHeight, html.scrollHeight, html.offsetHeight);
 
         $(el).css({
-            'height': height
+            height,
         });
     };
 
-    self.show = function() {
+    self.show = function () {
         $(el).removeClass('is-hidden');
     };
-
 }
 
 export default FormstackIframe;

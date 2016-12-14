@@ -15,35 +15,35 @@ function getSpacefinderRules() {
         selectors: {
             ' > h2': {
                 minAbove: detect.getBreakpoint() === 'mobile' ? 20 : 0,
-                minBelow: 200
+                minBelow: 200,
             },
             ' > *:not(p):not(h2)': {
                 minAbove: 35,
-                minBelow: 300
+                minBelow: 300,
             },
             ' .ad-slot': {
                 minAbove: 150,
-                minBelow: 200
+                minBelow: 200,
             },
             ' .element-rich-link': {
                 minAbove: 400,
-                minBelow: 400
-            }
-        }
+                minBelow: 400,
+            },
+        },
     };
 }
 
 export default {
-    init: function() {
+    init() {
         if (config.page.openModule) {
-            spaceFiller.fillSpace(getSpacefinderRules(), function(spaces) {
+            spaceFiller.fillSpace(getSpacefinderRules(), (spaces) => {
                 ajax({
                     url: config.page.openModule,
                     crossOrigin: true,
-                    method: 'get'
-                }).then(function(resp) {
+                    method: 'get',
+                }).then((resp) => {
                     if (resp.html) {
-                        fastdom.write(function() {
+                        fastdom.write(() => {
                             $.create(resp.html)
                                 .addClass('element--supporting')
                                 .insertBefore(spaces[0]);
@@ -53,5 +53,5 @@ export default {
                 });
             });
         }
-    }
+    },
 };

@@ -14,7 +14,7 @@ import profileIcon from 'inlineSvg!svgs/icon/profile-36';
 import rightArrowIcon from 'inlineSvg!svgs/icon/arrow-right';
 import guardianLogo from 'inlineSvg!svgs/icon/marque-36';
 import fetch from 'common/utils/fetch';
-export default function() {
+export default function () {
     this.id = 'RecommendedForYouRecommendations';
     this.start = '2016-08-02';
     this.expiry = '2016-12-23';
@@ -27,70 +27,64 @@ export default function() {
     this.dataLinkNames = '';
     this.idealOutcome = 'People will visit more often';
 
-    var endpoint = 'https://engine.mobile-aws.guardianapis.com/recommendations';
-    var cachedRecommendationsKey = 'gu.cachedRecommendations';
-    var numberOfRecommendations = 4;
+    const endpoint = 'https://engine.mobile-aws.guardianapis.com/recommendations';
+    const cachedRecommendationsKey = 'gu.cachedRecommendations';
+    const numberOfRecommendations = 4;
 
-    var $opinionSection;
-    var $recommendedForYouSection;
+    let $opinionSection;
+    let $recommendedForYouSection;
 
-    this.canRun = function() {
+    this.canRun = function () {
         $opinionSection = $('#opinion');
         return config.page.contentType === 'Network Front' && $opinionSection.length;
     };
 
     this.variants = [{
         id: 'user-history',
-        test: function() {
+        test() {
             populateRecommendationsContainer();
-        }
+        },
     }, {
         id: 'control',
-        test: function() {}
+        test() {},
     }];
 
     function populateRecommendationsContainer() {
-        var recommendations = storage.local.get(cachedRecommendationsKey);
+        const recommendations = storage.local.get(cachedRecommendationsKey);
         if (recommendations && new Date(recommendations.expiry) > new Date()) {
             insertSection(recommendations.items);
         } else {
-            var promisedRecommendations = getRemoteRecommendations();
+            const promisedRecommendations = getRemoteRecommendations();
             promisedRecommendations.then(cacheRecommendations);
             promisedRecommendations.then(insertSection);
         }
     }
 
     function getRemoteRecommendations() {
-        var reqBody = {
-            'pageSize': numberOfRecommendations,
-            'articles': history.test.getHistory().map(function(item) {
-                return item[0];
-            })
+        const reqBody = {
+            pageSize: numberOfRecommendations,
+            articles: history.test.getHistory().map(item => item[0]),
         };
 
-        var request = fetch(endpoint, {
+        const request = fetch(endpoint, {
             type: 'json',
             method: 'post',
             crossOrigin: true,
             body: JSON.stringify(reqBody),
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+            },
         });
 
-        return request.then(function(response) {
-            return response.json().then(function(body) {
-                return body.content.slice(0, numberOfRecommendations).map(itemFromRecommendationItem);
-            });
-        });
+        return request.then(response => response.json().then(body => body.content.slice(0, numberOfRecommendations).map(itemFromRecommendationItem)));
     }
 
     function cacheRecommendations(items) {
-        var expiry = new Date();
+        const expiry = new Date();
         expiry.setTime(expiry.getTime() + 21600000);
         storage.local.set(cachedRecommendationsKey, {
-            'expiry': expiry,
-            'items': items
+            expiry,
+            items,
         });
     }
 
@@ -109,15 +103,15 @@ export default function() {
 
     function itemFromRecommendationItem(item) {
         return {
-            'id': item.item.id,
-            'imageUrl': imageUrlFromItem(item.item),
-            'title': item.item.title,
-            'standFirst': item.item.standFirst
+            id: item.item.id,
+            imageUrl: imageUrlFromItem(item.item),
+            title: item.item.title,
+            standFirst: item.item.standFirst,
         };
     }
 
     function setupComponentAttentionTracking(trackingCode) {
-        require(['ophan/ng'], function(ophan) {
+        require(['ophan/ng'], (ophan) => {
             ophan.trackComponentAttention(trackingCode, $recommendedForYouSection[0]);
         });
     }
@@ -126,13 +120,13 @@ export default function() {
         $recommendedForYouSection = $.create(template(recommendedForYouTemplate, {
             profileIcon: svg(profileIcon, ['rounded-icon', 'rfy-profile-icon', 'control__icon-wrapper']),
             guardianLogo: svg(guardianLogo),
-            items: items
+            items,
         }));
 
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             $recommendedForYouSection.insertBefore($opinionSection);
             setupComponentAttentionTracking('recommended-for-you_user-history');
             mediator.emit('recommended-for-you:insert');
         });
     }
-};
+}

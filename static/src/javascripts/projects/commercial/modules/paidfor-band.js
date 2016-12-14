@@ -8,8 +8,8 @@ function init() {
         return Promise.resolve(false);
     }
 
-    return new Promise(function(resolve) {
-        var elem = document.querySelector('.facia-page > .paidfor-band, #article > .paidfor-band');
+    return new Promise((resolve) => {
+        const elem = document.querySelector('.facia-page > .paidfor-band, #article > .paidfor-band');
         if (elem) {
             new Sticky(elem).init();
         }
@@ -18,5 +18,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

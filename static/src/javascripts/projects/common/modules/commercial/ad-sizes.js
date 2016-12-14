@@ -1,4 +1,4 @@
-var adSizes = {
+const adSizes = {
     // standard ad sizes
     billboard: AdSize(970, 250),
     leaderboard: AdSize(728, 90),
@@ -18,7 +18,7 @@ var adSizes = {
     inlineMerchandising: AdSize(88, 85),
     fabric: AdSize(88, 71),
     fluid250: AdSize(88, 70),
-    empty: AdSize(2, 2)
+    empty: AdSize(2, 2),
 };
 adSizes['970x250'] = adSizes.billboard;
 adSizes['728x90'] = adSizes.leaderboard;
@@ -30,12 +30,12 @@ export default adSizes;
 
 function AdSize(width, height) {
     function toString() {
-        return width === height && height === 0 ? 'fluid' : width + ',' + height;
+        return width === height && height === 0 ? 'fluid' : `${width},${height}`;
     }
 
     return Object.freeze({
-        width: width,
-        height: height,
-        toString: toString
+        width,
+        height,
+        toString,
     });
 }

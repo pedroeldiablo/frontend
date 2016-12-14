@@ -19,8 +19,7 @@ import idApi from 'common/modules/identity/api';
 import assign from 'lodash/objects/assign';
 
 function Formstack(el, formstackId, config) {
-
-    var self = this,
+    let self = this,
         dom = {},
         formId = formstackId.split('-')[0];
 
@@ -42,10 +41,10 @@ function Formstack(el, formstackId, config) {
             sectionHeaderFirst: 'formstack-heading--first',
             sectionText: 'formstack-section',
             characterCount: 'formstack-count',
-            hide: 'is-hidden'
+            hide: 'is-hidden',
         },
         fsSelectors: {
-            form: '#fsForm' + formId,
+            form: `#fsForm${formId}`,
             field: '.fsRow',
             note: '.fsSupporting, .showMobile',
             label: '.fsLabel',
@@ -61,17 +60,17 @@ function Formstack(el, formstackId, config) {
             sectionHeaderFirst: '.fsSection:first-child .fsSectionHeading',
             sectionText: '.fsSectionText',
             characterCount: '.fsCounter',
-            hide: '.hidden, .fsHidden, .ui-datepicker-trigger'
+            hide: '.hidden, .fsHidden, .ui-datepicker-trigger',
         },
         hiddenSelectors: {
             userId: '[type="number"]',
-            email: '[type="email"]'
-        }
+            email: '[type="email"]',
+        },
     }, config);
 
-    self.init = function() {
+    self.init = function () {
         // User object required to populate fields
-        var user = idApi.getUserOrSignIn();
+        const user = idApi.getUserOrSignIn();
 
         self.dom(user);
         $(el).removeClass(config.idClasses.hide);
@@ -81,8 +80,11 @@ function Formstack(el, formstackId, config) {
         self.sendHeight();
     };
 
-    self.dom = function(user) {
-        var selector, $userId, $email, html;
+    self.dom = function (user) {
+        let selector,
+            $userId,
+            $email,
+            html;
 
         // Formstack generates some awful HTML, so we'll remove the CSS links,
         // loop their selectors and add our own classes instead
@@ -98,7 +100,7 @@ function Formstack(el, formstackId, config) {
         $userId = $(config.hiddenSelectors.userId, dom.$form).remove();
         $email = $(config.hiddenSelectors.email, dom.$form).remove();
 
-        html = '<input type="hidden" name="' + $userId.attr('name') + '" value="' + user.id + '">' + '<input type="hidden" name="' + $email.attr('name') + '" value="' + user.primaryEmailAddress + '">';
+        html = `<input type="hidden" name="${$userId.attr('name')}" value="${user.id}">` + `<input type="hidden" name="${$email.attr('name')}" value="${user.primaryEmailAddress}">`;
 
         dom.$form.append(html);
 
@@ -108,28 +110,28 @@ function Formstack(el, formstackId, config) {
 
         // Listen for message from top window,
         // only message we are listening for is the iframe position..
-        window.addEventListener('message', function(event) {
-            var message = JSON.parse(event.data);
+        window.addEventListener('message', (event) => {
+            const message = JSON.parse(event.data);
             if (message.iframeTop) {
                 self.scrollToTopOfIframe(message.iframeTop);
             }
         }, false);
     };
 
-    self.submit = function(event) {
+    self.submit = function (event) {
         event.preventDefault();
 
-        setTimeout(function() {
+        setTimeout(() => {
             // Remove any existing errors
-            $('.' + config.idClasses.formError).removeClass(config.idClasses.formError);
-            $('.' + config.idClasses.fieldError).removeClass(config.idClasses.fieldError);
+            $(`.${config.idClasses.formError}`).removeClass(config.idClasses.formError);
+            $(`.${config.idClasses.fieldError}`).removeClass(config.idClasses.fieldError);
 
             // Handle new errors
             $(config.fsSelectors.formError, dom.$form).addClass(config.idClasses.formError);
             $(config.fsSelectors.fieldError, dom.$form).addClass(config.idClasses.fieldError);
 
             // Update character count absolute positions
-            $(config.fsSelectors.textArea, el).each(function(textarea) {
+            $(config.fsSelectors.textArea, el).each((textarea) => {
                 bean.fire(textarea, 'keyup');
             });
 
@@ -139,21 +141,20 @@ function Formstack(el, formstackId, config) {
             if ($(config.fsSelectors.formError, dom.$form).length === 0) {
                 dom.$form[0].submit();
             }
-
         }, 100);
     };
 
-    self.scrollToTopOfIframe = function(top) {
+    self.scrollToTopOfIframe = function (top) {
         self.postMessage('scroll-to', 'scroll-to', 0, top);
     };
 
-    self.unload = function() {
+    self.unload = function () {
         // Listen for navigation to success page
         self.sendHeight(true);
     };
 
-    self.sendHeight = function() {
-        var body = document.body,
+    self.sendHeight = function () {
+        let body = document.body,
             html = document.documentElement,
             height = Math.max(body.scrollHeight, body.offsetHeight,
                 html.clientHeight, html.scrollHeight, html.offsetHeight);
@@ -161,12 +162,11 @@ function Formstack(el, formstackId, config) {
         self.postMessage('set-height', height);
     };
 
-    self.postMessage = function(type, value, x, y) {
-
-        var message = {
-            type: type,
-            value: value,
-            href: window.location.href
+    self.postMessage = function (type, value, x, y) {
+        const message = {
+            type,
+            value,
+            href: window.location.href,
         };
 
         if (x) {
@@ -178,7 +178,6 @@ function Formstack(el, formstackId, config) {
 
         window.top.postMessage(JSON.stringify(message), '*');
     };
-
 }
 
 export default Formstack;

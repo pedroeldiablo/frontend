@@ -5,18 +5,20 @@ import config from 'common/utils/config';
 import fastdom from 'common/utils/fastdom-promise';
 import createSlot from 'common/modules/commercial/dfp/create-slot';
 import commercialFeatures from 'common/modules/commercial/commercial-features';
-var minArticleHeight = 1300;
-var minFootballArticleHeight = 2200;
-var minImmersiveArticleHeight = 600;
+const minArticleHeight = 1300;
+const minFootballArticleHeight = 2200;
+const minImmersiveArticleHeight = 600;
 
-var mainColumnSelector = '.js-content-main-column';
-var rhColumnSelector = '.js-secondary-column';
-var adSlotContainerSelector = '.js-ad-slot-container';
-var componentsContainerSelector = '.js-components-container';
+const mainColumnSelector = '.js-content-main-column';
+const rhColumnSelector = '.js-secondary-column';
+const adSlotContainerSelector = '.js-ad-slot-container';
+const componentsContainerSelector = '.js-components-container';
 
 function init() {
-    var $col = $(rhColumnSelector);
-    var $mainCol, $componentsContainer, $adSlotContainer;
+    const $col = $(rhColumnSelector);
+    let $mainCol,
+        $componentsContainer,
+        $adSlotContainer;
 
     // are article aside ads disabled, or secondary column hidden?
     if (!(commercialFeatures.articleAsideAdverts && $col.length && $css($col, 'display') !== 'none')) {
@@ -27,10 +29,9 @@ function init() {
     $componentsContainer = $(componentsContainerSelector, $col[0]);
     $adSlotContainer = $(adSlotContainerSelector);
 
-    return fastdom.read(function() {
-        return $mainCol.dim().height;
-    }).then(function(mainColHeight) {
-        var $adSlot, adType;
+    return fastdom.read(() => $mainCol.dim().height).then((mainColHeight) => {
+        let $adSlot,
+            adType;
 
 
         if (config.page.isImmersive) {
@@ -44,7 +45,7 @@ function init() {
 
         $adSlot = createSlot(adType, 'mpu-banner-ad');
 
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             if (config.page.contentType === 'Article' && config.page.sponsorshipType === 'advertisement-features') {
                 $componentsContainer.addClass('u-h');
             }
@@ -57,5 +58,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

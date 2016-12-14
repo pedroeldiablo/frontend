@@ -8,51 +8,50 @@ function eventAction() {
 }
 
 function buildEventId(event, videoId) {
-    return event + ':' + videoId;
+    return `${event}:${videoId}`;
 }
 
 function initYoutubeEvents(videoId) {
+    const ga = window.ga;
+    const gaTracker = config.googleAnalytics.trackers.editorial;
 
-    var ga = window.ga;
-    var gaTracker = config.googleAnalytics.trackers.editorial;
-
-    var events = {
+    const events = {
         metricMap: {
-            'play': 'metric1',
-            'skip': 'metric2',
-            '25': 'metric3',
-            '50': 'metric4',
-            '75': 'metric5',
-            'end': 'metric6'
+            play: 'metric1',
+            skip: 'metric2',
+            25: 'metric3',
+            50: 'metric4',
+            75: 'metric5',
+            end: 'metric6',
         },
         baseEventObject: {
             eventCategory: 'media',
             eventAction: eventAction(),
             eventLabel: videoId,
             dimension19: videoId,
-            dimension20: 'guardian-youtube'
-        }
+            dimension20: 'guardian-youtube',
+        },
     };
 
-    var eventsList = ['play', '25', '50', '75', 'end'];
+    const eventsList = ['play', '25', '50', '75', 'end'];
 
-    forEach(eventsList, function(event) {
-        mediator.once(buildEventId(event, videoId), function(id) {
-            var mediaEvent = MediaEvent(videoId, 'video', event);
+    forEach(eventsList, (event) => {
+        mediator.once(buildEventId(event, videoId), (id) => {
+            const mediaEvent = MediaEvent(videoId, 'video', event);
             ophanRecord(mediaEvent);
-            ga(gaTracker + '.send', 'event',
+            ga(`${gaTracker}.send`, 'event',
                 gaHelper.buildGoogleAnalyticsEvent(mediaEvent, events.metricMap, id,
                     'gu-video-youtube', eventAction, id));
         });
     });
 
     function ophanRecord(event) {
-        require(['ophan/ng'], function(ophan) {
-            var eventObject = {
+        require(['ophan/ng'], (ophan) => {
+            const eventObject = {
                 video: {
-                    id: 'gu-video-youtube-' + event.mediaId,
-                    eventType: 'video:content:' + event.eventType
-                }
+                    id: `gu-video-youtube-${event.mediaId}`,
+                    eventType: `video:content:${event.eventType}`,
+                },
             };
             ophan.record(eventObject);
         });
@@ -69,9 +68,9 @@ function initYoutubeEvents(videoId) {
  */
 function MediaEvent(mediaId, mediaType, eventType) {
     return {
-        mediaId: mediaId,
-        mediaType: mediaType,
-        eventType: eventType
+        mediaId,
+        mediaType,
+        eventType,
     };
 }
 
@@ -84,6 +83,6 @@ function track(event, id) {
 }
 
 export default {
-    track: track,
-    init: init
+    track,
+    init,
 };

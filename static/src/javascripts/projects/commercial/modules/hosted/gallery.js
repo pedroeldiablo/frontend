@@ -19,7 +19,7 @@ import loadCssPromise from 'common/utils/load-css-promise';
 
 function HostedGallery() {
     // CONFIG
-    var breakpoint = detect.getBreakpoint();
+    const breakpoint = detect.getBreakpoint();
     this.useSwipe = detect.hasTouchScreen() && (breakpoint === 'mobile' || breakpoint === 'tablet');
     this.swipeThreshold = 0.05;
     this.index = this.index || 1;
@@ -52,9 +52,9 @@ function HostedGallery() {
         // FSM CONFIG
         this.fsm = new FiniteStateMachine({
             initial: 'image',
-            onChangeState: function() {},
+            onChangeState() {},
             context: this,
-            states: this.states
+            states: this.states,
         });
 
         bean.on(this.infoBtn, 'click', this.trigger.bind(this, 'toggle-info'));
@@ -73,39 +73,42 @@ function HostedGallery() {
     }
 }
 
-HostedGallery.prototype.toggleOj = function() {
+HostedGallery.prototype.toggleOj = function () {
     bonzo(this.$ojFloat).toggleClass('minimise-oj');
 };
 
-HostedGallery.prototype.initScroll = function() {
-    bean.on(this.nextBtn, 'click', function() {
+HostedGallery.prototype.initScroll = function () {
+    bean.on(this.nextBtn, 'click', () => {
         this.scrollTo(this.index + 1);
         this.trigger.bind(this, 'next', {
-            nav: 'Click'
+            nav: 'Click',
         });
-    }.bind(this));
-    bean.on(this.prevBtn, 'click', function() {
+    });
+    bean.on(this.prevBtn, 'click', () => {
         this.scrollTo(this.index - 1);
         this.trigger.bind(this, 'prev', {
-            nav: 'Click'
+            nav: 'Click',
         });
-    }.bind(this));
+    });
 
     bean.on(this.$scrollEl[0], 'scroll', throttle(this.fadeContent.bind(this), 20));
 };
 
-HostedGallery.prototype.initSwipe = function() {
-    var threshold, ox, dx, touchMove,
+HostedGallery.prototype.initSwipe = function () {
+    let threshold,
+        ox,
+        dx,
+        touchMove,
         updateTime = 20; // time in ms
-    this.$imagesContainer.css('width', this.$images.length + '00%');
+    this.$imagesContainer.css('width', `${this.$images.length}00%`);
 
-    bean.on(this.$galleryEl[0], 'touchstart', function(e) {
+    bean.on(this.$galleryEl[0], 'touchstart', (e) => {
         threshold = this.swipeContainerWidth * this.swipeThreshold;
         ox = e.touches[0].pageX;
         dx = 0;
-    }.bind(this));
+    });
 
-    touchMove = function(e) {
+    touchMove = function (e) {
         e.preventDefault();
         if (e.touches.length > 1 || e.scale && e.scale !== 1) {
             return;
@@ -115,11 +118,11 @@ HostedGallery.prototype.initSwipe = function() {
     }.bind(this);
 
     bean.on(this.$galleryEl[0], 'touchmove', throttle(touchMove, updateTime, {
-        trailing: false
+        trailing: false,
     }));
 
-    bean.on(this.$galleryEl[0], 'touchend', function() {
-        var direction;
+    bean.on(this.$galleryEl[0], 'touchend', () => {
+        let direction;
         if (Math.abs(dx) > threshold) {
             direction = dx > threshold ? 1 : -1;
         } else {
@@ -130,7 +133,7 @@ HostedGallery.prototype.initSwipe = function() {
         if (direction === 1) {
             if (this.index > 1) {
                 this.trigger('prev', {
-                    nav: 'Swipe'
+                    nav: 'Swipe',
                 });
             } else {
                 this.trigger('reload');
@@ -138,7 +141,7 @@ HostedGallery.prototype.initSwipe = function() {
         } else if (direction === -1) {
             if (this.index < this.$images.length) {
                 this.trigger('next', {
-                    nav: 'Swipe'
+                    nav: 'Swipe',
                 });
             } else {
                 this.trigger('reload');
@@ -146,35 +149,33 @@ HostedGallery.prototype.initSwipe = function() {
         } else {
             this.trigger('reload');
         }
-
-    }.bind(this));
+    });
 };
 
-HostedGallery.prototype.ctaIndex = function() {
-    var ctaIndex = config.page.ctaIndex;
-    var images = config.page.images;
+HostedGallery.prototype.ctaIndex = function () {
+    const ctaIndex = config.page.ctaIndex;
+    const images = config.page.images;
     return (ctaIndex > 0 && ctaIndex < images.length - 1) ? ctaIndex : undefined;
 };
 
-HostedGallery.prototype.trigger = function(event, data) {
+HostedGallery.prototype.trigger = function (event, data) {
     this.fsm.trigger(event, data);
 };
 
-HostedGallery.prototype.loadSurroundingImages = function(index, count) {
-    var $img, that = this;
+HostedGallery.prototype.loadSurroundingImages = function (index, count) {
+    let $img,
+        that = this;
     chain([0, 1, 2]).and(
         map,
-        function(i) {
-            return index + i === 0 ? count - 1 : (index - 1 + i) % count;
-        }
-    ).and(forEach, function(i) {
+        i => index + i === 0 ? count - 1 : (index - 1 + i) % count
+    ).and(forEach, (i) => {
         $img = $('img', this.$images[i]);
         if (!$img[0].complete) {
             bean.one($img[0], 'load', setSize.bind(this, $img, i));
         } else {
             setSize($img, i);
         }
-    }.bind(this));
+    });
 
     function setSize($image, index) {
         if (!that.imageRatios[index]) {
@@ -184,8 +185,8 @@ HostedGallery.prototype.loadSurroundingImages = function(index, count) {
     }
 };
 
-HostedGallery.prototype.resizeImage = function(imgIndex) {
-    var $imageDiv = this.$images[imgIndex],
+HostedGallery.prototype.resizeImage = function (imgIndex) {
+    let $imageDiv = this.$images[imgIndex],
         $galleryFrame = this.$galleryFrame[0],
         $ctaFloat = this.$ctaFloat,
         $ojFloat = this.$ojFloat,
@@ -199,7 +200,7 @@ HostedGallery.prototype.resizeImage = function(imgIndex) {
         ctaIndex = this.ctaIndex(),
         tabletSize = 740,
         imageSize = getFrame(imgRatio);
-    fastdom.write(function() {
+    fastdom.write(() => {
         $sizer.css('width', imageSize.width);
         $sizer.css('height', imageSize.height);
         $sizer.css('top', imageSize.topBottom);
@@ -221,11 +222,11 @@ HostedGallery.prototype.resizeImage = function(imgIndex) {
     function getFrame(desiredRatio, w, h) {
         w = w || width;
         h = h || height;
-        var frame = {
+        const frame = {
             height: h,
             width: w,
             topBottom: 0,
-            leftRight: 0
+            leftRight: 0,
         };
         if (!desiredRatio) return frame;
         if (desiredRatio > w / h) {
@@ -241,40 +242,40 @@ HostedGallery.prototype.resizeImage = function(imgIndex) {
     }
 };
 
-HostedGallery.prototype.translateContent = function(imgIndex, offset, duration) {
-    var px = -1 * (imgIndex - 1) * this.swipeContainerWidth,
+HostedGallery.prototype.translateContent = function (imgIndex, offset, duration) {
+    let px = -1 * (imgIndex - 1) * this.swipeContainerWidth,
         galleryEl = this.$imagesContainer[0],
         $meta = this.$meta;
-    galleryEl.style.webkitTransitionDuration = duration + 'ms';
-    galleryEl.style.mozTransitionDuration = duration + 'ms';
-    galleryEl.style.msTransitionDuration = duration + 'ms';
-    galleryEl.style.transitionDuration = duration + 'ms';
-    galleryEl.style.webkitTransform = 'translate(' + (px + offset) + 'px,0)' + 'translateZ(0)';
-    galleryEl.style.mozTransform = 'translate(' + (px + offset) + 'px,0)';
-    galleryEl.style.msTransform = 'translate(' + (px + offset) + 'px,0)';
-    galleryEl.style.transform = 'translate(' + (px + offset) + 'px,0)' + 'translateZ(0)';
-    fastdom.write(function() {
+    galleryEl.style.webkitTransitionDuration = `${duration}ms`;
+    galleryEl.style.mozTransitionDuration = `${duration}ms`;
+    galleryEl.style.msTransitionDuration = `${duration}ms`;
+    galleryEl.style.transitionDuration = `${duration}ms`;
+    galleryEl.style.webkitTransform = `translate(${px + offset}px,0)` + 'translateZ(0)';
+    galleryEl.style.mozTransform = `translate(${px + offset}px,0)`;
+    galleryEl.style.msTransform = `translate(${px + offset}px,0)`;
+    galleryEl.style.transform = `translate(${px + offset}px,0)` + 'translateZ(0)';
+    fastdom.write(() => {
         bonzo($meta).css('opacity', offset != 0 ? 0 : 1);
     });
 };
 
-HostedGallery.prototype.fadeContent = function(e) {
-    var length = this.$images.length;
-    var scrollTop = e.target.scrollTop;
-    var scrollHeight = e.target.scrollHeight;
-    var progress = Math.round(length * (scrollTop / scrollHeight) * 100) / 100;
-    var fractionProgress = progress % 1;
-    var deg = Math.ceil(fractionProgress * 360);
-    var newIndex = Math.round(progress + 0.75);
-    var ctaIndex = this.ctaIndex();
-    fastdom.write(function() {
-        this.$images.each(function(image, index) {
-            var opacity = ((progress - index + 1) * 16 / 11) - 0.0625;
+HostedGallery.prototype.fadeContent = function (e) {
+    const length = this.$images.length;
+    const scrollTop = e.target.scrollTop;
+    const scrollHeight = e.target.scrollHeight;
+    const progress = Math.round(length * (scrollTop / scrollHeight) * 100) / 100;
+    const fractionProgress = progress % 1;
+    const deg = Math.ceil(fractionProgress * 360);
+    const newIndex = Math.round(progress + 0.75);
+    const ctaIndex = this.ctaIndex();
+    fastdom.write(() => {
+        this.$images.each((image, index) => {
+            const opacity = ((progress - index + 1) * 16 / 11) - 0.0625;
             bonzo(image).css('opacity', Math.min(Math.max(opacity, 0), 1));
         });
 
-        bonzo(this.$border).css('transform', 'rotate(' + deg + 'deg)');
-        bonzo(this.$border).css('-webkit-transform', 'rotate(' + deg + 'deg)');
+        bonzo(this.$border).css('transform', `rotate(${deg}deg)`);
+        bonzo(this.$border).css('-webkit-transform', `rotate(${deg}deg)`);
 
         bonzo(this.$galleryEl).toggleClass('show-cta', progress <= ctaIndex && progress >= ctaIndex - 0.25);
         bonzo(this.$galleryEl).toggleClass('show-oj', progress >= length - 1.25);
@@ -282,37 +283,37 @@ HostedGallery.prototype.fadeContent = function(e) {
         bonzo(this.$progress).toggleClass('first-half', fractionProgress && fractionProgress < 0.5);
 
         bonzo(this.$meta).css('opacity', progress != 0 ? 0 : 1);
-    }.bind(this));
+    });
 
     if (newIndex && newIndex !== this.index) {
         this.index = newIndex;
         this.trigger('reload', {
-            nav: 'Scroll'
+            nav: 'Scroll',
         });
     }
 };
 
-HostedGallery.prototype.scrollTo = function(index) {
-    var scrollEl = this.$scrollEl;
-    var length = this.$images.length;
-    var scrollHeight = scrollEl[0].scrollHeight;
-    fastdom.write(function() {
+HostedGallery.prototype.scrollTo = function (index) {
+    const scrollEl = this.$scrollEl;
+    const length = this.$images.length;
+    const scrollHeight = scrollEl[0].scrollHeight;
+    fastdom.write(() => {
         scrollEl.scrollTop((index - 1) * scrollHeight / length);
     });
 };
 
 
 HostedGallery.prototype.states = {
-    'image': {
-        enter: function() {
-            var that = this;
+    image: {
+        enter() {
+            const that = this;
 
             // load prev/current/next
             this.loadSurroundingImages(this.index, this.$images.length);
-            this.$captions.each(function(caption, index) {
+            this.$captions.each((caption, index) => {
                 bonzo(caption).toggleClass('current-caption', that.index === index + 1);
             });
-            bonzo(this.$counter).html(this.index + '/' + this.$images.length);
+            bonzo(this.$counter).html(`${this.index}/${this.$images.length}`);
 
             if (this.useSwipe) {
                 this.translateContent(this.index, 0, 100);
@@ -320,58 +321,58 @@ HostedGallery.prototype.states = {
                 bonzo(this.$galleryEl).toggleClass('show-cta', this.index === this.ctaIndex() + 1);
             }
 
-            var pageName = config.page.pageName || window.location.pathname.substr(window.location.pathname.lastIndexOf('/') + 1);
-            url.pushUrl({}, document.title, pageName + '#img-' + this.index, true);
+            const pageName = config.page.pageName || window.location.pathname.substr(window.location.pathname.lastIndexOf('/') + 1);
+            url.pushUrl({}, document.title, `${pageName}#img-${this.index}`, true);
             // event bindings
             mediator.on('window:resize', this.resize);
         },
-        leave: function() {
+        leave() {
             this.trigger('hide-info');
             mediator.off('window:resize', this.resize);
         },
         events: {
-            'next': function(e) {
+            next(e) {
                 if (this.index < this.$images.length) { // last img
                     this.index += 1;
                     this.trackNavBetweenImages(e);
                 }
                 this.reloadState = true;
             },
-            'prev': function(e) {
+            prev(e) {
                 if (this.index > 1) { // first img
                     this.index -= 1;
                     this.trackNavBetweenImages(e);
                 }
                 this.reloadState = true;
             },
-            'reload': function(e) {
+            reload(e) {
                 this.trackNavBetweenImages(e);
                 this.reloadState = true;
             },
-            'toggle-info': function() {
+            'toggle-info': function () {
                 this.$captionContainer.toggleClass('hosted-gallery--show-caption');
             },
-            'hide-info': function() {
+            'hide-info': function () {
                 this.$captionContainer.removeClass('hosted-gallery--show-caption');
             },
-            'show-info': function() {
+            'show-info': function () {
                 this.$captionContainer.addClass('hosted-gallery--show-caption');
             },
-            'resize': function() {
+            resize() {
                 this.onResize();
-            }
-        }
-    }
+            },
+        },
+    },
 };
 
-HostedGallery.prototype.trackNavBetweenImages = function(data) {
+HostedGallery.prototype.trackNavBetweenImages = function (data) {
     if (data && data.nav) {
-        interactionTracking.trackNonClickInteraction(config.page.trackingPrefix + data.nav + ' - image ' + this.index);
+        interactionTracking.trackNonClickInteraction(`${config.page.trackingPrefix + data.nav} - image ${this.index}`);
     }
 };
 
-HostedGallery.prototype.onResize = function() {
-    this.resizer = this.resizer || function() {
+HostedGallery.prototype.onResize = function () {
+    this.resizer = this.resizer || function () {
         this.loadSurroundingImages(this.index, this.$images.length);
         if (this.useSwipe) {
             this.swipeContainerWidth = this.$galleryFrame.dim().width;
@@ -382,8 +383,8 @@ HostedGallery.prototype.onResize = function() {
     throttle(this.resizer, 200)();
 };
 
-HostedGallery.prototype.setPageWidth = function() {
-    var $imagesContainer = this.$imagesContainer[0],
+HostedGallery.prototype.setPageWidth = function () {
+    let $imagesContainer = this.$imagesContainer[0],
         $gallery = this.$galleryEl[0],
         width = $gallery.clientWidth,
         height = $imagesContainer.clientHeight,
@@ -396,12 +397,12 @@ HostedGallery.prototype.setPageWidth = function() {
         that = this;
     if (imgRatio < width / height) {
         imageWidth = height * imgRatio;
-        leftRight = (width - imageWidth) / 2 + 'px';
+        leftRight = `${(width - imageWidth) / 2}px`;
     }
     this.swipeContainerWidth = imageWidth;
-    fastdom.write(function() {
+    fastdom.write(() => {
         $header.css('width', imageWidth);
-        $footer.css('margin', '0 ' + leftRight);
+        $footer.css('margin', `0 ${leftRight}`);
         $footer.css('width', 'auto');
         $galleryFrame.css('left', leftRight);
         $galleryFrame.css('right', leftRight);
@@ -409,25 +410,25 @@ HostedGallery.prototype.setPageWidth = function() {
     });
 };
 
-HostedGallery.prototype.handleKeyEvents = function(e) {
-    var keyNames = {
-        '37': 'left',
-        '38': 'up',
-        '39': 'right',
-        '40': 'down'
+HostedGallery.prototype.handleKeyEvents = function (e) {
+    const keyNames = {
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down',
     };
     if (e.keyCode === 37 || e.keyCode === 38) { // up/left
         e.preventDefault();
         this.scrollTo(this.index - 1);
         this.trigger('prev', {
-            nav: 'KeyPress:' + keyNames[e.keyCode]
+            nav: `KeyPress:${keyNames[e.keyCode]}`,
         });
         return false;
     } else if (e.keyCode === 39 || e.keyCode === 40) { // down/right
         e.preventDefault();
         this.scrollTo(this.index + 1);
         this.trigger('next', {
-            nav: 'KeyPress:' + keyNames[e.keyCode]
+            nav: `KeyPress:${keyNames[e.keyCode]}`,
         });
         return false;
     } else if (e.keyCode === 73) { // 'i'
@@ -435,7 +436,7 @@ HostedGallery.prototype.handleKeyEvents = function(e) {
     }
 };
 
-HostedGallery.prototype.loadAtIndex = function(i) {
+HostedGallery.prototype.loadAtIndex = function (i) {
     this.index = i;
     this.trigger('reload');
     if (this.useSwipe) {
@@ -446,8 +447,8 @@ HostedGallery.prototype.loadAtIndex = function(i) {
 };
 
 function init() {
-    return loadCssPromise.then(function() {
-        var gallery,
+    return loadCssPromise.then(() => {
+        let gallery,
             match,
             galleryHash = window.location.hash,
             res;
@@ -466,6 +467,6 @@ function init() {
 }
 
 export default {
-    init: init,
-    HostedGallery: HostedGallery
+    init,
+    HostedGallery,
 };

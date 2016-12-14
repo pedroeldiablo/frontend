@@ -3,7 +3,7 @@
  * object. Subsequent sources will overwrite property assignments of previous
  * sources.
  */
-var assign = 'assign' in Object ? assignNative : assignPolyfill;
+const assign = 'assign' in Object ? assignNative : assignPolyfill;
 export default assign;
 
 function assignNative() {
@@ -11,10 +11,10 @@ function assignNative() {
 }
 
 function assignPolyfill(target) {
-    for (var i = 1, ii = arguments.length; i < ii; i++) {
-        var source = arguments[i];
+    for (let i = 1, ii = arguments.length; i < ii; i++) {
+        const source = arguments[i];
         if (source) {
-            Object.keys(source).forEach(function(key) {
+            Object.keys(source).forEach((key) => {
                 target[key] = source[key];
             });
         }

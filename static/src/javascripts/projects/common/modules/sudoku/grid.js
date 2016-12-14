@@ -1,4 +1,4 @@
-/*eslint-disable new-cap*/
+/* eslint-disable new-cap*/
 import React from 'react';
 import Cell from 'common/modules/sudoku/cell';
 import Controls from 'common/modules/sudoku/controls';
@@ -14,19 +14,21 @@ import constant from 'lodash/utilities/constant';
 import contains from 'lodash/collections/contains';
 import without from 'lodash/arrays/without';
 export default React.createClass({
-    getInitialState: function() {
+    getInitialState() {
         return {
-            cells: this.props.cells
+            cells: this.props.cells,
         };
     },
 
-    onBlur: function() {
+    onBlur() {
         this.state.focus = null;
         this.updateCellStatesAndRender();
     },
 
-    onKeyDown: function(event) {
-        var x, y, n;
+    onKeyDown(event) {
+        let x,
+            y,
+            n;
 
         if (this.state.focus) {
             x = this.state.focus.x;
@@ -63,8 +65,8 @@ export default React.createClass({
         }
     },
 
-    getFocussedCell: function() {
-        var focus = this.state.focus;
+    getFocussedCell() {
+        const focus = this.state.focus;
 
         if (focus) {
             return this.getCell(focus.x, focus.y);
@@ -73,12 +75,12 @@ export default React.createClass({
         }
     },
 
-    getCell: function(x, y) {
+    getCell(x, y) {
         return this.state.cells[y * 9 + x];
     },
 
-    setFocussedValue: function(n) {
-        var focussed = this.getFocussedCell();
+    setFocussedValue(n) {
+        const focussed = this.getFocussedCell();
 
         if (focussed && focussed.isEditable) {
             focussed.value = n;
@@ -88,8 +90,8 @@ export default React.createClass({
         }
     },
 
-    unsetFocussedValue: function() {
-        var focussed = this.getFocussedCell();
+    unsetFocussedValue() {
+        const focussed = this.getFocussedCell();
 
         if (focussed.isEditable && focussed.value !== null) {
             focussed.value = null;
@@ -97,8 +99,8 @@ export default React.createClass({
         }
     },
 
-    addJotting: function(n) {
-        var focussed = this.getFocussedCell();
+    addJotting(n) {
+        const focussed = this.getFocussedCell();
 
         if (focussed.isEditable) {
             focussed.value = null;
@@ -113,99 +115,79 @@ export default React.createClass({
         }
     },
 
-    updateCellStatesAndRender: function() {
-        var focus = this.state.focus,
+    updateCellStatesAndRender() {
+        let focus = this.state.focus,
             isHighlighted = focus ? utils.highlights(focus.x, focus.y) : constant(false),
             focussedCell = this.getFocussedCell(),
             valueInFocus = focussedCell ? focussedCell.value : null;
 
-        this.mapCells(function(cell) {
-            return assign({}, cell, {
-                isHighlighted: isHighlighted(cell.x, cell.y),
-                isSameValue: cell.value && cell.value === valueInFocus,
-                isFocussed: focus && cell.x === focus.x && cell.y === focus.y
-            });
-        });
+        this.mapCells(cell => assign({}, cell, {
+            isHighlighted: isHighlighted(cell.x, cell.y),
+            isSameValue: cell.value && cell.value === valueInFocus,
+            isFocussed: focus && cell.x === focus.x && cell.y === focus.y,
+        }));
 
         this.highlightErrors();
         this.forceUpdate();
     },
 
-    highlightErrors: function() {
-        var self = this,
-            rows, columns, squares;
+    highlightErrors() {
+        let self = this,
+            rows,
+            columns,
+            squares;
 
-        this.mapCells(function(cell) {
-            return assign({}, cell, {
-                isError: false
-            });
-        });
+        this.mapCells(cell => assign({}, cell, {
+            isError: false,
+        }));
 
-        rows = map(range(9), function(y) {
-            return map(range(9), function(x) {
-                return self.getCell(x, y);
-            });
-        });
+        rows = map(range(9), y => map(range(9), x => self.getCell(x, y)));
 
-        columns = map(range(9), function(x) {
-            return map(range(9), function(y) {
-                return self.getCell(x, y);
-            });
-        });
+        columns = map(range(9), x => map(range(9), y => self.getCell(x, y)));
 
-        squares = flatMap(range(3), function(x) {
-            return map(range(3), function(y) {
-                return flatMap(range(3), function(dx) {
-                    return map(range(3), function(dy) {
-                        return self.getCell(x * 3 + dx, y * 3 + dy);
-                    });
-                });
-            });
-        });
+        squares = flatMap(range(3), x => map(range(3), y => flatMap(range(3), dx => map(range(3), dy => self.getCell(x * 3 + dx, y * 3 + dy)))));
 
         forEach(rows.concat(columns, squares), bind(this.highlightDuplicatesInRange, this));
     },
 
-    highlightDuplicatesInRange: function(cells) {
-        var cellsByValue = map(range(9), function() {
-            return [];
-        });
+    highlightDuplicatesInRange(cells) {
+        const cellsByValue = map(range(9), () => []);
 
-        forEach(cells, function(cell) {
+        forEach(cells, (cell) => {
             if (cell.value) {
                 cellsByValue[cell.value - 1].push(cell);
             }
         });
 
-        forEach(cellsByValue, function(cells) {
+        forEach(cellsByValue, (cells) => {
             if (cells.length > 1) {
-                forEach(cells, function(cell) {
+                forEach(cells, (cell) => {
                     cell.isError = true;
                 });
             }
         });
     },
 
-    focusCell: function(x, y) {
+    focusCell(x, y) {
         this.state.focus = {
-            x: x,
-            y: y
+            x,
+            y,
         };
 
         this.updateCellStatesAndRender();
     },
 
-    mapCells: function(f) {
+    mapCells(f) {
         this.state.cells = map(this.state.cells, f);
         this.forceUpdate();
     },
 
-    render: function() {
-        var self = this,
-            cells = map(this.state.cells, function(cell) {
-                var data = assign({}, cell, {
-                    key: cell.x + '_' + cell.y,
-                    onClick: self.focusCell
+    render() {
+        let self = this,
+            cells = map(this.state.cells, (cell) => {
+                const data = assign({}, cell, {
+                    key: `${cell.x}_${cell.y}`,
+                    onClick: self.focusCell,
                 });
 
                 return Cell(data);
@@ -218,19 +200,19 @@ export default React.createClass({
             tabIndex: '0',
             onKeyDown: this.onKeyDown,
             className: 'sudoku__grid',
-            viewBox: '0 0 ' + gridSize + ' ' + (gridSize + constants.controlsTopMargin + constants.controlsHeight),
-            onBlur: this.onBlur
+            viewBox: `0 0 ${gridSize} ${gridSize + constants.controlsTopMargin + constants.controlsHeight}`,
+            onBlur: this.onBlur,
         }, React.DOM.rect({
             className: 'sudoku__background',
             x: 0,
             y: 0,
             width: gridSize,
-            height: gridSize
+            height: gridSize,
         }), Controls({
             x: constants.controlsLeftMargin,
             y: gridSize + constants.controlsTopMargin,
             onClickNumber: this.setFocussedValue,
-            onClickDelete: this.unsetFocussedValue
+            onClickDelete: this.unsetFocussedValue,
         }), cells);
-    }
+    },
 });

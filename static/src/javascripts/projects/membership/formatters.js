@@ -1,13 +1,13 @@
 export default {
-    formatAmount: function(amount, glyph) {
+    formatAmount(amount, glyph) {
         return amount ? glyph + (amount / 100).toFixed(2) : 'FREE';
     },
-    formatDate: function(timestamp) {
-        var options = {
+    formatDate(timestamp) {
+        const options = {
             day: 'numeric',
             month: 'long',
-            year: 'numeric'
+            year: 'numeric',
         };
         return (new Date(timestamp)).toLocaleDateString('en-GB', options);
-    }
+    },
 };

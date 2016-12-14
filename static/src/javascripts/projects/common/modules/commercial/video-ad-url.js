@@ -3,7 +3,7 @@ import urlUtils from 'common/utils/url';
 import buildPageTargeting from 'commercial/modules/build-page-targeting';
 
 function getAdUrl() {
-    var queryParams = {
+    const queryParams = {
         ad_rule: 1,
         correlator: new Date().getTime(),
         cust_params: encodeURIComponent(urlUtils.constructQuery(buildPageTargeting())),
@@ -14,12 +14,12 @@ function getAdUrl() {
         output: 'xml_vast2',
         scp: encodeURIComponent('slot=video'),
         sz: '400x300',
-        unviewed_position_start: 1
+        unviewed_position_start: 1,
     };
 
-    return 'https://' + config.page.dfpHost + '/gampad/ads?' + urlUtils.constructQuery(queryParams);
+    return `https://${config.page.dfpHost}/gampad/ads?${urlUtils.constructQuery(queryParams)}`;
 }
 
 export default {
-    get: getAdUrl
+    get: getAdUrl,
 };

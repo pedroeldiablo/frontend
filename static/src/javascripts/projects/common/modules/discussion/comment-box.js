@@ -64,7 +64,7 @@ CommentBox.prototype.errorMessages = {
     AUTH_COOKIE_INVALID: 'Sorry, your comment was not published as you are no longer signed in. Please sign in and try again.',
     'READ-ONLY-MODE': 'Sorry your comment can not currently be published as commenting is undergoing maintenance but will be back shortly. Please try again in a moment.',
     /* Custom error codes */
-    API_CORS_BLOCKED: /*CORS blocked by HTTP/1.0 proxy*/ 'Could not post due to your internet settings, which might be controlled by your provider. Please contact your administrator or disable any proxy servers or VPNs and try again.',
+    API_CORS_BLOCKED: /* CORS blocked by HTTP/1.0 proxy*/ 'Could not post due to your internet settings, which might be controlled by your provider. Please contact your administrator or disable any proxy servers or VPNs and try again.',
     API_ERROR: 'Sorry, there was a problem posting your comment.  Please try another browser or network connection.  Reference code ',
     EMAIL_VERIFIED: '<span class="d-comment-box__error-meta">Sent. Please check your email to verify ' +
         ' your email address' + '. Once verified post your comment.</span>',
@@ -72,7 +72,7 @@ CommentBox.prototype.errorMessages = {
         '<a href="/send/email" class="js-id-send-validation-email"><strong>resend the verification</strong></a>.',
     EMAIL_NOT_VALIDATED: 'Please confirm your email address to comment.<br />' +
         'If you can\'t find the email, we can <a href="_#" class="js-id-send-validation-email"><strong>resend the verification email</strong></a> to ' +
-        ' your email address' + '.'
+        ' your email address' + '.',
 };
 
 /**
@@ -87,7 +87,7 @@ CommentBox.prototype.defaultOptions = {
     focus: false,
     state: 'top-level',
     replyTo: null,
-    priorToVerificationDate: new Date(1392719401337) // Tue Feb 18 2014 10:30:01 GMT
+    priorToVerificationDate: new Date(1392719401337), // Tue Feb 18 2014 10:30:01 GMT
 };
 
 /**
@@ -95,51 +95,50 @@ CommentBox.prototype.defaultOptions = {
  */
 CommentBox.prototype.errors = [];
 
-CommentBox.prototype.getUserData = function() {
+CommentBox.prototype.getUserData = function () {
     return IdentityApi.getUserFromCookie();
 };
 
 /** @override */
-CommentBox.prototype.prerender = function() {
+CommentBox.prototype.prerender = function () {
     if (!this.options.premod) {
         this.getElem('premod').parentNode.removeChild(this.getElem('premod'));
     }
 
-    var userData = this.getUserData();
+    const userData = this.getUserData();
 
     this.getElem('author').innerHTML = userData.displayName;
 
     if (this.options.state === 'response') {
         this.getElem('submit').innerHTML = 'Post reply';
     } else if (this.options.shouldRenderMainAvatar) {
-        var avatar = this.getElem('avatar-wrapper');
+        const avatar = this.getElem('avatar-wrapper');
         avatar.setAttribute('userid', userData.id);
         avatar.setAttribute('data-userid', userData.id);
         UserAvatars.avatarify(avatar);
     } else {
-        var container = document.getElementsByClassName('d-comment-box__meta')[0];
+        const container = document.getElementsByClassName('d-comment-box__meta')[0];
         if (container) {
             container.parentNode.removeChild(container);
         }
     }
 
     if (this.options.replyTo) {
-        var replyToAuthor = this.getElem('reply-to-author');
+        const replyToAuthor = this.getElem('reply-to-author');
         replyToAuthor.innerHTML = this.options.replyTo.author;
-        this.getElem('parent-comment-author').innerHTML = this.options.replyTo.author + ' @ ' + this.options.replyTo.timestamp + ' said:';
+        this.getElem('parent-comment-author').innerHTML = `${this.options.replyTo.author} @ ${this.options.replyTo.timestamp} said:`;
 
         this.getElem('parent-comment-body').innerHTML = this.options.replyTo.body;
 
-        var setSpoutMargin = function() {
-            var spoutOffset = replyToAuthor.offsetLeft + (replyToAuthor.getBoundingClientRect().width / 2);
-            this.getElem('parent-comment-spout').style.marginLeft = spoutOffset + 'px';
+        const setSpoutMargin = function () {
+            const spoutOffset = replyToAuthor.offsetLeft + (replyToAuthor.getBoundingClientRect().width / 2);
+            this.getElem('parent-comment-spout').style.marginLeft = `${spoutOffset}px`;
         };
         window.setTimeout(setSpoutMargin.bind(this), 0);
-
     }
 };
 
-CommentBox.prototype.showOnboarding = function(e) {
+CommentBox.prototype.showOnboarding = function (e) {
     e.preventDefault();
 
     // Check if new commenter as they may have already commented on this article
@@ -154,18 +153,18 @@ CommentBox.prototype.showOnboarding = function(e) {
     }
 };
 
-CommentBox.prototype.hideOnboarding = function(e) {
+CommentBox.prototype.hideOnboarding = function (e) {
     e.preventDefault();
     this.removeState('onboarding-visible');
 };
 
 /** @override */
-CommentBox.prototype.ready = function() {
+CommentBox.prototype.ready = function () {
     if (this.getDiscussionId() === null) {
         throw new Error('CommentBox: You need to set the "data-discussion-key" on your element');
     }
 
-    var commentBody = this.getElem('body');
+    const commentBody = this.getElem('body');
 
     this.setFormState();
 
@@ -197,51 +196,51 @@ CommentBox.prototype.ready = function() {
     this.setState(this.options.state);
 
     if (this.options.focus) {
-        window.setTimeout(function() {
+        window.setTimeout(() => {
             this.getElem('body').focus();
-        }.bind(this), 0);
+        }, 0);
     }
 };
 
-CommentBox.prototype.urlify = function(str) {
-    var reOutsideTags = '(?![^<]*>|[^<>]*</)',
+CommentBox.prototype.urlify = function (str) {
+    let reOutsideTags = '(?![^<]*>|[^<>]*</)',
         reUrl = '\\b((https?://|www.)\\S+)\\b',
         regexp = new RegExp(reUrl + reOutsideTags, 'g');
-    return str.replace(regexp, function(match, url, protocol) {
-        var fullUrl = protocol === 'www.' ? 'http://' + url : url;
-        return '<a href="' + fullUrl + '">' + url + '</a>';
+    return str.replace(regexp, (match, url, protocol) => {
+        const fullUrl = protocol === 'www.' ? `http://${url}` : url;
+        return `<a href="${fullUrl}">${url}</a>`;
     });
 };
 
 /**
  * @param {Event}
  */
-CommentBox.prototype.submitPostComment = function(e) {
+CommentBox.prototype.submitPostComment = function (e) {
     e.preventDefault();
     this.postComment();
 };
 
-CommentBox.prototype.invalidEmailError = function() {
+CommentBox.prototype.invalidEmailError = function () {
     this.error('EMAIL_NOT_VALIDATED');
     ValidationEmail.init();
 };
 
-CommentBox.prototype.postComment = function() {
-    var self = this,
+CommentBox.prototype.postComment = function () {
+    let self = this,
         comment = {
-            body: this.elem.body.value
+            body: this.elem.body.value,
         };
 
     self.clearErrors();
 
-    var validEmailCommentSubmission = function() {
+    const validEmailCommentSubmission = function () {
         if (comment.body === '') {
             self.error('EMPTY_COMMENT_BODY');
         }
 
         if (comment.body.length > self.options.maxLength) {
-            self.error('COMMENT_TOO_LONG', '<b>Comments must be shorter than ' + self.options.maxLength + ' characters.</b>' +
-                'Yours is currently ' + (comment.body.length - self.options.maxLength) + ' character(s) too long.');
+            self.error('COMMENT_TOO_LONG', `<b>Comments must be shorter than ${self.options.maxLength} characters.</b>` +
+                `Yours is currently ${comment.body.length - self.options.maxLength} character(s) too long.`);
         }
 
         if (self.options.replyTo) {
@@ -259,9 +258,9 @@ CommentBox.prototype.postComment = function() {
 
     if (!self.getUserData().emailVerified) {
         // Cookie could be stale so lets refresh and check from the api
-        var createdDate = new Date(self.getUserData().accountCreatedDate);
+        const createdDate = new Date(self.getUserData().accountCreatedDate);
         if (createdDate > self.options.priorToVerificationDate) {
-            IdentityApi.getUserFromApiWithRefreshedCookie().then(function(response) {
+            IdentityApi.getUserFromApiWithRefreshedCookie().then((response) => {
                 if (response.user.statusFields.userEmailValidated === true) {
                     validEmailCommentSubmission();
                 } else {
@@ -281,8 +280,7 @@ CommentBox.prototype.postComment = function() {
  * @param {string} type
  * @param {string} message Overrides the default message
  */
-CommentBox.prototype.error = function(type, message) {
-
+CommentBox.prototype.error = function (type, message) {
     if (type === 'API_CORS_BLOCKED') {
         beacon.counts('comment-http-proxy-error', 'comment-error');
     } else {
@@ -292,10 +290,10 @@ CommentBox.prototype.error = function(type, message) {
     message = message || this.errorMessages[type];
 
     this.setState('invalid');
-    var error = bonzo.create(
-        '<div class="d-discussion__error ' + this.getClass('error', true) + '">' +
+    const error = bonzo.create(
+        `<div class="d-discussion__error ${this.getClass('error', true)}">` +
         '<i class="i i-alert"></i>' +
-        '<span class="d-discussion__error-text">' + message + '</span>' +
+        `<span class="d-discussion__error-text">${message}</span>` +
         '</div>'
     )[0];
     this.getElem('messages').appendChild(error);
@@ -306,7 +304,7 @@ CommentBox.prototype.error = function(type, message) {
  * @param {Object} comment
  * @param {Object} resp
  */
-CommentBox.prototype.postCommentSuccess = function(comment, resp) {
+CommentBox.prototype.postCommentSuccess = function (comment, resp) {
     beacon.counts('comment-post-success');
     comment.id = parseInt(resp.message, 10);
     this.getElem('body').value = '';
@@ -320,8 +318,8 @@ CommentBox.prototype.postCommentSuccess = function(comment, resp) {
  * TODO (jamesgorrie); Make this more robust
  * @param {Reqwest=} resp (optional)
  */
-CommentBox.prototype.fail = function(xhr) {
-    var response;
+CommentBox.prototype.fail = function (xhr) {
+    let response;
     // if our API is down, it returns HTML
     // this is not so good for JSON.parse
     try {
@@ -343,7 +341,7 @@ CommentBox.prototype.fail = function(xhr) {
     }
 };
 
-CommentBox.prototype.onboardingPreviewSuccess = function(comment, resp) {
+CommentBox.prototype.onboardingPreviewSuccess = function (comment, resp) {
     this.getElem('onboarding-preview-body').innerHTML = resp.commentBody;
 };
 
@@ -351,7 +349,7 @@ CommentBox.prototype.onboardingPreviewSuccess = function(comment, resp) {
  * @param {Object} comment
  * @param {Object} resp
  */
-CommentBox.prototype.previewCommentSuccess = function(comment, resp) {
+CommentBox.prototype.previewCommentSuccess = function (comment, resp) {
     this.getElem('preview-body').innerHTML = resp.commentBody;
     this.setState('preview-visible');
 };
@@ -360,7 +358,7 @@ CommentBox.prototype.previewCommentSuccess = function(comment, resp) {
  * TODO: remove the replace, get the Scala to be better
  * @return {string}
  */
-CommentBox.prototype.getDiscussionId = function() {
+CommentBox.prototype.getDiscussionId = function () {
     return this.options.discussionId || this.elem.getAttribute('data-discussion-key').replace('discussion', '');
 };
 
@@ -368,10 +366,10 @@ CommentBox.prototype.getDiscussionId = function() {
  * Set the form to be postable or not dependant on the comment
  * @param {Boolean|Event=} disabled (optional)
  */
-CommentBox.prototype.setFormState = function(disabled) {
+CommentBox.prototype.setFormState = function (disabled) {
     disabled = typeof disabled === 'boolean' ? disabled : false;
 
-    var commentBody = this.getElem('body'),
+    let commentBody = this.getElem('body'),
         submitButton = this.getElem('submit');
 
     if (disabled || commentBody.value.length === 0) {
@@ -381,7 +379,7 @@ CommentBox.prototype.setFormState = function(disabled) {
     }
 };
 
-CommentBox.prototype.clearErrors = function() {
+CommentBox.prototype.clearErrors = function () {
     this.getElem('messages').innerHTML = '';
     this.errors = [];
     this.removeState('invalid');
@@ -390,14 +388,14 @@ CommentBox.prototype.clearErrors = function() {
 /**
  * @param {Event=} e (optional)
  */
-CommentBox.prototype.setExpanded = function() {
+CommentBox.prototype.setExpanded = function () {
     this.setState('expanded');
 };
 
 /**
  * @param {Event=} e (optional)
  */
-CommentBox.prototype.verificationEmailSuccess = function() {
+CommentBox.prototype.verificationEmailSuccess = function () {
     this.clearErrors();
     this.error('EMAIL_VERIFIED');
 };
@@ -405,7 +403,7 @@ CommentBox.prototype.verificationEmailSuccess = function() {
 /**
  * @param {Event=} e (optional)
  */
-CommentBox.prototype.verificationEmailFail = function() {
+CommentBox.prototype.verificationEmailFail = function () {
     this.clearErrors();
     this.error('EMAIL_VERIFIED_FAIL');
 };
@@ -413,10 +411,10 @@ CommentBox.prototype.verificationEmailFail = function() {
 /**
  * @param {Event=} e (optional)
  */
-CommentBox.prototype.previewComment = function(callback) {
-    var self = this,
+CommentBox.prototype.previewComment = function (callback) {
+    let self = this,
         comment = {
-            body: this.getElem('body').value
+            body: this.getElem('body').value,
         };
 
     self.clearErrors();
@@ -427,8 +425,8 @@ CommentBox.prototype.previewComment = function(callback) {
     }
 
     if (comment.body.length > self.options.maxLength) {
-        self.error('COMMENT_TOO_LONG', '<b>Comments must be shorter than ' + self.options.maxLength + ' characters.</b>' +
-            'Yours is currently ' + (comment.body.length - self.options.maxLength) + ' characters too long.');
+        self.error('COMMENT_TOO_LONG', `<b>Comments must be shorter than ${self.options.maxLength} characters.</b>` +
+            `Yours is currently ${comment.body.length - self.options.maxLength} characters too long.`);
     }
 
     if (self.errors.length === 0) {
@@ -441,7 +439,7 @@ CommentBox.prototype.previewComment = function(callback) {
 /**
  * @param {Event=} e (optional)
  */
-CommentBox.prototype.cancelComment = function() {
+CommentBox.prototype.cancelComment = function () {
     if (this.options.state === 'response') {
         this.destroy();
     } else {
@@ -453,8 +451,7 @@ CommentBox.prototype.cancelComment = function() {
 };
 
 
-
-CommentBox.prototype.resetPreviewComment = function() {
+CommentBox.prototype.resetPreviewComment = function () {
     this.removeState('preview-visible');
     this.getElem('preview-body').innerHTML = '';
 };
@@ -463,18 +460,17 @@ CommentBox.prototype.resetPreviewComment = function() {
  *
  * @param {String=} formatStyle
  */
-CommentBox.prototype.formatComment = function(formatStyle) {
+CommentBox.prototype.formatComment = function (formatStyle) {
+    const commentBody = this.getElem('body');
+    const cursorPositionStart = commentBody.selectionStart;
+    let selectedText = commentBody.value.substring(commentBody.selectionStart, commentBody.selectionEnd);
 
-    var commentBody = this.getElem('body');
-    var cursorPositionStart = commentBody.selectionStart;
-    var selectedText = commentBody.value.substring(commentBody.selectionStart, commentBody.selectionEnd);
-
-    var selectNewText = function(newText) {
+    const selectNewText = function (newText) {
         commentBody.setSelectionRange(cursorPositionStart, cursorPositionStart + newText.length);
     };
 
-    var formatSelection = function(startTag, endTag) {
-        var newText = startTag + selectedText + endTag;
+    const formatSelection = function (startTag, endTag) {
+        const newText = startTag + selectedText + endTag;
 
         commentBody.value = commentBody.value.substring(0, commentBody.selectionStart) +
             newText + commentBody.value.substring(commentBody.selectionEnd);
@@ -482,9 +478,9 @@ CommentBox.prototype.formatComment = function(formatStyle) {
         selectNewText(newText);
     };
 
-    var formatSelectionLink = function() {
-        var href;
-        var linkURL;
+    const formatSelectionLink = function () {
+        let href;
+        let linkURL;
         if (/^https?:\/\//i.test(selectedText)) {
             href = selectedText;
         } else {
@@ -493,7 +489,7 @@ CommentBox.prototype.formatComment = function(formatStyle) {
 
             selectedText = selectedText || linkURL;
         }
-        var newText = '<a href="' + href + '">' + selectedText + '</a>';
+        const newText = `<a href="${href}">${selectedText}</a>`;
 
         commentBody.value = commentBody.value.substring(0, commentBody.selectionStart) +
             newText + commentBody.value.substring(commentBody.selectionEnd);

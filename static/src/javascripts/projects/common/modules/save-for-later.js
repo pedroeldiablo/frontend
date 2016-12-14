@@ -31,11 +31,11 @@ function SaveForLater() {
         itemSaveLinkHeading: '.save-for-later-link__heading',
         fcItemIsSaved: 'fc-save-for-later--is-saved',
         profileDropdownLink: '.brand-bar__item--saved-for-later',
-        identityProfileItem: '.js-profile-nav'
+        identityProfileItem: '.js-profile-nav',
     };
     this.attributes = {
         containerItemShortUrl: 'data-loyalty-short-url',
-        containerItemDataId: 'data-id'
+        containerItemDataId: 'data-id',
     };
 
 
@@ -53,32 +53,32 @@ function SaveForLater() {
     );
 }
 
-var bookmarkSvg = svgs('bookmark', ['rounded-icon']),
+let bookmarkSvg = svgs('bookmark', ['rounded-icon']),
     shortUrl = config.page.shortUrlId || '',
-    savedPlatformAnalytics = 'web:' + detect.getUserAgent.browser + ':' + detect.getBreakpoint();
+    savedPlatformAnalytics = `web:${detect.getUserAgent.browser}:${detect.getBreakpoint()}`;
 
-var getCustomEventProperties = function(contentId) {
-    var prefix = config.page.contentType.match(/^Network Front|Section$/) ? 'Front' : 'Content';
+const getCustomEventProperties = function (contentId) {
+    const prefix = config.page.contentType.match(/^Network Front|Section$/) ? 'Front' : 'Content';
     return {
-        prop74: prefix + 'ContainerSave:' + contentId
+        prop74: `${prefix}ContainerSave:${contentId}`,
     };
 };
 
-SaveForLater.prototype.conditionalInit = function() {
+SaveForLater.prototype.conditionalInit = function () {
     if (!liveBlog.notificationsCondition()) {
         this.init();
     }
 };
 
-SaveForLater.prototype.init = function() {
-    var userLoggedIn = identity.isUserLoggedIn();
+SaveForLater.prototype.init = function () {
+    const userLoggedIn = identity.isUserLoggedIn();
 
     if (userLoggedIn) {
         identity.getSavedArticles()
-            .then(function(resp) {
-                var notFound = {
+            .then((resp) => {
+                const notFound = {
                     message: 'Not found',
-                    description: 'Resource not found'
+                    description: 'Resource not found',
                 };
 
                 if (resp.status === 'error' && resp.errors[0].message === notFound.message && resp.errors[0].description === notFound.description) {
@@ -86,10 +86,10 @@ SaveForLater.prototype.init = function() {
                     // data object and save an introductory article for them
 
                     // Identity api needs a string in the format yyyy-mm-ddThh:mm:ss+hh:mm  otherwise it barfs
-                    var date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00');
+                    const date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00');
                     this.userData = {
                         version: date,
-                        articles: []
+                        articles: [],
                     };
                     this.saveIntroArticle();
                 } else {
@@ -103,66 +103,63 @@ SaveForLater.prototype.init = function() {
                 if (this.isContent) {
                     this.renderSaveButtonsInArticle();
                 }
-            }.bind(this));
-    } else {
-        if (this.isContent) {
-            var url = template('<%= idUrl%>/save-content?INTCMP=DOTCOM_ARTICLE_SFL&returnUrl=<%= returnUrl%>&shortUrl=<%= shortUrl%>&platform=<%= platform%>', {
-                idUrl: config.page.idUrl,
-                returnUrl: encodeURIComponent(document.location.href),
-                shortUrl: shortUrl,
-                platform: savedPlatformAnalytics
             });
-            this.renderArticleSaveButton({
-                url: url,
-                isSaved: false
-            });
-        }
+    } else if (this.isContent) {
+        const url = template('<%= idUrl%>/save-content?INTCMP=DOTCOM_ARTICLE_SFL&returnUrl=<%= returnUrl%>&shortUrl=<%= shortUrl%>&platform=<%= platform%>', {
+            idUrl: config.page.idUrl,
+            returnUrl: encodeURIComponent(document.location.href),
+            shortUrl,
+            platform: savedPlatformAnalytics,
+        });
+        this.renderArticleSaveButton({
+            url,
+            isSaved: false,
+        });
     }
-
 };
 
 
-SaveForLater.prototype.renderSaveButtonsInArticle = function() {
+SaveForLater.prototype.renderSaveButtonsInArticle = function () {
     if (this.getSavedArticle(shortUrl)) {
         this.renderArticleSaveButton({
-            isSaved: true
+            isSaved: true,
         });
     } else {
         this.renderArticleSaveButton({
-            isSaved: false
+            isSaved: false,
         });
     }
 };
 
-SaveForLater.prototype.renderArticleSaveButton = function(options) {
-    var $savers = bonzo(qwery(this.classes.saveThisArticle));
+SaveForLater.prototype.renderArticleSaveButton = function (options) {
+    const $savers = bonzo(qwery(this.classes.saveThisArticle));
 
-    $savers.each(function(saver) {
-        var $saver = bonzo(saver);
-        var templateData = {
+    $savers.each((saver) => {
+        const $saver = bonzo(saver);
+        const templateData = {
             icon: bookmarkSvg,
             isSaved: options.isSaved,
             position: $saver.attr('data-position'),
-            config: config
+            config,
         };
-        fastdom.write(function() {
+        fastdom.write(() => {
             $saver.css('display', 'block');
             if (options.url) {
                 $saver.html(template(saveLink,
                     assign({
-                        url: options.url
+                        url: options.url,
                     }, templateData)));
             } else {
                 $saver.html(template(saveButton, templateData));
 
                 this.makeActive($saver[0], options);
             }
-        }.bind(this));
-    }.bind(this));
+        });
+    });
 };
 
-SaveForLater.prototype.makeActive = function(saver, options) {
-    fastdom.write(function() {
+SaveForLater.prototype.makeActive = function (saver, options) {
+    fastdom.write(() => {
         if (options.url) return saver.href = options.url;
 
         bean.one(saver, 'click', this.classes.saveThisArticleButton,
@@ -171,45 +168,44 @@ SaveForLater.prototype.makeActive = function(saver, options) {
                 shortUrl
             )
         );
-    }.bind(this));
+    });
 };
 
-SaveForLater.prototype.getElementsIndexedById = function(context) {
-    return qwery('[' + this.attributes.containerItemShortUrl + ']', context);
+SaveForLater.prototype.getElementsIndexedById = function (context) {
+    return qwery(`[${this.attributes.containerItemShortUrl}]`, context);
 };
 
-SaveForLater.prototype.prepareFaciaItemLinks = function(signedIn) {
-
+SaveForLater.prototype.prepareFaciaItemLinks = function (signedIn) {
     this.renderFaciaItemLinks(signedIn, document.body);
 
-    mediator.once('modules:tonal:loaded', function() {
+    mediator.once('modules:tonal:loaded', () => {
         this.renderFaciaItemLinks(signedIn, this.classes.onwardContainer);
-    }.bind(this));
+    });
 
-    mediator.once('modules:onward:loaded', function() {
+    mediator.once('modules:onward:loaded', () => {
         this.renderFaciaItemLinks(signedIn, this.classes.onwardContainer);
-    }.bind(this));
+    });
 
-    mediator.once('modules:tonal:loaded', function() {
+    mediator.once('modules:tonal:loaded', () => {
         this.renderFaciaItemLinks(signedIn, this.classes.onwardContainer);
-    }.bind(this));
+    });
 
-    mediator.once('modules:related:loaded', function() {
+    mediator.once('modules:related:loaded', () => {
         this.renderFaciaItemLinks(signedIn, this.classes.relatedContainer);
-    }.bind(this));
+    });
 
-    mediator.on('modules:show-more:loaded', function() {
+    mediator.on('modules:show-more:loaded', () => {
         this.renderFaciaItemLinks(signedIn, this.classes.showMoreContainer);
         $(this.classes.showMoreContainer).removeClass('js-show-more');
-    }.bind(this));
+    });
 };
 
 // Configure the save for later links on a front or in a container
-SaveForLater.prototype.renderFaciaItemLinks = function(signedIn, context) {
-    var elements = this.getElementsIndexedById(context);
+SaveForLater.prototype.renderFaciaItemLinks = function (signedIn, context) {
+    const elements = this.getElementsIndexedById(context);
 
-    forEach(elements, function(item) {
-        var $item = $(item),
+    forEach(elements, (item) => {
+        let $item = $(item),
             $itemSaveLink = $(this.classes.itemSaveLink, item),
             shortUrl = item.getAttribute(this.attributes.containerItemShortUrl),
             id = item.getAttribute(this.attributes.containerItemDataId),
@@ -222,17 +218,17 @@ SaveForLater.prototype.renderFaciaItemLinks = function(signedIn, context) {
         if (signedIn) {
             this[isSaved ? 'createDeleteFaciaItemHandler' : 'createSaveFaciaItemHandler']($itemSaveLink[0], id, shortUrl);
         } else {
-            bean.one($itemSaveLink[0], 'click', function(id, shortUrl) {
+            bean.one($itemSaveLink[0], 'click', function (id, shortUrl) {
                 this.signUserInToSaveArticle(id, shortUrl);
             }.bind(this, id, shortUrl));
         }
 
 
-        fastdom.write(function() {
+        fastdom.write(() => {
             if (isSaved) {
                 $itemSaveLink.addClass(this.classes.fcItemIsSaved);
             } else {
-                var contentId = $($.ancestor($itemSaveLink[0], 'fc-item')).attr('data-id');
+                const contentId = $($.ancestor($itemSaveLink[0], 'fc-item')).attr('data-id');
                 $itemSaveLink.attr('data-custom-event-properties', JSON.stringify(getCustomEventProperties(contentId)));
             }
             $itemSaveLink.attr('data-link-name', isSaved ? 'Unsave' : 'Save');
@@ -240,63 +236,61 @@ SaveForLater.prototype.renderFaciaItemLinks = function(signedIn, context) {
             // only while in test
             $item.addClass('fc-item--has-metadata');
             $itemSaveLink.removeClass('is-hidden');
-        }.bind(this));
-    }.bind(this));
+        });
+    });
 };
 
 // generic functions to save/delete an article, from anywhere
-SaveForLater.prototype.save = function(pageId, shortUrl, onSave) {
-    var date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00'),
+SaveForLater.prototype.save = function (pageId, shortUrl, onSave) {
+    let date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00'),
         newArticle = {
             id: pageId,
-            shortUrl: shortUrl,
-            date: date,
+            shortUrl,
+            date,
             read: false,
-            platform: savedPlatformAnalytics
+            platform: savedPlatformAnalytics,
         };
 
     this.userData.articles.push(newArticle);
 
     identity.saveToArticles(this.userData).then(
-        function(resp) {
+        (resp) => {
             onSave(resp.status !== 'error');
         }
     );
 };
 
-SaveForLater.prototype.delete = function(pageId, shortUrl, onDelete) {
-    this.userData.articles = filter(this.userData.articles, function(article) {
-        return article.shortUrl !== shortUrl;
-    });
+SaveForLater.prototype.delete = function (pageId, shortUrl, onDelete) {
+    this.userData.articles = filter(this.userData.articles, article => article.shortUrl !== shortUrl);
 
     identity.saveToArticles(this.userData).then(
-        function(resp) {
+        (resp) => {
             onDelete(resp.status !== 'error');
         }
     );
 };
 
 // handle saving/deleting from content pages
-SaveForLater.prototype.saveArticle = function(pageId, shortUrl) {
+SaveForLater.prototype.saveArticle = function (pageId, shortUrl) {
     this.save(pageId, shortUrl, this.onSaveArticle);
 };
 
-SaveForLater.prototype.onSaveArticle = function(success) {
+SaveForLater.prototype.onSaveArticle = function (success) {
     this.renderArticleSaveButton({
-        isSaved: success
+        isSaved: success,
     });
     if (success) {
         this.updateSavedCount();
     }
 };
 
-SaveForLater.prototype.deleteArticle = function(pageId, shortUrl) {
+SaveForLater.prototype.deleteArticle = function (pageId, shortUrl) {
     this.delete(pageId, shortUrl, this.onDeleteArticle);
 };
 
-SaveForLater.prototype.onDeleteArticle = function(success) {
+SaveForLater.prototype.onDeleteArticle = function (success) {
     this.renderArticleSaveButton({
-        isSaved: !success
+        isSaved: !success,
     });
     if (success) {
         this.updateSavedCount();
@@ -305,17 +299,17 @@ SaveForLater.prototype.onDeleteArticle = function(success) {
 
 // handle saving/deleting from fronts
 
-SaveForLater.prototype.saveFaciaItem = function(pageId, shortUrl) {
+SaveForLater.prototype.saveFaciaItem = function (pageId, shortUrl) {
     this.save(pageId, shortUrl, this.onSaveFaciaItem);
 };
 
-SaveForLater.prototype.onSaveFaciaItem = function(link, id, shortUrl, success) {
-    var that = this;
+SaveForLater.prototype.onSaveFaciaItem = function (link, id, shortUrl, success) {
+    const that = this;
     if (success) {
         this.createDeleteFaciaItemHandler(link, id, shortUrl);
         this.updateSavedCount();
 
-        fastdom.write(function() {
+        fastdom.write(() => {
             bonzo(link)
                 .addClass(that.classes.fcItemIsSaved)
                 .attr('data-link-name', 'Unsave')
@@ -324,24 +318,24 @@ SaveForLater.prototype.onSaveFaciaItem = function(link, id, shortUrl, success) {
     } else {
         this.createSaveFaciaItemHandler(link, id, shortUrl);
 
-        fastdom.write(function() {
+        fastdom.write(() => {
             bonzo(qwery(that.classes.itemSaveLinkHeading, link)[0]).html('Error Saving');
         });
     }
 };
 
-SaveForLater.prototype.deleteFaciaItem = function(pageId, shortUrl) {
+SaveForLater.prototype.deleteFaciaItem = function (pageId, shortUrl) {
     this.save(pageId, shortUrl, this.onDeleteFaciaItem);
 };
 
-SaveForLater.prototype.onDeleteFaciaItem = function(link, id, shortUrl, success) {
-    var that = this;
+SaveForLater.prototype.onDeleteFaciaItem = function (link, id, shortUrl, success) {
+    const that = this;
     if (success) {
         this.createSaveFaciaItemHandler(link, id, shortUrl);
         this.updateSavedCount();
 
-        fastdom.write(function() {
-            var contentId = $($.ancestor(link, 'fc-item')).attr('data-id');
+        fastdom.write(() => {
+            const contentId = $($.ancestor(link, 'fc-item')).attr('data-id');
             bonzo(link)
                 .removeClass(that.classes.fcItemIsSaved)
                 .attr('data-link-name', 'Save')
@@ -350,14 +344,14 @@ SaveForLater.prototype.onDeleteFaciaItem = function(link, id, shortUrl, success)
     } else {
         this.createDeleteFaciaItemHandler(link, id, shortUrl);
 
-        fastdom.write(function() {
+        fastdom.write(() => {
             bonzo(qwery(that.classes.itemSaveLinkHeading, link)[0]).html('Error Removing');
         });
     }
 };
 
-//--Create container link click handlers
-SaveForLater.prototype.createSaveFaciaItemHandler = function(link, id, shortUrl) {
+// --Create container link click handlers
+SaveForLater.prototype.createSaveFaciaItemHandler = function (link, id, shortUrl) {
     if (link) {
         bean.one(link, 'click',
             this.save.bind(this,
@@ -369,18 +363,18 @@ SaveForLater.prototype.createSaveFaciaItemHandler = function(link, id, shortUrl)
     }
 };
 
-SaveForLater.prototype.signUserInToSaveArticle = function(id, shortUrl) {
-    var url = template('<%= idUrl%>/save-content?returnUrl=<%= returnUrl%>&shortUrl=<%= shortUrl%>&platform=<%= platform%>&articleId=<%= articleId %>&INTCMP=SFL-SO', {
+SaveForLater.prototype.signUserInToSaveArticle = function (id, shortUrl) {
+    const url = template('<%= idUrl%>/save-content?returnUrl=<%= returnUrl%>&shortUrl=<%= shortUrl%>&platform=<%= platform%>&articleId=<%= articleId %>&INTCMP=SFL-SO', {
         idUrl: config.page.idUrl,
         returnUrl: encodeURIComponent(document.location.href),
-        shortUrl: shortUrl,
+        shortUrl,
         platform: savedPlatformAnalytics,
-        articleId: id
+        articleId: id,
     });
     window.location = url;
 };
 
-SaveForLater.prototype.createDeleteFaciaItemHandler = function(link, id, shortUrl) {
+SaveForLater.prototype.createDeleteFaciaItemHandler = function (link, id, shortUrl) {
     bean.one(link, 'click',
         this.delete.bind(this,
             id,
@@ -390,14 +384,12 @@ SaveForLater.prototype.createDeleteFaciaItemHandler = function(link, id, shortUr
     );
 };
 
-SaveForLater.prototype.getSavedArticle = function(shortUrl) {
-    return some(this.userData.articles, function(article) {
-        return article.shortUrl.indexOf(shortUrl) > -1;
-    });
+SaveForLater.prototype.getSavedArticle = function (shortUrl) {
+    return some(this.userData.articles, article => article.shortUrl.indexOf(shortUrl) > -1);
 };
 
-SaveForLater.prototype.updateSavedCount = function() {
-    var $saveForLaterEl = $(this.classes.profileDropdownLink),
+SaveForLater.prototype.updateSavedCount = function () {
+    let $saveForLaterEl = $(this.classes.profileDropdownLink),
         $profileDropdownItem = $(this.classes.identityProfileItem),
         count = (this.userData.articles) ? this.userData.articles.length : 0;
 
@@ -410,9 +402,9 @@ SaveForLater.prototype.updateSavedCount = function() {
     }
 };
 
-SaveForLater.prototype.saveIntroArticle = function() {
-    var pageId = 'help/insideguardian/2015/jul/21/introducing-save-for-later';
-    var shortUrl = '/p/4ab7x';
+SaveForLater.prototype.saveIntroArticle = function () {
+    const pageId = 'help/insideguardian/2015/jul/21/introducing-save-for-later';
+    const shortUrl = '/p/4ab7x';
 
     this.saveArticle(pageId, shortUrl);
 };

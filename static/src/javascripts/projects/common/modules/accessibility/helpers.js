@@ -4,7 +4,7 @@ import $ from 'common/utils/$';
 
 function shouldHideFlashingElements(callback) {
     if (!accessibility.isOn('flashing-elements')) {
-        fastdom.write(function() {
+        fastdom.write(() => {
             $('body').addClass('disable-flashing-elements');
             if (callback) {
                 callback();
@@ -16,5 +16,5 @@ function shouldHideFlashingElements(callback) {
 }
 
 export default {
-    shouldHideFlashingElements: shouldHideFlashingElements
+    shouldHideFlashingElements,
 };

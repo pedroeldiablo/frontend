@@ -15,7 +15,7 @@ function addSlot(adSlot) {
         if (dfpEnv.firstAdRendered) {
             displayAd(adSlot);
         } else {
-            mediator.once('modules:commercial:dfp:rendered', function() {
+            mediator.once('modules:commercial:dfp:rendered', () => {
                 displayAd(adSlot);
             });
         }
@@ -23,7 +23,7 @@ function addSlot(adSlot) {
 }
 
 function displayAd(adSlot) {
-    var advert = Advert(adSlot);
+    const advert = Advert(adSlot);
 
     dfpEnv.adverts.push(advert);
     queueAdvert(advert);

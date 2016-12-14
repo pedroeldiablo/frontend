@@ -3,15 +3,15 @@ import config from 'common/utils/config';
 import userTiming from 'common/utils/user-timing';
 import beacon from 'common/modules/analytics/beacon';
 
-var performanceLog = {
+const performanceLog = {
     viewId: 'unknown',
     tags: [],
     modules: [],
     adverts: [],
-    baselines: []
+    baselines: [],
 };
-var primaryBaseline = 'primary';
-var secondaryBaseline = 'secondary';
+const primaryBaseline = 'primary';
+const secondaryBaseline = 'secondary';
 
 function setListeners(googletag) {
     googletag.pubads().addEventListener('slotRenderEnded', raven.wrap(reportTrackingData));
@@ -21,34 +21,32 @@ function setListeners(googletag) {
 // The baseline allows us to determine whether the module was called in the first
 // boot phase (primary) or the second boot phase (secondary).
 function moduleCheckpoint(module, baseline) {
-    var timerEnd = userTiming.getCurrentTime();
-    var timerStart = getBaseline(baseline);
+    const timerEnd = userTiming.getCurrentTime();
+    const timerStart = getBaseline(baseline);
     performanceLog.modules.push({
         name: module,
         start: timerStart,
-        duration: timerEnd - timerStart
+        duration: timerEnd - timerStart,
     });
 }
 
 // moduleStart() and moduleEnd() can be used for measuring modules ad-hoc,
 // when they don't align to a baseline.
 function moduleStart(moduleName) {
-    var timerStart = userTiming.getCurrentTime();
+    const timerStart = userTiming.getCurrentTime();
     performanceLog.modules.push({
         name: moduleName,
-        start: timerStart
+        start: timerStart,
     });
 }
 
 function moduleEnd(moduleName) {
-    var timerEnd = userTiming.getCurrentTime();
+    const timerEnd = userTiming.getCurrentTime();
 
-    var moduleIndex = performanceLog.modules.map(function(module) {
-        return module.name;
-    }).indexOf(moduleName);
+    const moduleIndex = performanceLog.modules.map(module => module.name).indexOf(moduleName);
 
     if (moduleIndex != -1) {
-        var module = performanceLog.modules[moduleIndex];
+        const module = performanceLog.modules[moduleIndex];
         module.duration = timerEnd - module.start;
     }
 }
@@ -57,9 +55,7 @@ function moduleEnd(moduleName) {
 // It may be called multiple times for the same advert, so that we effectively update
 // the object with additional timings.
 function updateAdvertMetric(advert, metricName, metricValue) {
-    performanceLog.adverts = performanceLog.adverts.filter(function(element) {
-        return advert.id !== element.id;
-    });
+    performanceLog.adverts = performanceLog.adverts.filter(element => advert.id !== element.id);
     advert.timings[metricName] = metricValue;
     performanceLog.adverts.push(Object.freeze({
         id: advert.id,
@@ -73,19 +69,19 @@ function updateAdvertMetric(advert, metricName, metricValue) {
         startRendering: advert.timings.startRendering,
         stopRendering: advert.timings.stopRendering,
         loadingMethod: advert.timings.loadingMethod,
-        lazyWaitComplete: advert.timings.lazyWaitComplete
+        lazyWaitComplete: advert.timings.lazyWaitComplete,
     }));
 }
 
 function addStartTimeBaseline(baselineName) {
     performanceLog.baselines.push({
         name: baselineName,
-        startTime: userTiming.getCurrentTime()
+        startTime: userTiming.getCurrentTime(),
     });
 }
 
 function addEndTimeBaseline(baselineName) {
-    performanceLog.baselines.forEach(function(baseline) {
+    performanceLog.baselines.forEach((baseline) => {
         if (baseline.name === baselineName) {
             baseline.endTime = userTiming.getCurrentTime();
         }
@@ -93,17 +89,15 @@ function addEndTimeBaseline(baselineName) {
 }
 
 function getBaseline(baselineName) {
-    var index = performanceLog.baselines
-        .map(function(_) {
-            return _.name;
-        })
+    const index = performanceLog.baselines
+        .map(_ => _.name)
         .indexOf(baselineName);
     return index > -1 ? performanceLog.baselines[index].startTime : 0;
 }
 
 function reportTrackingData() {
     if (config.tests.commercialClientLogging) {
-        require(['ophan/ng'], function(ophan) {
+        require(['ophan/ng'], (ophan) => {
             performanceLog.viewId = ophan.viewId;
 
             beacon.postJson('/commercial-report', JSON.stringify(performanceLog), true);
@@ -116,14 +110,14 @@ function addTag(tag) {
 }
 
 export default {
-    setListeners: setListeners,
-    moduleCheckpoint: moduleCheckpoint,
-    moduleStart: moduleStart,
-    moduleEnd: moduleEnd,
-    updateAdvertMetric: updateAdvertMetric,
-    addStartTimeBaseline: addStartTimeBaseline,
-    addEndTimeBaseline: addEndTimeBaseline,
-    primaryBaseline: primaryBaseline,
-    secondaryBaseline: secondaryBaseline,
-    addTag: addTag
+    setListeners,
+    moduleCheckpoint,
+    moduleStart,
+    moduleEnd,
+    updateAdvertMetric,
+    addStartTimeBaseline,
+    addEndTimeBaseline,
+    primaryBaseline,
+    secondaryBaseline,
+    addTag,
 };

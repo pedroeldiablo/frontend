@@ -5,5 +5,5 @@
 export default {
     getHash: function getHash() {
         return window.location.hash;
-    }
+    },
 };

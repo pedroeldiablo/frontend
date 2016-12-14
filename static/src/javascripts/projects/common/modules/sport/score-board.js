@@ -16,7 +16,7 @@ function ScoreBoard(context) {
     this.parent = context.parent;
 
     this.placeholder = bonzo.create(template(scoreContainerHtml, {
-        loadingState: this.pageType !== 'report' ? ' score__loading--live' : ''
+        loadingState: this.pageType !== 'report' ? ' score__loading--live' : '',
     }))[0];
 
     if (this.pageType === 'report') {
@@ -30,7 +30,7 @@ function ScoreBoard(context) {
     this.autoupdated = context.autoupdated;
     this.responseDataKey = context.responseDataKey;
     this.updateEvery = detect.isBreakpoint({
-        min: 'desktop'
+        min: 'desktop',
     }) ? 30 : 60;
 }
 
@@ -38,29 +38,29 @@ component.define(ScoreBoard);
 
 ScoreBoard.prototype.componentClass = 'match-summary';
 
-ScoreBoard.prototype.prerender = function() {
-    var scoreLoadingPlaceholder = $('.score__loading', $(this.placeholder));
+ScoreBoard.prototype.prerender = function () {
+    const scoreLoadingPlaceholder = $('.score__loading', $(this.placeholder));
     if (scoreLoadingPlaceholder.length) {
         scoreLoadingPlaceholder.remove();
     }
 };
 
-ScoreBoard.prototype.ready = function() {
+ScoreBoard.prototype.ready = function () {
     this.setState(this.pageType);
 };
 
 // Load the first score html component from ajax, and any subsequent score updates from the same endpoint.
-ScoreBoard.prototype.load = function() {
+ScoreBoard.prototype.load = function () {
     this.fetch(this.placeholder);
 };
 
 // Load the first score html component from json, and any subsequent score updates from ajax.
-ScoreBoard.prototype.loadFromJson = function(html) {
+ScoreBoard.prototype.loadFromJson = function (html) {
     this.template = html;
     this.render(this.placeholder);
 };
 
-ScoreBoard.prototype.error = function() {
+ScoreBoard.prototype.error = function () {
     this.placeholder.innerHTML = '';
     this.parent.removeClass('u-h');
 };

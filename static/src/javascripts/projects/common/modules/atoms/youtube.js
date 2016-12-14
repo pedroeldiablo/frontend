@@ -3,12 +3,12 @@ import youtubePlayer from 'common/modules/atoms/youtube-player';
 import tracking from 'common/modules/atoms/youtube-tracking';
 import $ from 'common/utils/$';
 
-var players = {};
+const players = {};
 
-var STATES = {
-    'ENDED': onPlayerEnded,
-    'PLAYING': onPlayerPlaying,
-    'PAUSED': onPlayerPaused
+const STATES = {
+    ENDED: onPlayerEnded,
+    PLAYING: onPlayerPlaying,
+    PAUSED: onPlayerPaused,
 };
 
 function checkState(atomId, state, status) {
@@ -44,8 +44,8 @@ function killProgressTracker(atomId) {
 }
 
 function recordPlayerProgress(atomId) {
-    var player = players[atomId].player;
-    var pendingTrackingCalls = players[atomId].pendingTrackingCalls;
+    const player = players[atomId].player;
+    const pendingTrackingCalls = players[atomId].pendingTrackingCalls;
 
     if (!pendingTrackingCalls.length) {
         return;
@@ -55,8 +55,8 @@ function recordPlayerProgress(atomId) {
         player.duration = player.getDuration();
     }
 
-    var currentTime = player.getCurrentTime();
-    var percentPlayed = Math.round(((currentTime / player.duration) * 100));
+    const currentTime = player.getCurrentTime();
+    const percentPlayed = Math.round(((currentTime / player.duration) * 100));
 
     if (percentPlayed >= pendingTrackingCalls[0]) {
         tracking.track(pendingTrackingCalls[0], atomId);
@@ -67,20 +67,20 @@ function recordPlayerProgress(atomId) {
 function onPlayerReady(atomId, overlay, event) {
     players[atomId] = {
         player: event.target,
-        pendingTrackingCalls: [25, 50, 75]
+        pendingTrackingCalls: [25, 50, 75],
     };
 
     if (overlay) {
-        var formattedDuration = getFormattedDuration(players[atomId].player.getDuration());
+        const formattedDuration = getFormattedDuration(players[atomId].player.getDuration());
         setDuration(formattedDuration, overlay);
     }
 }
 
 function getFormattedDuration(durationInSeconds) {
-    var times = [];
-    var hours = Math.floor(durationInSeconds / 3600);
-    var minutes = Math.floor((durationInSeconds - hours * 3600) / 60);
-    var seconds = (durationInSeconds - hours * 3600) - (minutes * 60);
+    const times = [];
+    const hours = Math.floor(durationInSeconds / 3600);
+    const minutes = Math.floor((durationInSeconds - hours * 3600) / 60);
+    const seconds = (durationInSeconds - hours * 3600) - (minutes * 60);
 
     if (hours) {
         times.push(hours);
@@ -94,11 +94,11 @@ function getFormattedDuration(durationInSeconds) {
 }
 
 function formatTime(time) {
-    return ('0' + time).slice(-2);
+    return (`0${time}`).slice(-2);
 }
 
 function setDuration(formattedDuration, overlay) {
-    var durationElem = overlay.querySelector('.youtube-media-atom__bottom-bar__duration');
+    const durationElem = overlay.querySelector('.youtube-media-atom__bottom-bar__duration');
 
     durationElem.innerText = formattedDuration;
 }
@@ -116,23 +116,23 @@ function checkElemsForVideos(elems) {
 }
 
 function checkElemForVideo(elem) {
-    fastdom.read(function() {
-        $('.youtube-media-atom', elem).each(function(el) {
-            var atomId = el.getAttribute('data-media-atom-id');
-            var iframe = el.querySelector('iframe');
-            var overlay = el.querySelector('.youtube-media-atom__overlay');
-            var youtubeId = iframe.id;
+    fastdom.read(() => {
+        $('.youtube-media-atom', elem).each((el) => {
+            const atomId = el.getAttribute('data-media-atom-id');
+            const iframe = el.querySelector('iframe');
+            const overlay = el.querySelector('.youtube-media-atom__overlay');
+            const youtubeId = iframe.id;
 
             tracking.init(atomId);
 
             youtubePlayer.init(iframe, {
                 onPlayerReady: onPlayerReady.bind(null, atomId, overlay),
-                onPlayerStateChange: onPlayerStateChange.bind(null, atomId)
+                onPlayerStateChange: onPlayerStateChange.bind(null, atomId),
             }, youtubeId);
         });
     });
 }
 
 export default {
-    checkElemsForVideos: checkElemsForVideos
+    checkElemsForVideos,
 };

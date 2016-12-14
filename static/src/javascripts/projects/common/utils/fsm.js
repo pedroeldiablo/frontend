@@ -36,21 +36,20 @@ function FiniteStateMachine(options) {
     this.states = options.states || {};
     this.context.state = options.initial || '';
     this.debug = options.debug || false;
-    this.onChangeState = options.onChangeState.bind(this.context) || function() {};
+    this.onChangeState = options.onChangeState.bind(this.context) || function () {};
 }
 
-FiniteStateMachine.prototype.log = function() {
+FiniteStateMachine.prototype.log = function () {
     if (this.debug && window.console && window.console.log) {
         window.console.log.apply(window.console, arguments);
     }
 };
 
-FiniteStateMachine.prototype.trigger = function(event, data) {
-
+FiniteStateMachine.prototype.trigger = function (event, data) {
     this.log('fsm: (event)', event);
 
-    var state = this.context.state,
-        noop = function() {};
+    let state = this.context.state,
+        noop = function () {};
 
     (this.states[state].events[event] || noop).call(this.context, data);
 
@@ -61,7 +60,7 @@ FiniteStateMachine.prototype.trigger = function(event, data) {
         (this.states[state].leave || noop).apply(this.context);
         (this.states[this.context.state].enter || noop).apply(this.context);
 
-        this.log('fsm: (state)', state + ' -> ' + this.context.state);
+        this.log('fsm: (state)', `${state} -> ${this.context.state}`);
     }
 };
 

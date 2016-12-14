@@ -6,39 +6,38 @@ import assign from 'lodash/objects/assign';
 function noop() {}
 
 function elementIsInView(el, offsets_) {
-    var offsets = assign({}, {
+    const offsets = assign({}, {
         left: 0,
         right: 0,
         top: 0,
-        bottom: 0
+        bottom: 0,
     }, offsets_);
 
-    var rect = el.getBoundingClientRect();
-    var viewportHeight = window.innerHeight;
-    var viewportWidth = window.innerWidth;
+    const rect = el.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-    var fromTop = rect.top + offsets.top;
-    var fromBottom = rect.bottom - offsets.bottom;
-    var fromLeft = rect.left - offsets.left;
-    var fromRight = rect.right + offsets.right;
+    const fromTop = rect.top + offsets.top;
+    const fromBottom = rect.bottom - offsets.bottom;
+    const fromLeft = rect.left - offsets.left;
+    const fromRight = rect.right + offsets.right;
 
-    var visibleVertically = fromTop < viewportHeight && fromBottom > 0;
-    var visibleHorizontally = fromLeft < viewportWidth && fromRight > 0;
+    const visibleVertically = fromTop < viewportHeight && fromBottom > 0;
+    const visibleHorizontally = fromLeft < viewportWidth && fromRight > 0;
 
     return visibleVertically && visibleHorizontally;
 }
 
 
-
 function ElementInview(element, container, offsets) {
-    var hasBeenSeen = false;
+    let hasBeenSeen = false;
 
-    var events = {
-        firstview: noop
+    const events = {
+        firstview: noop,
     };
 
-    bean.on(container, 'scroll', debounce(function() {
-        var inView = elementIsInView(element, offsets);
+    bean.on(container, 'scroll', debounce(() => {
+        const inView = elementIsInView(element, offsets);
 
         if (inView) {
             if (!hasBeenSeen) {
@@ -49,9 +48,9 @@ function ElementInview(element, container, offsets) {
     }, 200));
 
     return {
-        on: function(event, func) {
+        on(event, func) {
             events[event] = func;
-        }
+        },
     };
 }
 

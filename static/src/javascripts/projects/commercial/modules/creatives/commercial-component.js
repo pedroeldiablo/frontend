@@ -14,7 +14,7 @@ import pick from 'lodash/objects/pick';
 import merge from 'lodash/objects/merge';
 import map from 'lodash/collections/map';
 import reduce from 'lodash/collections/reduce';
-var urlBuilders = {
+const urlBuilders = {
     soulmates: defaultUrlBuilder('soulmates/mixed'),
     capiSingle: complexUrlBuilder('capi-single', false, false, true),
     capi: complexUrlBuilder('capi', false, false, true),
@@ -26,21 +26,21 @@ var urlBuilders = {
     travel: complexUrlBuilder('travel/offers', 'ids', true),
     multi: complexUrlBuilder('multi', '', true),
     book: bookUrlBuilder('books/book'),
-    soulmatesGroup: soulmatesGroupUrlBuilder('soulmates/')
+    soulmatesGroup: soulmatesGroupUrlBuilder('soulmates/'),
 };
 
 function defaultUrlBuilder(url) {
-    return function(params) {
+    return function (params) {
         return buildComponentUrl(url, params);
     };
 }
 
 function bookUrlBuilder(url) {
-    return function(params) {
-        var isbn = config.page.isbn || params.isbn;
+    return function (params) {
+        const isbn = config.page.isbn || params.isbn;
         if (isbn) {
             return buildComponentUrl(url, merge(params, {
-                t: isbn
+                t: isbn,
             }));
         } else {
             return false;
@@ -49,21 +49,21 @@ function bookUrlBuilder(url) {
 }
 
 function soulmatesGroupUrlBuilder(url) {
-    return function(params) {
+    return function (params) {
         return buildComponentUrl(url + params.soulmatesFeedName, params);
     };
 }
 
 function complexUrlBuilder(url, withSpecificId, withKeywords, withSection) {
-    return function(params) {
+    return function (params) {
         return buildComponentUrl(url, merge(
             params,
             withSpecificId && params[withSpecificId] ? {
-                t: params[withSpecificId].split(',')
+                t: params[withSpecificId].split(','),
             } : {},
             withKeywords ? getKeywords() : {},
             withSection ? {
-                s: config.page.section
+                s: config.page.section,
             } : {}
         ));
     };
@@ -76,18 +76,18 @@ function createToggle(el) {
 }
 
 function adjustMostPopHeight(el) {
-    var adSlotHeight;
-    var $adSlot = $(el);
-    var $mostPopTabs = $('.js-most-popular-footer .tabs__pane');
-    var mostPopTabsHeight;
+    let adSlotHeight;
+    const $adSlot = $(el);
+    const $mostPopTabs = $('.js-most-popular-footer .tabs__pane');
+    let mostPopTabsHeight;
 
     if ($adSlot.hasClass('ad-slot--mostpop')) {
-        fastdom.read(function() {
+        fastdom.read(() => {
             adSlotHeight = $adSlot.dim().height;
             mostPopTabsHeight = $mostPopTabs.dim().height;
 
             if (adSlotHeight > mostPopTabsHeight) {
-                fastdom.write(function() {
+                fastdom.write(() => {
                     $mostPopTabs.css('height', adSlotHeight);
                 });
             }
@@ -102,9 +102,9 @@ function setFluid(el) {
 }
 
 function constructQuery(params) {
-    return reduce(params, function(result, value, key) {
-        var buildParam = function(value) {
-            return key + '=' + encodeURIComponent(value);
+    return reduce(params, (result, value, key) => {
+        const buildParam = function (value) {
+            return `${key}=${encodeURIComponent(value)}`;
         };
 
         if (result !== '?') {
@@ -117,19 +117,17 @@ function constructQuery(params) {
 
 function buildComponentUrl(url, params) {
     // filter out empty params
-    var filteredParams = pick(params, function(v) {
-        return isArray(v) ? v.length : v;
-    });
-    var query = Object.keys(filteredParams).length ? constructQuery(filteredParams) : '';
-    return config.page.ajaxUrl + '/commercial/' + url + '.json' + query;
+    const filteredParams = pick(params, v => isArray(v) ? v.length : v);
+    const query = Object.keys(filteredParams).length ? constructQuery(filteredParams) : '';
+    return `${config.page.ajaxUrl}/commercial/${url}.json${query}`;
 }
 
 function getKeywords() {
-    var keywords = config.page.keywordIds ?
+    const keywords = config.page.keywordIds ?
         map(config.page.keywordIds.split(','), getKeyword) :
         getKeyword(config.page.pageId);
     return {
-        k: keywords
+        k: keywords,
     };
 
     function getKeyword(str) {
@@ -147,9 +145,11 @@ function getKeywords() {
  * @param {Object=} params
  */
 function CommercialComponent(adSlot, params) {
-    if (params.type == 'book') fastdom.write(function() {
-        $(adSlot).addClass('ad-slot--books-inline');
-    });
+    if (params.type == 'book') {
+        fastdom.write(() => {
+            $(adSlot).addClass('ad-slot--books-inline');
+        });
+    }
     this.params = params || {};
     this.type = this.params.type;
     // remove type from params
@@ -158,14 +158,14 @@ function CommercialComponent(adSlot, params) {
     this.url = urlBuilders[this.type](this.params);
 }
 
-CommercialComponent.prototype.create = function() {
-    return new Promise(function(resolve) {
+CommercialComponent.prototype.create = function () {
+    return new Promise((resolve) => {
         if (this.url) {
             lazyload({
                 url: this.url,
                 container: this.adSlot,
                 success: onSuccess.bind(this),
-                error: onError.bind(this)
+                error: onError.bind(this),
             });
         } else {
             resolve(false);
@@ -182,17 +182,17 @@ CommercialComponent.prototype.create = function() {
         function onError() {
             resolve(false);
         }
-    }.bind(this));
+    });
 };
 
 CommercialComponent.prototype.postLoadEvents = {
     capi: createToggle,
     capiSingle: createToggle,
-    paidforCard: function(el) {
+    paidforCard(el) {
         setFluid(el);
         adjustMostPopHeight(el);
         createToggle(el);
-    }
+    },
 };
 
 export default CommercialComponent;

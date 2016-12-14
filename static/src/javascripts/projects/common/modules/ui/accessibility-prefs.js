@@ -5,10 +5,10 @@ import forEach from 'lodash/collections/forEach';
 // ^ U WOT
 
 function set(mode) {
-    var val = mode + '(100%)';
+    const val = `${mode}(100%)`;
     $('body').css({
         '-webkit-filter': val,
-        'filter': val
+        filter: val,
     });
 }
 
@@ -16,8 +16,8 @@ function breuer() {
     $('body').addClass('is-breuer-mode');
 }
 
-export default function() {
-    forEach(['sepia', 'grayscale', 'invert', 'contrast', 'saturate', 'opacity'], function(filter) {
+export default function () {
+    forEach(['sepia', 'grayscale', 'invert', 'contrast', 'saturate', 'opacity'], (filter) => {
         if (userPrefs.isOn(filter)) {
             set(filter);
         }
@@ -26,4 +26,4 @@ export default function() {
             breuer();
         }
     });
-};
+}

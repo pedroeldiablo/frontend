@@ -1,8 +1,8 @@
 import storage from 'common/utils/storage';
 
-var storagePrefix = 'gu.prefs.';
-var defaultOptions = {
-    type: 'local'
+const storagePrefix = 'gu.prefs.';
+const defaultOptions = {
+    type: 'local',
 };
 
 function set(name, value, options) {
@@ -22,27 +22,27 @@ function remove(name, options) {
 
 function switchOn(name, options) {
     options = options || {};
-    storage[options.type || defaultOptions.type].set(storagePrefix + 'switch.' + name, true);
+    storage[options.type || defaultOptions.type].set(`${storagePrefix}switch.${name}`, true);
 }
 
 function switchOff(name, options) {
     options = options || {};
-    storage[options.type || defaultOptions.type].set(storagePrefix + 'switch.' + name, false);
+    storage[options.type || defaultOptions.type].set(`${storagePrefix}switch.${name}`, false);
 }
 
 function removeSwitch(name, options) {
     options = options || {};
-    storage[options.type || defaultOptions.type].remove(storagePrefix + 'switch.' + name);
+    storage[options.type || defaultOptions.type].remove(`${storagePrefix}switch.${name}`);
 }
 
 function isOn(name, options) {
     options = options || {};
-    return storage[options.type || defaultOptions.type].get(storagePrefix + 'switch.' + name) === true;
+    return storage[options.type || defaultOptions.type].get(`${storagePrefix}switch.${name}`) === true;
 }
 
 function isOff(name, options) {
     options = options || {};
-    return storage[options.type || defaultOptions.type].get(storagePrefix + 'switch.' + name) === false;
+    return storage[options.type || defaultOptions.type].get(`${storagePrefix}switch.${name}`) === false;
 }
 
 function isNumeric(str) {
@@ -54,7 +54,7 @@ function isBoolean(str) {
 }
 
 function setPrefs(loc) {
-    var qs = loc.hash.substr(1).split('&'),
+    let qs = loc.hash.substr(1).split('&'),
         m,
         key,
         val,
@@ -86,13 +86,13 @@ function setPrefs(loc) {
 setPrefs(window.location);
 
 export default {
-    set: set,
-    get: get,
-    remove: remove,
-    switchOn: switchOn,
-    switchOff: switchOff,
-    removeSwitch: removeSwitch,
-    isOn: isOn,
-    isOff: isOff,
-    setPrefs: setPrefs
+    set,
+    get,
+    remove,
+    switchOn,
+    switchOff,
+    removeSwitch,
+    isOn,
+    isOff,
+    setPrefs,
 };

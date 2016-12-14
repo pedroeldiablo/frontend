@@ -15,20 +15,20 @@ import config from 'common/utils/config';
  * Less than 4 impressions
  * Persist close state
  */
-var COOKIE_IMPRESSION_KEY = 'GU_SMARTAPPBANNER',
+let COOKIE_IMPRESSION_KEY = 'GU_SMARTAPPBANNER',
     DATA = {
         IOS: {
             LOGO: 'https://assets.guim.co.uk/images/apps/ios-logo.png',
             SCREENSHOTS: 'https://assets.guim.co.uk/images/apps/ios-screenshots.jpg',
             LINK: 'https://app.adjust.com/w97upi?deep_link=gnmguardian://root?contenttype=front&source=adjust',
-            STORE: 'on the App Store'
+            STORE: 'on the App Store',
         },
         ANDROID: {
             LOGO: 'https://assets.guim.co.uk/images/apps/android-logo-2x.png',
             SCREENSHOTS: 'https://assets.guim.co.uk/images/apps/ios-screenshots.jpg',
             LINK: 'https://app.adjust.com/642i3r?deep_link=x-gu://www.theguardian.com/?source=adjust',
-            STORE: 'in Google Play'
-        }
+            STORE: 'in Google Play',
+        },
     },
     cookieVal = cookies.get(COOKIE_IMPRESSION_KEY),
     impressions = cookieVal && !isNaN(cookieVal) ? parseInt(cookieVal, 10) : 0,
@@ -50,8 +50,8 @@ function canUseSmartBanner() {
 }
 
 function showMessage() {
-    loadCssPromise.then(function() {
-        var platform = (detect.isIOS()) ? 'ios' : 'android',
+    loadCssPromise.then(() => {
+        let platform = (detect.isIOS()) ? 'ios' : 'android',
             msg = new Message(platform),
             fullTemplate = tmp + (detect.getBreakpoint() === 'mobile' ? '' : tablet);
 
@@ -59,9 +59,9 @@ function showMessage() {
 
         cookies.add(COOKIE_IMPRESSION_KEY, impressions + 1);
 
-        fastdom.read(function() {
-            var $banner = $('.site-message--ios, .site-message--android');
-            var bannerHeight = $banner.dim().height;
+        fastdom.read(() => {
+            const $banner = $('.site-message--ios, .site-message--android');
+            const bannerHeight = $banner.dim().height;
             if (window.scrollY !== 0) {
                 window.scrollTo(window.scrollX, window.scrollY + bannerHeight);
             }
@@ -84,7 +84,7 @@ function getMessageHeight() {
 }
 
 export default {
-    init: init,
-    isMessageShown: isMessageShown,
-    getMessageHeight: getMessageHeight
+    init,
+    isMessageShown,
+    getMessageHeight,
 };

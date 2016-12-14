@@ -22,33 +22,33 @@ import domReady from 'domReady';
 import raven from 'common/utils/raven';
 // curl’s promise API is broken, so we must cast it to a real Promise
 // https://github.com/cujojs/curl/issues/293
-var promiseRequire = function(moduleIds) {
+const promiseRequire = function (moduleIds) {
     return Promise.resolve(require(moduleIds));
 };
 
-var guardian = window.guardian;
-var config = guardian.config;
+const guardian = window.guardian;
+const config = guardian.config;
 
-var domReadyPromise = new Promise(function(resolve) {
+const domReadyPromise = new Promise((resolve) => {
     domReady(resolve);
 });
 
-var bootStandard = function() {
+const bootStandard = function () {
     return promiseRequire(['bootstraps/standard/main'])
-        .then(function(boot) {
+        .then((boot) => {
             boot();
         });
 };
 
-var bootCommercial = function() {
+const bootCommercial = function () {
     if (!config.switches.commercial) {
         return;
     }
 
     if (config.page.isDev) {
-        guardian.adBlockers.onDetect.push(function(isInUse) {
-            var needsMessage = isInUse && window.console && window.console.warn;
-            var message = 'Do you have an adblocker enabled? Commercial features might fail to run, or throw exceptions.';
+        guardian.adBlockers.onDetect.push((isInUse) => {
+            const needsMessage = isInUse && window.console && window.console.warn;
+            const message = 'Do you have an adblocker enabled? Commercial features might fail to run, or throw exceptions.';
             if (needsMessage) {
                 window.console.warn(message);
             }
@@ -57,20 +57,20 @@ var bootCommercial = function() {
 
     return promiseRequire(['bootstraps/commercial'])
         .then(raven.wrap({
-                tags: {
-                    feature: 'commercial'
-                }
+            tags: {
+                feature: 'commercial',
             },
-            function(commercial) {
+        },
+            (commercial) => {
                 commercial.init();
             }
         ));
 };
 
-var bootEnhanced = function() {
+const bootEnhanced = function () {
     if (guardian.isEnhanced) {
         return promiseRequire(['bootstraps/enhanced/main'])
-            .then(function(boot) {
+            .then((boot) => {
                 boot();
             });
     }

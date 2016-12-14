@@ -13,14 +13,14 @@ import lowFrictionButtons from 'text!common/views/experiments/participation/low-
 import template from 'common/utils/template';
 import mediator from 'common/utils/mediator';
 
-var currentState = {
+const currentState = {
     initialRender: true,
     complete: false,
     confirming: false,
-    selectedItem: null
+    selectedItem: null,
 };
 
-var settings = {
+let settings = {
     prevItemsHighlight: true, // Add the highlight class the items before the selected one
     itemCount: 5, // Amount of items
     itemIconUnicode: [], // Add a list of unicode icons
@@ -33,17 +33,17 @@ var settings = {
         description: 'Let us know what you think!',
         itemClassSuffix: 'star',
         confirmButton: 'Rate it!',
-        testMessage: 'This is a test. We\'re currently evaluating this as a potential new feature on theguardian.com'
-    }
+        testMessage: 'This is a test. We\'re currently evaluating this as a potential new feature on theguardian.com',
+    },
 };
 
-var els = {
+const els = {
     $articleBody: $('.js-article__body'),
     $lowFricContainer: null,
-    $lowFricContents: null
+    $lowFricContents: null,
 };
 
-var prefs = 'gu.lowFricParticipation';
+const prefs = 'gu.lowFricParticipation';
 
 // Tear everything down
 
@@ -54,19 +54,19 @@ function tearDown() {
 // Mark-up Building
 
 function createButtons(state) {
-    var buttonString = '';
+    let buttonString = '';
 
     // Build our participation buttons
-    for (var i = 0; i < settings.itemCount; i++) {
-        var thisUniIcon = settings.itemIconUnicode[i] || settings.itemIconUnicode[0]; // Use icon at current iteration or default to first
-        var templateVars = {
-            buttonText: 'Choose' + (settings.buttonTextArray.length > 0 && settings.buttonTextArray[i]) || i + 1,
+    for (let i = 0; i < settings.itemCount; i++) {
+        const thisUniIcon = settings.itemIconUnicode[i] || settings.itemIconUnicode[0]; // Use icon at current iteration or default to first
+        const templateVars = {
+            buttonText: `Choose${settings.buttonTextArray.length > 0 && settings.buttonTextArray[i]}` || i + 1,
             shouldBeActive: !state.confirming && !state.complete,
             shouldBeHighlighted: (state.confirming || state.complete) &&
                 ((settings.prevItemsHighlight && state.selectedItem >= i) || state.selectedItem === i),
             itemIcon: thisUniIcon || svg(settings.itemIcon, [settings.inactiveIconClass]),
             itemId: i,
-            state: state
+            state,
         };
 
         buttonString += template(lowFrictionButtons, merge(settings.templateVars, templateVars));
@@ -78,12 +78,11 @@ function createButtons(state) {
 // Rendering
 
 function render(state) {
-
-    var view = template(lowFrictionContents, merge(settings.templateVars, {
+    const view = template(lowFrictionContents, merge(settings.templateVars, {
         buttons: createButtons(state),
         selectedItem: state.selectedItem,
         confirming: state.confirming,
-        complete: state.complete
+        complete: state.complete,
     }));
 
     if (state.complete) {
@@ -91,17 +90,16 @@ function render(state) {
     }
 
     if (state.initialRender) {
-        var fullView = template(lowFrictionWrapper, merge(settings.templateVars, {
-            contents: view
+        const fullView = template(lowFrictionWrapper, merge(settings.templateVars, {
+            contents: view,
         }));
 
-        fastdomPromise.write(function() {
+        fastdomPromise.write(() => {
             els.$articleBody.append(fullView);
             els.$lowFricContents = $('.js-participation-low-friction__contents');
         });
-
     } else {
-        fastdomPromise.write(function() {
+        fastdomPromise.write(() => {
             els.$lowFricContents.html(view);
 
             if (state.confirming) {
@@ -110,7 +108,6 @@ function render(state) {
             }
         });
     }
-
 }
 
 // State Handling
@@ -127,18 +124,17 @@ function getUserVote() {
         return 'no-storage';
     }
 
-    var currentPage = config.page.pageId,
+    let currentPage = config.page.pageId,
         votedPages = JSON.parse(storage.local.get(prefs));
 
     // Will return result for current page if available
     return votedPages && votedPages[currentPage];
-
 }
 
 // Setters
 
 function setUserVote() {
-    var currentPage = config.page.pageId,
+    let currentPage = config.page.pageId,
         votedPages = JSON.parse(storage.local.get(prefs));
 
     // If the prefs object doesn't exist, lets create one
@@ -157,14 +153,14 @@ function itemClicked(event) {
     updateState({
         confirming: true,
         selectedItem: $(event.currentTarget).data().itemId,
-        initialRender: false
+        initialRender: false,
     });
 }
 
 function confirmClicked() {
     updateState({
         confirming: false,
-        complete: true
+        complete: true,
     });
 
     setUserVote();
@@ -173,21 +169,20 @@ function confirmClicked() {
 }
 
 function itemHovered(e) {
-    var itemLength;
-    var $lowFricButtons;
+    let itemLength;
+    let $lowFricButtons;
 
-    fastdomPromise.read(function() {
+    fastdomPromise.read(() => {
         itemLength = e.currentTarget.getAttribute('data-item-id');
         $lowFricButtons = $('.js-participation-low-fric--button');
     }).then(updateIcons);
 
     function updateIcons() {
-        fastdomPromise.write(function() {
+        fastdomPromise.write(() => {
             $lowFricButtons.removeClass('participation-low-fric--button__is-highlighted');
 
             if (itemLength > -1) {
-                for (var i = itemLength; i >= 0; i--) {
-
+                for (let i = itemLength; i >= 0; i--) {
                     $($lowFricButtons[i]).addClass('participation-low-fric--button__is-highlighted');
                 }
             }
@@ -197,7 +192,7 @@ function itemHovered(e) {
 
 function blockUnHovered() {
     if (!currentState.confirming && !currentState.complete) {
-        fastdomPromise.write(function() {
+        fastdomPromise.write(() => {
             $('.js-participation-low-fric--button').removeClass('participation-low-fric--button__is-highlighted');
         });
     }
@@ -213,7 +208,7 @@ function bindEvents() {
 // Initalise it.
 
 function init(options) {
-    var userVote = getUserVote();
+    const userVote = getUserVote();
 
     // If we can't store the user's value, don't render
     if (userVote === 'no-storage') {
@@ -229,7 +224,7 @@ function init(options) {
         // Render with selected item
         updateState({
             complete: true,
-            selectedItem: userVote
+            selectedItem: userVote,
         });
     } else {
         // Set and render initial state
@@ -237,9 +232,8 @@ function init(options) {
 
         bindEvents(currentState);
     }
-
 }
 
 export default {
-    init: init
+    init,
 };

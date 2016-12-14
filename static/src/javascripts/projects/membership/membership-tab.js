@@ -5,7 +5,7 @@ import config from 'common/utils/config';
 import formatters from 'membership/formatters';
 import stripe from 'membership/stripe';
 
-var CARD_DETAILS = '.js-mem-card-details',
+let CARD_DETAILS = '.js-mem-card-details',
     CHANGE_TIER_CARD_LAST4 = '.js-mem-card-last4',
     PACKAGE_COST = '.js-mem-package-cost',
     PACKAGE_CURRENT_RENEWAL_DATE = '.js-mem-current-renewal-date',
@@ -33,11 +33,11 @@ var CARD_DETAILS = '.js-mem-card-details',
 
 function fetchUserDetails() {
     ajax({
-        url: config.page.userAttributesApiUrl + '/me/mma-membership',
+        url: `${config.page.userAttributesApiUrl}/me/mma-membership`,
         crossOrigin: true,
         withCredentials: true,
-        method: 'get'
-    }).then(function(resp) {
+        method: 'get',
+    }).then((resp) => {
         if (resp && resp.subscription) {
             hideLoader();
             populateUserDetails(resp);
@@ -54,7 +54,7 @@ function hideLoader() {
 
 
 function populateUserDetails(userDetails) {
-    var isMonthly = userDetails.subscription.plan.interval === 'month',
+    let isMonthly = userDetails.subscription.plan.interval === 'month',
         intervalText = isMonthly ? 'Monthly' : 'Annual',
         glyph = userDetails.subscription.plan.currency,
         notificationTypeSelector;
@@ -99,7 +99,7 @@ function populateUserDetails(userDetails) {
         notificationTypeSelector = userDetails.optIn ? NOTIFICATION_CHANGE : NOTIFICATION_CANCEL;
         $(notificationTypeSelector).removeClass(IS_HIDDEN_CLASSNAME);
         $(MEMBER_DETAILS).addClass(IS_HIDDEN_CLASSNAME);
-        $(DETAILS_MEMBERSHIP_TIER_ICON_CURRENT).addClass('i-g-' + userDetails.tier.toLowerCase());
+        $(DETAILS_MEMBERSHIP_TIER_ICON_CURRENT).addClass(`i-g-${userDetails.tier.toLowerCase()}`);
     } else if (userDetails.subscription.card) {
         // only show card details if user hasn't changed their subscription and has a payment method
         stripe.display(CARD_DETAILS, userDetails.subscription.card);
@@ -117,5 +117,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

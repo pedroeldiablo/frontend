@@ -1,4 +1,4 @@
-/*eslint-disable no-new*/
+/* eslint-disable no-new*/
 /** Bootstrap for functionality common to all trail pages: article, live blogs, podcasts, videos, etc. */
 import fastdom from 'fastdom';
 import qwery from 'qwery';
@@ -22,7 +22,7 @@ function insertOrProximity(selector, insert) {
     if (window.location.hash) {
         insert();
     } else {
-        var el = qwery(selector)[0];
+        const el = qwery(selector)[0];
 
         if (el) {
             proximityLoader.add(el, 1500, insert);
@@ -32,7 +32,7 @@ function insertOrProximity(selector, insert) {
 
 function initPopular() {
     if (!config.page.isFront) {
-        insertOrProximity('.js-popular-trails', function() {
+        insertOrProximity('.js-popular-trails', () => {
             new Popular().init();
         });
     }
@@ -40,9 +40,9 @@ function initPopular() {
 
 function initRelated() {
     if (!(config.page.seriesId || config.page.blogIds)) {
-        insertOrProximity('.js-related', function() {
-            var opts = {
-                excludeTags: []
+        insertOrProximity('.js-related', () => {
+            const opts = {
+                excludeTags: [],
             };
 
             // exclude ad features from non-ad feature content
@@ -60,11 +60,11 @@ function initRelated() {
 }
 
 function initOnwardContent() {
-    insertOrProximity('.js-onward', function() {
+    insertOrProximity('.js-onward', () => {
         if ((config.page.seriesId || config.page.blogIds) && config.page.showRelatedContent) {
             new Onward(qwery('.js-onward'));
         } else if (config.page.tones !== '') {
-            $('.js-onward').each(function(c) {
+            $('.js-onward').each((c) => {
                 new TonalComponent().fetch(c, 'html');
             });
         }
@@ -73,7 +73,7 @@ function initOnwardContent() {
 
 function initDiscussion() {
     if (config.switches.discussion && config.page.commentable) {
-        var el = qwery('.discussion')[0];
+        const el = qwery('.discussion')[0];
         if (el) {
             new DiscussionLoader().attachTo(el);
         }
@@ -82,18 +82,18 @@ function initDiscussion() {
 
 function repositionComments() {
     if (!identityApi.isUserLoggedIn()) {
-        var $comments = $('.js-comments');
-        fastdom.write(function() {
+        const $comments = $('.js-comments');
+        fastdom.write(() => {
             $comments.appendTo(qwery('.js-repositioned-comments'));
             if (window.location.hash === '#comments') {
-                var top = $comments.offset().top;
+                const top = $comments.offset().top;
                 $(document.body).scrollTop(top);
             }
         });
     }
 }
 
-export default function() {
+export default function () {
     robust.catchErrorsAndLogAll([
         ['c-discussion', initDiscussion],
         ['c-comments', repositionComments],
@@ -101,6 +101,6 @@ export default function() {
         ['c-popular', initPopular],
         ['c-related', initRelated],
         ['c-onward', initOnwardContent],
-        ['c-comment-adverts', commentAdverts]
+        ['c-comment-adverts', commentAdverts],
     ]);
-};
+}

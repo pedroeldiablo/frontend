@@ -1,36 +1,36 @@
 import raven from 'raven';
 import config from 'common/utils/config';
 import detect from 'common/utils/detect';
-var guardian = window.guardian;
+const guardian = window.guardian;
 
-var app = guardian.app = guardian.app || {};
+const app = guardian.app = guardian.app || {};
 
 // attach raven to global object
 app.raven = raven;
 
 app.raven.config(
-    'https://' + config.page.sentryPublicApiKey + '@' + config.page.sentryHost, {
+    `https://${config.page.sentryPublicApiKey}@${config.page.sentryHost}`, {
         whitelistUrls: [
             /localhost/, // will not actually log errors, but `shouldSendCallback` will be called
             /assets\.guim\.co\.uk/,
-            /ophan\.co\.uk/
+            /ophan\.co\.uk/,
         ],
         tags: {
             edition: config.page.edition,
             contentType: config.page.contentType,
-            revisionNumber: config.page.revisionNumber
+            revisionNumber: config.page.revisionNumber,
         },
-        dataCallback: function(data) {
+        dataCallback(data) {
             if (data.culprit) {
                 data.culprit = data.culprit.replace(/\/[a-z\d]{32}(\/[^\/]+)$/, '$1');
             }
             data.tags.origin = (/j.ophan.co.uk/.test(data.culprit)) ? 'ophan' : 'app';
             return data;
         },
-        shouldSendCallback: function(data) {
-            var isDev = config.page.isDev;
-            var isIgnored = typeof(data.tags.ignored) !== 'undefined' && data.tags.ignored;
-            var adBlockerOn = detect.adblockInUseSync();
+        shouldSendCallback(data) {
+            const isDev = config.page.isDev;
+            const isIgnored = typeof (data.tags.ignored) !== 'undefined' && data.tags.ignored;
+            const adBlockerOn = detect.adblockInUseSync();
 
             if (isDev && !isIgnored) {
                 // Some environments don't support or don't always expose the console object
@@ -41,7 +41,7 @@ app.raven.config(
 
             return config.switches.enableSentryReporting &&
                 Math.random() < 0.1 && !isIgnored && !adBlockerOn && !isDev; // don't actually notify sentry in dev mode
-        }
+        },
     }
 );
 

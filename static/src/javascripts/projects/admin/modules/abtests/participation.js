@@ -13,27 +13,27 @@ function Participation(config) {
 Component.define(Participation);
 
 Participation.prototype.config = {
-    test: ''
+    test: '',
 };
 
 Participation.prototype.templateName = 'participation-template';
 Participation.prototype.componentClass = 'participation';
 Participation.prototype.useBem = true;
 
-Participation.prototype.prerender = function() {
-    var test = this.config.test,
+Participation.prototype.prerender = function () {
+    let test = this.config.test,
         origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin,
-        examplePath = (test.examplePath || '/uk') + '#ab-' + test.id;
+        examplePath = `${test.examplePath || '/uk'}#ab-${test.id}`;
 
-    this.getElem('opt-out').href = origin + examplePath + '=notintest';
+    this.getElem('opt-out').href = `${origin + examplePath}=notintest`;
 
-    var linksContainer = this.getElem('links');
+    const linksContainer = this.getElem('links');
 
-    test.variants.forEach(function(variant) {
+    test.variants.forEach((variant) => {
         new ParticipationItem({
             test: test.id,
-            examplePath: examplePath,
-            variant: variant.id
+            examplePath,
+            variant: variant.id,
         }).render(linksContainer);
     });
 };

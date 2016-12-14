@@ -13,9 +13,9 @@ import assign from 'common/utils/assign';
 import Queue from 'common/utils/queue';
 import config from 'common/utils/config';
 
-var q = new Queue();
-var running = false;
-var promise;
+const q = new Queue();
+let running = false;
+let promise;
 
 /**
  * Process the insertion operation:
@@ -30,35 +30,29 @@ var promise;
 function go(state) {
     running = true;
 
-    var batch = [];
-    var batchHeightsBeforeInsert;
+    const batch = [];
+    let batchHeightsBeforeInsert;
 
-    promise = new Promise(function(resolve) {
-            while (!q.empty()) {
+    promise = new Promise((resolve) => {
+        while (!q.empty()) {
                 // Take the current queue items and add them to the batch array
-                batch.push(q.dequeue());
-            }
+            batch.push(q.dequeue());
+        }
 
-            resolve(batch);
-        })
-        .then(function() {
-            return getHeightOfAllContainers(batch);
-        })
-        .then(function(heightsBeforeIns) {
+        resolve(batch);
+    })
+        .then(() => getHeightOfAllContainers(batch))
+        .then((heightsBeforeIns) => {
             batchHeightsBeforeInsert = heightsBeforeIns || 0;
             return insertElements(batch);
         })
-        .then(function() {
-            return getHeightOfAllContainers(batch).then(function(newHeights) {
-                return assign(state, {
-                    newHeight: newHeights - batchHeightsBeforeInsert
-                });
-            });
-        })
-        .then(function(state) {
+        .then(() => getHeightOfAllContainers(batch).then(newHeights => assign(state, {
+            newHeight: newHeights - batchHeightsBeforeInsert,
+        })))
+        .then((state) => {
             if (q.empty()) {
                 // If the queue is empty (no more elements need to be added to the page) we immediately scroll
-                var scrollY = state.newHeight + state.prevHeight + state.scrollY;
+                const scrollY = state.newHeight + state.prevHeight + state.scrollY;
 
                 if (scrollY) {
                     window.scrollTo(0, scrollY);
@@ -70,13 +64,12 @@ function go(state) {
                 // and recursively call the function so that we only scroll the page once the queue is empty -
                 // this prevents excessive and jarring scrolling
                 return go(assign(state, {
-                    prevHeight: state.prevHeight + state.newHeight
+                    prevHeight: state.prevHeight + state.newHeight,
                 }));
             }
         });
 
     return promise;
-
 }
 
 /**
@@ -91,14 +84,14 @@ function insert(container, cb) {
         return fastdom.write(cb);
     }
 
-    var initialState = {
+    const initialState = {
         scrollY: window.scrollY,
-        prevHeight: 0
+        prevHeight: 0,
     };
 
     q.enqueue({
-        container: container,
-        cb: cb
+        container,
+        cb,
     });
 
     return (running ? promise : go(initialState));
@@ -111,8 +104,8 @@ function insert(container, cb) {
  * @param  {Array} batch
  */
 function insertElements(batch) {
-    return fastdom.write(function() {
-        batch.forEach(function(insertion) {
+    return fastdom.write(() => {
+        batch.forEach((insertion) => {
             insertion.cb();
         });
     });
@@ -125,20 +118,17 @@ function insertElements(batch) {
  * @param  {Array} batch
  */
 function getHeightOfAllContainers(batch) {
-    var viewportHeight;
+    let viewportHeight;
 
-    return fastdom.read(function() {
+    return fastdom.read(() => {
         viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
         // Add all the heights of the passed in batch
         // removing the current height
-        return batch.filter(elementIsAbove).reduce(function(height, insertion) {
-            return height + readHeight(insertion.container);
-        }, 0);
+        return batch.filter(elementIsAbove).reduce((height, insertion) => height + readHeight(insertion.container), 0);
     });
 
     function elementIsAbove(el) {
-
-        var elTopPos = el.container.getBoundingClientRect().top;
+        const elTopPos = el.container.getBoundingClientRect().top;
         // If the element has height
         // and the user has scrolled
         // and the distance from the top of the element to the top of the viewport is less
@@ -148,16 +138,16 @@ function getHeightOfAllContainers(batch) {
     }
 
     function readHeight(el) {
-        var style = getComputedStyle(el);
-        var height = el.offsetHeight + parseInt(style.marginTop) + parseInt(style.marginBottom);
+        const style = getComputedStyle(el);
+        const height = el.offsetHeight + parseInt(style.marginTop) + parseInt(style.marginBottom);
         return isNaN(height) ? 0 : height;
     }
 }
 
 export default {
-    insert: insert,
+    insert,
     _tests: {
-        getHeightOfAllContainers: getHeightOfAllContainers,
-        insertElements: insertElements
-    }
+        getHeightOfAllContainers,
+        insertElements,
+    },
 };

@@ -9,7 +9,7 @@
  * @return {?Date} the current date
  */
 function mergeCalls(targetFunction) {
-    var callbacks,
+    let callbacks,
         status,
         callbackArguments;
 
@@ -17,7 +17,7 @@ function mergeCalls(targetFunction) {
         callbackArguments = arguments;
         status = 'complete';
 
-        for (var i = 0; i < callbacks.length; i++) {
+        for (let i = 0; i < callbacks.length; i++) {
             callbacks[i].apply(null, callbackArguments);
         }
     }
@@ -30,7 +30,7 @@ function mergeCalls(targetFunction) {
         } else if (status === 'waiting') {
             callbacks.push(callback);
         } else {
-            callback.apply(null, callbackArguments);
+            callback(...callbackArguments);
         }
     }
 
@@ -48,5 +48,5 @@ function mergeCalls(targetFunction) {
 }
 
 export default {
-    mergeCalls: mergeCalls
+    mergeCalls,
 };

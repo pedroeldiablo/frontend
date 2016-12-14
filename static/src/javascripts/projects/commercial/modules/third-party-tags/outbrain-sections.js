@@ -1,4 +1,4 @@
-var sections = ['politics', 'world', 'business', 'commentisfree'];
+const sections = ['politics', 'world', 'business', 'commentisfree'];
 
 function getSection(section) {
     section = section.toLowerCase();

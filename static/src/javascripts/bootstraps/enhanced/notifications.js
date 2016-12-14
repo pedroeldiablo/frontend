@@ -18,54 +18,52 @@ import some from 'lodash/collections/some';
 import uniq from 'lodash/arrays/uniq';
 import without from 'lodash/arrays/without';
 import isEmpty from 'lodash/objects/isEmpty';
-var modules = {
+const modules = {
 
-    getReg: function() {
+    getReg() {
         return navigator.serviceWorker.ready;
     },
 
-    getSub: function() {
-        //This function can change Notification.permission
-        //by asking the user if it is in 'default' state.
-        return modules.getReg().then(function(reg) {
-            return reg.pushManager.getSubscription();
-        });
+    getSub() {
+        // This function can change Notification.permission
+        // by asking the user if it is in 'default' state.
+        return modules.getReg().then(reg => reg.pushManager.getSubscription());
     },
 
-    init: function() {
-        modules.addButtonPromise().then(function() {
-            var $followElement = modules.configureSubscribeButton();
+    init() {
+        modules.addButtonPromise().then(() => {
+            const $followElement = modules.configureSubscribeButton();
             modules.trackFollowButtonAttention($followElement.get(0));
         });
     },
 
-    addButtonPromise: function() {
-        var button = '<button class="js-notifications__toggle notifications__toggle notifications-follow-input--solo"></button><span class="live-notifications__label js-live-notifications__label--denied live-notifications__label--hidden">Oops! You need to <a href="https://support.google.com/chrome/answer/3220216">unblock notifications</a> for www.theguardian.com</span>';
-        var $container = $('.js-live-notifications');
-        return fastdom.write(function() {
+    addButtonPromise() {
+        const button = '<button class="js-notifications__toggle notifications__toggle notifications-follow-input--solo"></button><span class="live-notifications__label js-live-notifications__label--denied live-notifications__label--hidden">Oops! You need to <a href="https://support.google.com/chrome/answer/3220216">unblock notifications</a> for www.theguardian.com</span>';
+        const $container = $('.js-live-notifications');
+        return fastdom.write(() => {
             $container.append(button);
         });
     },
 
-    trackFollowButtonAttention: function(followElement) {
+    trackFollowButtonAttention(followElement) {
         if (followElement) {
-            require(['ophan/ng'], function(ophan) {
+            require(['ophan/ng'], (ophan) => {
                 ophan.trackComponentAttention('web-notifications--follow-button', followElement);
             });
         }
     },
 
-    configureSubscribeButton: function() {
-        var $follow = $('.js-notifications__toggle'),
+    configureSubscribeButton() {
+        let $follow = $('.js-notifications__toggle'),
             isSubscribed = modules.checkSubscriptions(),
             handler = isSubscribed ? modules.unSubscribeHandler : modules.subscribeHandler,
             src = template(followLink, {
-                isSubscribed: isSubscribed,
-                icon: svgs(isSubscribed ? 'notificationsOff' : 'notificationsOn')
+                isSubscribed,
+                icon: svgs(isSubscribed ? 'notificationsOff' : 'notificationsOn'),
             });
 
         if (!isEmpty($follow)) {
-            fastdom.write(function() {
+            fastdom.write(() => {
                 if (isSubscribed) {
                     $follow.attr('data-link-name', 'live-blog-notifications-turned-off');
                 } else {
@@ -79,15 +77,15 @@ var modules = {
         return $follow;
     },
 
-    subscribeHandler: function() {
-        var wasNotGranted = Notification.permission !== 'granted';
+    subscribeHandler() {
+        const wasNotGranted = Notification.permission !== 'granted';
         modules.subscribe().then(modules.follow)
-            .then(function() {
-                var isNowGranted = Notification.permission === 'granted';
+            .then(() => {
+                const isNowGranted = Notification.permission === 'granted';
                 if (wasNotGranted && isNowGranted) {
                     googleAnalytics.trackNonClickInteraction('browser-notifications-granted');
                 }
-            }).catch(function() {
+            }).catch(() => {
                 if (Notification.permission === 'denied') {
                     googleAnalytics.trackNonClickInteraction('browser-notifications-denied');
                 }
@@ -95,37 +93,35 @@ var modules = {
             });
     },
 
-    unSubscribeHandler: function() {
+    unSubscribeHandler() {
         modules.unFollow().then(modules.unSubscribe);
     },
 
-    subscribe: function() {
-        return modules.getReg().then(function(reg) {
-            return modules.getSub().then(function(sub) {
-                if (sub) {
-                    return sub;
-                } else {
-                    return reg.pushManager.subscribe({
-                        userVisibleOnly: true
-                    });
-                }
-            }).catch(function(e) {
-                fastdom.write(function() {
-                    var $denied = $('.js-live-notifications__label--denied');
-                    $denied.removeClass('live-notifications__label--hidden');
-                    $denied.addClass('live-notifications__label--visible');
+    subscribe() {
+        return modules.getReg().then(reg => modules.getSub().then((sub) => {
+            if (sub) {
+                return sub;
+            } else {
+                return reg.pushManager.subscribe({
+                    userVisibleOnly: true,
                 });
-                throw e;
+            }
+        }).catch((e) => {
+            fastdom.write(() => {
+                const $denied = $('.js-live-notifications__label--denied');
+                $denied.removeClass('live-notifications__label--hidden');
+                $denied.addClass('live-notifications__label--visible');
             });
-        });
+            throw e;
+        }));
     },
 
-    follow: function() {
-        var endpoint = '/notification/store';
+    follow() {
+        const endpoint = '/notification/store';
 
         modules.updateSubscription(endpoint).then(
-            function() {
-                var subscriptions = modules.getSubscriptions();
+            () => {
+                const subscriptions = modules.getSubscriptions();
                 subscriptions.push(config.page.pageId);
                 userPrefs.set('subscriptions', uniq(subscriptions));
                 modules.configureSubscribeButton();
@@ -133,10 +129,10 @@ var modules = {
         );
     },
 
-    unSubscribe: function() {
+    unSubscribe() {
         if (modules.subscriptionsEmpty()) {
-            modules.getSub().then(function(sub) {
-                sub.unsubscribe().catch(function(error) {
+            modules.getSub().then((sub) => {
+                sub.unsubscribe().catch((error) => {
                     robust.log('07cm-frontendNotificatons', error);
                 });
             });
@@ -144,20 +140,20 @@ var modules = {
         modules.configureSubscribeButton();
     },
 
-    unFollow: function() {
-        var notificationsEndpoint = '/notification/delete';
+    unFollow() {
+        const notificationsEndpoint = '/notification/delete';
         return modules.updateSubscription(notificationsEndpoint).then(
-            function() {
-                var subscriptions = modules.getSubscriptions(),
+            () => {
+                let subscriptions = modules.getSubscriptions(),
                     newSubscriptions = without(subscriptions, config.page.pageId);
                 userPrefs.set('subscriptions', uniq(newSubscriptions));
             }
         );
     },
 
-    updateSubscription: function(notificationsEndpoint) {
-        return modules.getSub().then(function(sub) {
-            var endpoint = sub && sub.endpoint;
+    updateSubscription(notificationsEndpoint) {
+        return modules.getSub().then((sub) => {
+            const endpoint = sub && sub.endpoint;
             if (endpoint) {
                 return ajax({
                     url: notificationsEndpoint,
@@ -165,34 +161,32 @@ var modules = {
                     contentType: 'application/x-www-form-urlencoded',
                     data: {
                         browserEndpoint: endpoint,
-                        notificationTopicId: config.page.pageId
-                    }
+                        notificationTopicId: config.page.pageId,
+                    },
                 });
             }
         });
     },
 
-    hasSubscribed: function() {
+    hasSubscribed() {
         return userPrefs.get('subscriptions');
     },
 
-    getSubscriptions: function() {
+    getSubscriptions() {
         return modules.hasSubscribed() || [];
     },
 
-    subscriptionsEmpty: function() {
-        var subscriptions = modules.getSubscriptions();
+    subscriptionsEmpty() {
+        const subscriptions = modules.getSubscriptions();
         return subscriptions.length ? false : true;
     },
 
-    checkSubscriptions: function() {
-        var subscriptions = modules.getSubscriptions();
-        return some(subscriptions, function(sub) {
-            return sub == config.page.pageId;
-        });
-    }
+    checkSubscriptions() {
+        const subscriptions = modules.getSubscriptions();
+        return some(subscriptions, sub => sub == config.page.pageId);
+    },
 };
 
 export default {
-    init: modules.init
+    init: modules.init,
 };

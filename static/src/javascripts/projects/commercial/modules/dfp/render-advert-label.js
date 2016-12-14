@@ -3,7 +3,7 @@ import fastdom from 'common/utils/fastdom-promise';
 
 function renderAdvertLabel(adSlotNode) {
     if (shouldRenderLabel(adSlotNode)) {
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             adSlotNode.insertAdjacentHTML('afterbegin', '<div class="ad-slot__label" data-test-id="ad-slot-label">Advertisement</div>');
         });
     } else {

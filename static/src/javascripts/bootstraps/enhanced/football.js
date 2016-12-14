@@ -16,12 +16,12 @@ import ScoreBoard from 'common/modules/sport/score-board';
 import rhc from 'common/modules/ui/rhc';
 
 function renderNav(match, callback) {
-    var matchInfo = new MatchInfo(match, config.page.pageId);
+    const matchInfo = new MatchInfo(match, config.page.pageId);
 
-    return matchInfo.fetch().then(function(resp) {
-        var $nav;
+    return matchInfo.fetch().then((resp) => {
+        let $nav;
         if (resp.nav && resp.nav.trim().length > 0) {
-            $nav = $.create(resp.nav).first().each(function(nav) {
+            $nav = $.create(resp.nav).first().each((nav) => {
                 if (match.id || $('.tabs__tab', nav).length > 2) {
                     $('.js-sport-tabs').append(nav);
                 }
@@ -31,7 +31,7 @@ function renderNav(match, callback) {
         if (callback) {
             callback(resp, $nav, matchInfo.endpoint);
         } // The promise chain is broken as Reqwest doesn't allow for creating more than 1 argument.
-    }, function() {
+    }, () => {
         $('.score-container').remove();
         $('.js-score').removeClass('u-h');
     });
@@ -39,29 +39,25 @@ function renderNav(match, callback) {
 
 function renderExtras(extras, dropdownTemplate) {
     // clean
-    extras = extras.filter(function(extra) {
-        return extra;
-    });
-    var ready = extras.filter(function(extra) {
-        return extra.ready === false;
-    }).length === 0;
+    extras = extras.filter(extra => extra);
+    const ready = extras.filter(extra => extra.ready === false).length === 0;
 
     if (ready) {
-        page.belowArticleVisible(function() {
-            var b;
+        page.belowArticleVisible(() => {
+            let b;
             $('.js-after-article').append(
-                $.create('<div class="football-extras"></div>').each(function(extrasContainer) {
-                    extras.forEach(function(extra, i) {
+                $.create('<div class="football-extras"></div>').each((extrasContainer) => {
+                    extras.forEach((extra, i) => {
                         if (dropdownTemplate) {
-                            $.create(dropdownTemplate).each(function(dropdown) {
+                            $.create(dropdownTemplate).each((dropdown) => {
                                 if (config.page.isLiveBlog) {
                                     $(dropdown).addClass('dropdown--key-events');
                                 }
                                 $('.dropdown__label', dropdown).append(extra.name);
                                 $('.dropdown__content', dropdown).append(extra.content);
                                 $('.dropdown__button', dropdown)
-                                    .attr('data-link-name', 'Show dropdown: ' + extra.name)
-                                    .each(function(el) {
+                                    .attr('data-link-name', `Show dropdown: ${extra.name}`)
+                                    .each((el) => {
                                         if (i === 0) {
                                             b = el;
                                         }
@@ -79,8 +75,8 @@ function renderExtras(extras, dropdownTemplate) {
             if (b) {
                 bean.fire(b, 'click');
             }
-        }, function() {
-            extras.forEach(function(extra) {
+        }, () => {
+            extras.forEach((extra) => {
                 rhc.addComponent(extra.content, extra.importance);
             });
         });
@@ -89,18 +85,18 @@ function renderExtras(extras, dropdownTemplate) {
 
 function renderTable(competition, extras, template) {
     extras[2] = {
-        ready: false
+        ready: false,
     };
-    $.create('<div class="js-football-table" data-link-name="football-table-embed"></div>').each(function(container) {
-        football.tableFor(competition).fetch(container).then(function() {
+    $.create('<div class="js-football-table" data-link-name="football-table-embed"></div>').each((container) => {
+        football.tableFor(competition).fetch(container).then(() => {
             extras[2] = $('.table__container', container).length > 0 ? {
                 name: 'Table',
                 importance: 3,
                 content: container,
-                ready: true
+                ready: true,
             } : undefined;
             renderExtras(extras, template);
-        }, function() {
+        }, () => {
             delete extras[2];
             renderExtras(extras, template);
         });
@@ -109,10 +105,10 @@ function renderTable(competition, extras, template) {
 
 function loading(elem, message, link) {
     bonzo(elem).append(bonzo.create(
-        '<div class="loading">' +
-        '<div class="loading__message">' + (message || 'Loading…') + '</div>' +
-        (link ? '<a href="' + link.href + '" class="loading__link">' + link.text + '</a>' : '') +
-        '<div class="loading__animation"></div>' +
+        `${'<div class="loading">' +
+        '<div class="loading__message">'}${message || 'Loading…'}</div>${
+        link ? `<a href="${link.href}" class="loading__link">${link.text}</a>` : ''
+        }<div class="loading__animation"></div>` +
         '</div>'
     ));
 }
@@ -123,25 +119,25 @@ function loaded(elem) {
 
 function init() {
     // We're doing this as to have one redraw
-    var extras = [],
+    let extras = [],
         dropdownTemplate;
 
-    page.isMatch(function(match) {
+    page.isMatch((match) => {
         extras[0] = {
-            ready: false
+            ready: false,
         };
         if (match.pageType === 'stats') {
             renderNav(match);
         } else {
-            var $h = $('.js-score'),
+            let $h = $('.js-score'),
                 scoreBoard = new ScoreBoard({
                     pageType: match.pageType,
                     parent: $h,
                     responseDataKey: 'matchSummary',
-                    autoupdated: match.isLive
+                    autoupdated: match.isLive,
                 });
 
-            renderNav(match, function(resp, $nav, endpoint) {
+            renderNav(match, (resp, $nav, endpoint) => {
                 dropdownTemplate = resp.dropdown;
 
                 // Test if template is not composed of just whitspace. A content validation check, apparently.
@@ -154,18 +150,18 @@ function init() {
 
                 // match stats
                 if (resp.hasStarted && $nav) {
-                    var statsUrl = $('.tab--stats a', $nav).attr('href').replace(/^.*\/\/[^\/]+/, '');
+                    const statsUrl = $('.tab--stats a', $nav).attr('href').replace(/^.*\/\/[^\/]+/, '');
 
-                    $.create('<div class="match-stats__container"></div>').each(function(container) {
-                        football.statsFor(statsUrl).fetch(container).then(function() {
-                            $('.js-chart', container).each(function(el) {
+                    $.create('<div class="match-stats__container"></div>').each((container) => {
+                        football.statsFor(statsUrl).fetch(container).then(() => {
+                            $('.js-chart', container).each((el) => {
                                 new Doughnut().render(el);
                             });
                             extras[0] = {
                                 name: 'Match stats',
                                 importance: 3,
                                 content: container,
-                                ready: true
+                                ready: true,
                             };
                             renderExtras(extras, dropdownTemplate);
                         });
@@ -176,26 +172,26 @@ function init() {
                 }
 
                 // Group table & Match day
-                page.isCompetition(function(competition) {
+                page.isCompetition((competition) => {
                     extras[1] = {
-                        ready: false
+                        ready: false,
                     };
                     // Group table
                     if (resp.group !== '') {
-                        renderTable(competition + '/' + resp.group, extras, dropdownTemplate);
+                        renderTable(`${competition}/${resp.group}`, extras, dropdownTemplate);
                     }
 
                     // Other games today
-                    $.create('<div class="js-football-match-day" data-link-name="football-match-day-embed"></div>').each(function(container) {
-                        football.matchDayFor(competition, resp.matchDate).fetch(container).then(function() {
+                    $.create('<div class="js-football-match-day" data-link-name="football-match-day-embed"></div>').each((container) => {
+                        football.matchDayFor(competition, resp.matchDate).fetch(container).then(() => {
                             extras[1] = {
                                 name: 'Today’s matches',
                                 importance: 2,
                                 content: container,
-                                ready: true
+                                ready: true,
                             };
                             renderExtras(extras, dropdownTemplate);
-                        }, function() {
+                        }, () => {
                             delete extras[1];
                             renderExtras(extras, dropdownTemplate);
                         });
@@ -205,62 +201,62 @@ function init() {
         }
     });
 
-    page.isCompetition(function(competition) {
-        var $rightHandCol = $('.js-secondary-column').dim().height;
+    page.isCompetition((competition) => {
+        const $rightHandCol = $('.js-secondary-column').dim().height;
         if ($rightHandCol === 0 || $rightHandCol > 1800) {
             renderTable(competition, extras, dropdownTemplate);
         }
     });
 
-    page.isLiveClockwatch(function() {
-        var ml = new MatchListLive('match-day', page.isCompetition() || 'premierleague', config.dateFromSlug()),
+    page.isLiveClockwatch(() => {
+        let ml = new MatchListLive('match-day', page.isCompetition() || 'premierleague', config.dateFromSlug()),
             $img = $('.media-primary'),
             $matchListContainer = $.create('<div class="football-matches__container" data-link-name="football-matches-clockwatch"></div>')
             .css({
-                minHeight: $img[0] ? $img[0].offsetHeight : 0
+                minHeight: $img[0] ? $img[0].offsetHeight : 0,
             });
 
         $img.addClass('u-h');
         loading($matchListContainer[0], 'Fetching today’s matches…', {
             text: 'Impatient?',
-            href: '/football/live'
+            href: '/football/live',
         });
 
         $('.js-football-meta').append($matchListContainer);
-        ml.fetch($matchListContainer[0]).fail(function() {
+        ml.fetch($matchListContainer[0]).fail(() => {
             ml.destroy();
             $matchListContainer.remove();
             $img.removeClass('u-h');
-        }).always(function() {
+        }).always(() => {
             if ($('.football-match', $matchListContainer[0]).length === 0) {
                 ml.destroy();
                 $matchListContainer.remove();
                 $img.removeClass('u-h');
             }
             $matchListContainer.css({
-                minHeight: 0
+                minHeight: 0,
             });
             loaded($matchListContainer[0]);
         });
     });
 
-    page.isFootballStatsPage(function() {
-        $('.js-chart').each(function(el) {
+    page.isFootballStatsPage(() => {
+        $('.js-chart').each((el) => {
             new Doughnut().render(el);
         });
     });
 
     // Binding
-    bean.on(document.body, 'click', '.js-show-more-football-matches', function(e) {
+    bean.on(document.body, 'click', '.js-show-more-football-matches', (e) => {
         e.preventDefault();
-        var el = e.currentTarget;
-        fetchJson(el.getAttribute('href') + '.json')
-            .then(function(resp) {
-                $.create(resp.html).each(function(html) {
-                    $('[data-show-more-contains="' + el.getAttribute('data-puts-more-into') + '"]')
+        const el = e.currentTarget;
+        fetchJson(`${el.getAttribute('href')}.json`)
+            .then((resp) => {
+                $.create(resp.html).each((html) => {
+                    $(`[data-show-more-contains="${el.getAttribute('data-puts-more-into')}"]`)
                         .append($(el.getAttribute('data-shows-more'), html));
 
-                    var nurl = resp[el.getAttribute('data-new-url')];
+                    const nurl = resp[el.getAttribute('data-new-url')];
                     if (nurl) {
                         bonzo(el).attr('href', nurl);
                     } else {
@@ -268,14 +264,14 @@ function init() {
                     }
                 });
             })
-            .catch(function(ex) {
+            .catch((ex) => {
                 reportError(ex, {
-                    feature: 'football-show-more'
+                    feature: 'football-show-more',
                 });
             });
     });
 
-    bean.on(document.body, 'change', $('form.football-leagues')[0], function() {
+    bean.on(document.body, 'change', $('form.football-leagues')[0], function () {
         window.location = this.value;
     });
 
@@ -283,5 +279,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

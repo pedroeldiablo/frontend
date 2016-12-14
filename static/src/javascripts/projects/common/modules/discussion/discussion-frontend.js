@@ -5,20 +5,20 @@ import reportError from 'common/utils/report-error';
 
 function load(ab, loader, opts) {
     function onDiscussionFrontendLoad(emitter) {
-        emitter.on('error', function(feature, error) {
+        emitter.on('error', (feature, error) => {
             reportError(error, {
-                feature: 'discussion-' + feature
+                feature: `discussion-${feature}`,
             }, false);
         });
-        emitter.once('comment-count', function(value) {
+        emitter.once('comment-count', (value) => {
             if (value === 0) {
                 loader.setState('empty');
             } else {
                 // By the time discussion frontent loads, the number of comments
                 // might have changed. If there are other comment counts element
                 // in the page refresh their value.
-                var otherValues = document.getElementsByClassName('js_commentcount_actualvalue');
-                for (var i = 0, len = otherValues.length; i < len; i += 1) {
+                const otherValues = document.getElementsByClassName('js_commentcount_actualvalue');
+                for (let i = 0, len = otherValues.length; i < len; i += 1) {
                     updateCommentCount(otherValues[i], value);
                 }
             }
@@ -27,12 +27,12 @@ function load(ab, loader, opts) {
     }
 
     function updateCommentCount(element, value) {
-        fastdom.write(function() {
+        fastdom.write(() => {
             element.textContent = formatters.integerCommas(value);
         });
     }
 
-    return require('discussion-frontend-preact', function(frontend) {
+    return require('discussion-frontend-preact', (frontend) => {
         // - Inject the net module to work around the lack of a global fetch
         //   It can be removed once all browsers have window.fetch
         // - Well, it turns out that fetchJson uses reqwest which sends X-Requested-With
@@ -44,18 +44,18 @@ function load(ab, loader, opts) {
 
         frontend(opts)
             .then(onDiscussionFrontendLoad)
-            .catch(function(error) {
+            .catch((error) => {
                 reportError(error, {
-                    feature: 'discussion'
+                    feature: 'discussion',
                 });
             });
-    }, function(error) {
+    }, (error) => {
         reportError(error, {
-            feature: 'discussion'
+            feature: 'discussion',
         });
     });
 }
 
 export default {
-    load: load
+    load,
 };

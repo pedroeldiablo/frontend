@@ -18,8 +18,7 @@ function init() {
 }
 
 function fillAdvertSlots() {
-
-    return new Promise(function(resolve) {
+    return new Promise((resolve) => {
         window.googletag.cmd.push(
             createAdverts,
             queueAdverts,
@@ -46,13 +45,13 @@ function queueAdverts() {
 }
 
 function setPublisherProvidedId() {
-    var user = identity.getUserFromCookie();
+    const user = identity.getUserFromCookie();
     if (user) {
-        var hashedId = sha1.hash(user.id);
+        const hashedId = sha1.hash(user.id);
         window.googletag.pubads().setPublisherProvidedId(hashedId);
     }
 }
 
 export default {
-    init: init
+    init,
 };

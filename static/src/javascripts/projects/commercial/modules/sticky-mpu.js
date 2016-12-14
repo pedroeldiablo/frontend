@@ -5,8 +5,8 @@ import fastdom from 'common/utils/fastdom-promise';
 import Sticky from 'common/modules/ui/sticky';
 import messenger from 'commercial/modules/messenger';
 import Promise from 'Promise';
-var stickyElement = null;
-var rightSlot;
+let stickyElement = null;
+let rightSlot;
 
 function stickyMpu($adSlot) {
     if ($adSlot.data('name') !== 'right' || stickyElement) {
@@ -15,21 +15,17 @@ function stickyMpu($adSlot) {
 
     rightSlot = $adSlot[0];
 
-    var referenceElement = document.querySelector(config.page.hasShowcaseMainElement ? '.media-primary' : '.content__article-body,.js-liveblog-body-content');
+    const referenceElement = document.querySelector(config.page.hasShowcaseMainElement ? '.media-primary' : '.content__article-body,.js-liveblog-body-content');
     if (!referenceElement) {
         return;
     }
 
-    fastdom.read(function() {
-        return (referenceElement[config.page.hasShowcaseMainElement ? 'offsetHeight' : 'offsetTop']) + $adSlot[0].offsetHeight;
-    }).then(function(newHeight) {
-        return fastdom.write(function() {
-            $adSlot.parent().css('height', newHeight + 'px');
-        });
-    }).then(function() {
-        //if there is a sticky 'paid by' band move the sticky mpu down so it will be always visible
-        var options = config.page.isAdvertisementFeature ? {
-            top: 43
+    fastdom.read(() => (referenceElement[config.page.hasShowcaseMainElement ? 'offsetHeight' : 'offsetTop']) + $adSlot[0].offsetHeight).then(newHeight => fastdom.write(() => {
+        $adSlot.parent().css('height', `${newHeight}px`);
+    })).then(() => {
+        // if there is a sticky 'paid by' band move the sticky mpu down so it will be always visible
+        const options = config.page.isAdvertisementFeature ? {
+            top: 43,
         } : {};
         stickyElement = new Sticky($adSlot[0], options);
         stickyElement.init();
@@ -46,7 +42,7 @@ function onResize(specs, _, iframe) {
     }
 }
 
-stickyMpu.whenRendered = new Promise(function(resolve) {
+stickyMpu.whenRendered = new Promise((resolve) => {
     mediator.on('page:commercial:sticky-mpu', resolve);
 });
 

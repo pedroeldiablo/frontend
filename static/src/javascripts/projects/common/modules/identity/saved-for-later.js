@@ -9,28 +9,28 @@ import template from 'common/utils/template';
 import svgs from 'common/views/svgs';
 import deleteButtonAllTmp from 'text!common/views/save-for-later/delete-all-button.html';
 export default function SavedForLater() {
-    this.init = function() {
-        var self = this,
+    this.init = function () {
+        let self = this,
             deleteAll = $('.js-save-for-later__delete-all')[0];
 
         if (deleteAll) {
             this.renderDeleteButton('delete');
-            bean.one(deleteAll, 'click', '.js-save-for-later__button', function(event) {
+            bean.one(deleteAll, 'click', '.js-save-for-later__button', (event) => {
                 event.preventDefault();
                 self.renderDeleteButton('confirm');
             });
         }
     };
 
-    this.renderDeleteButton = function(state) {
-        fastdom.read(function() {
-            var $button = bonzo(qwery('.js-save-for-later__delete-all')[0]);
+    this.renderDeleteButton = function (state) {
+        fastdom.read(() => {
+            const $button = bonzo(qwery('.js-save-for-later__delete-all')[0]);
 
-            fastdom.write(function() {
+            fastdom.write(() => {
                 $button.html(template(deleteButtonAllTmp, {
                     icon: svgs('crossIcon'),
-                    state: state,
-                    dataLinkName: 'saved | remove all' + (state === 'confirm' ? ' | confirm' : '')
+                    state,
+                    dataLinkName: `saved | remove all${state === 'confirm' ? ' | confirm' : ''}`,
                 }));
             });
         });
@@ -38,4 +38,4 @@ export default function SavedForLater() {
             setTimeout(this.init.bind(this), 2000);
         }
     };
-};
+}

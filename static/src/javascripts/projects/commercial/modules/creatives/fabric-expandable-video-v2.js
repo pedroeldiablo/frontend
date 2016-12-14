@@ -10,57 +10,57 @@ import addTrackingPixel from 'commercial/modules/creatives/add-tracking-pixel';
 export default FabricExpandableVideoV2;
 
 function FabricExpandableVideoV2($adSlot, params) {
-    var isClosed = true;
-    var closedHeight = 250;
-    var openedHeight = 500;
+    let isClosed = true;
+    const closedHeight = 250;
+    const openedHeight = 500;
 
-    var ctaTpl = template(fabricExpandableCtaHtml);
+    const ctaTpl = template(fabricExpandableCtaHtml);
 
     return Object.freeze({
-        create: create
+        create,
     });
 
     function create() {
-        var videoHeight = openedHeight;
-        var plusIconPosition = params.showCrossInContainer.substring(3);
-        var additionalParams = {
+        const videoHeight = openedHeight;
+        const plusIconPosition = params.showCrossInContainer.substring(3);
+        const additionalParams = {
             desktopCTA: params.ctaDesktopImage ? ctaTpl({
                 media: 'hide-until-tablet',
                 link: params.link,
                 image: params.ctaDesktopImage,
-                position: params.ctaDesktopPosition
+                position: params.ctaDesktopPosition,
             }) : '',
             mobileCTA: params.ctaMobileImage ? ctaTpl({
                 media: 'mobile-only',
                 link: params.link,
                 image: params.ctaMobileImage,
-                position: params.ctaMobilePosition
+                position: params.ctaMobilePosition,
             }) : '',
             showArrow: (params.showMoreType === 'arrow-only' || params.showMoreType === 'plus-and-arrow') ?
-                '<button class="ad-exp__open-chevron ad-exp__open">' + svgs('arrowdownicon') + '</button>' : '',
+                `<button class="ad-exp__open-chevron ad-exp__open">${svgs('arrowdownicon')}</button>` : '',
             showPlus: params.showMoreType === 'plus-only' || params.showMoreType === 'plus-and-arrow' ?
-                '<button class="ad-exp__close-button ad-exp__open ad-exp__open--' + plusIconPosition + '">' + svgs('closeCentralIcon') + '</button>' : '',
+                `<button class="ad-exp__close-button ad-exp__open ad-exp__open--${plusIconPosition}">${svgs('closeCentralIcon')}</button>` : '',
             videoEmbed: (params.YoutubeVideoURL !== '') ?
-                '<iframe id="YTPlayer" width="100%" height="' + videoHeight + '" src="' + params.YoutubeVideoURL + '?showinfo=0&amp;rel=0&amp;controls=0&amp;fs=0&amp;title=0&amp;byline=0&amp;portrait=0" frameborder="0" class="expandable-video"></iframe>' : ''
+                `<iframe id="YTPlayer" width="100%" height="${videoHeight}" src="${params.YoutubeVideoURL}?showinfo=0&amp;rel=0&amp;controls=0&amp;fs=0&amp;title=0&amp;byline=0&amp;portrait=0" frameborder="0" class="expandable-video"></iframe>` : '',
         };
-        var $fabricExpandableVideo = $.create(template(fabricExpandableVideoHtml, {
-            data: assign(params, additionalParams)
+        const $fabricExpandableVideo = $.create(template(fabricExpandableVideoHtml, {
+            data: assign(params, additionalParams),
         }));
-        var $ad = $('.ad-exp--expand', $fabricExpandableVideo);
+        const $ad = $('.ad-exp--expand', $fabricExpandableVideo);
 
-        bean.on($adSlot[0], 'click', '.ad-exp__open', function() {
-            fastdom.write(function() {
+        bean.on($adSlot[0], 'click', '.ad-exp__open', () => {
+            fastdom.write(() => {
                 open(isClosed);
             });
         });
 
-        bean.on($adSlot[0], 'click', '.video-container__cta, .creative__cta', function() {
-            fastdom.write(function() {
+        bean.on($adSlot[0], 'click', '.video-container__cta, .creative__cta', () => {
+            fastdom.write(() => {
                 open(false);
             });
         });
 
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             $ad.css('height', closedHeight);
             $('.ad-exp-collapse__slide', $fabricExpandableVideo).css('height', closedHeight);
             if (params.trackingPixel) {
@@ -75,11 +75,11 @@ function FabricExpandableVideoV2($adSlot, params) {
         });
 
         function open(open) {
-            var videoSrc = $('#YTPlayer').attr('src');
-            var videoSrcAutoplay = videoSrc;
+            const videoSrc = $('#YTPlayer').attr('src');
+            let videoSrcAutoplay = videoSrc;
 
             if (videoSrc.indexOf('autoplay') === -1) {
-                videoSrcAutoplay = videoSrc + '&amp;autoplay=1';
+                videoSrcAutoplay = `${videoSrc}&amp;autoplay=1`;
             } else {
                 videoSrcAutoplay = videoSrcAutoplay.replace(
                     open ? 'autoplay=0' : 'autoplay=1',
@@ -107,7 +107,7 @@ function FabricExpandableVideoV2($adSlot, params) {
 
             isClosed = !open;
 
-            setTimeout(function() {
+            setTimeout(() => {
                 $('#YTPlayer').attr('src', videoSrcAutoplay);
             }, 1000);
         }

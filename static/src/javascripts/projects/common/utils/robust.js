@@ -3,8 +3,8 @@
     For example "comments throwing an exception should not stop auto refresh"
  */
 import reportError from 'common/utils/report-error';
-var catchErrors = function(fn) {
-    var error;
+const catchErrors = function (fn) {
+    let error;
     try {
         fn();
     } catch (e) {
@@ -13,7 +13,7 @@ var catchErrors = function(fn) {
     return error;
 };
 
-var log = function(name, error, reporter) {
+const log = function (name, error, reporter) {
     if (window.console && window.console.warn) {
         window.console.warn('Caught error.', error.stack);
     }
@@ -21,34 +21,34 @@ var log = function(name, error, reporter) {
         reporter = reportError;
     }
     reporter(error, {
-        module: name
+        module: name,
     }, false);
 };
 
-var catchErrorsAndLog = function(name, fn, reporter) {
-    var error = catchErrors(fn);
+const catchErrorsAndLog = function (name, fn, reporter) {
+    const error = catchErrors(fn);
     if (error) {
         log(name, error, reporter);
     }
 };
 
-var catchErrorsAndLogAll = function(modules) {
-    modules.forEach(function(pair) {
-        var name = pair[0];
-        var fn = pair[1];
+const catchErrorsAndLogAll = function (modules) {
+    modules.forEach((pair) => {
+        const name = pair[0];
+        const fn = pair[1];
         catchErrorsAndLog(name, fn);
     });
 };
 
 function makeBlocks(codeBlocks) {
-    return codeBlocks.map(function(record) {
+    return codeBlocks.map(function (record) {
         return catchErrorsAndLog.bind(this, record[0], record[1]);
     });
 }
 
 export default {
-    catchErrorsAndLog: catchErrorsAndLog,
-    catchErrorsAndLogAll: catchErrorsAndLogAll,
-    makeBlocks: makeBlocks,
-    log: log
+    catchErrorsAndLog,
+    catchErrorsAndLogAll,
+    makeBlocks,
+    log,
 };

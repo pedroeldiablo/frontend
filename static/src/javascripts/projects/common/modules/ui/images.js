@@ -2,19 +2,19 @@ import qwery from 'qwery';
 import picturefill from 'picturefill';
 import mediator from 'common/utils/mediator';
 
-var images = {
+const images = {
 
-    upgradePictures: function(context) {
+    upgradePictures(context) {
         picturefill({
-            elements: qwery('img[srcset], picture img', context || document)
+            elements: qwery('img[srcset], picture img', context || document),
         });
     },
 
-    listen: function() {
+    listen() {
         mediator.addListeners({
-            'ui:images:upgradePictures': images.upgradePictures
+            'ui:images:upgradePictures': images.upgradePictures,
         });
-    }
+    },
 
 };
 

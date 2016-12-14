@@ -14,7 +14,7 @@
  *
  * @namespace
  */
-var Sha1 = {};
+const Sha1 = {};
 
 
 /**
@@ -23,25 +23,25 @@ var Sha1 = {};
  * @param   {string} msg - (Unicode) string to be hashed.
  * @returns {string} Hash of msg as hex character string.
  */
-Sha1.hash = function(msg) {
+Sha1.hash = function (msg) {
     // convert string to UTF-8, as SHA only deals with byte-streams
     msg = decodeURIComponent(encodeURIComponent(msg));
 
     // constants [§4.2.1]
-    var K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
+    const K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
 
     // PREPROCESSING
 
     msg += String.fromCharCode(0x80); // add trailing '1' bit (+ 0's padding) to string [§5.1.1]
 
     // convert string msg into 512-bit/16-integer blocks arrays of ints [§5.2.1]
-    var l = msg.length / 4 + 2; // length (in 32-bit integers) of msg + ‘1’ + appended length
-    var N = Math.ceil(l / 16); // number of 16-integer-blocks required to hold 'l' ints
-    var M = new Array(N);
+    const l = msg.length / 4 + 2; // length (in 32-bit integers) of msg + ‘1’ + appended length
+    const N = Math.ceil(l / 16); // number of 16-integer-blocks required to hold 'l' ints
+    const M = new Array(N);
 
     for (var i = 0; i < N; i++) {
         M[i] = new Array(16);
-        for (var j = 0; j < 16; j++) { // encode 4 chars per integer, big-endian encoding
+        for (let j = 0; j < 16; j++) { // encode 4 chars per integer, big-endian encoding
             M[i][j] = (msg.charCodeAt(i * 64 + j * 4) << 24) | (msg.charCodeAt(i * 64 + j * 4 + 1) << 16) |
                 (msg.charCodeAt(i * 64 + j * 4 + 2) << 8) | (msg.charCodeAt(i * 64 + j * 4 + 3));
         } // note running off the end of msg is ok 'cos bitwise ops on NaN return 0
@@ -54,18 +54,21 @@ Sha1.hash = function(msg) {
     M[N - 1][15] = ((msg.length - 1) * 8) & 0xffffffff;
 
     // set initial hash value [§5.3.1]
-    var H0 = 0x67452301;
-    var H1 = 0xefcdab89;
-    var H2 = 0x98badcfe;
-    var H3 = 0x10325476;
-    var H4 = 0xc3d2e1f0;
+    let H0 = 0x67452301;
+    let H1 = 0xefcdab89;
+    let H2 = 0x98badcfe;
+    let H3 = 0x10325476;
+    let H4 = 0xc3d2e1f0;
 
     // HASH COMPUTATION [§6.1.2]
 
-    var W = new Array(80);
-    var a, b, c, d, e;
+    const W = new Array(80);
+    let a,
+        b,
+        c,
+        d,
+        e;
     for (var i = 0; i < N; i++) {
-
         // 1 - prepare message schedule 'W'
         for (var t = 0; t < 16; t++) {
             W[t] = M[i][t];
@@ -83,8 +86,8 @@ Sha1.hash = function(msg) {
 
         // 3 - main loop
         for (var t = 0; t < 80; t++) {
-            var s = Math.floor(t / 20); // seq for blocks of 'f' functions and 'K' constants
-            var T = (Sha1.ROTL(a, 5) + Sha1.f(s, b, c, d) + e + K[s] + W[t]) & 0xffffffff;
+            const s = Math.floor(t / 20); // seq for blocks of 'f' functions and 'K' constants
+            const T = (Sha1.ROTL(a, 5) + Sha1.f(s, b, c, d) + e + K[s] + W[t]) & 0xffffffff;
             e = d;
             d = c;
             c = Sha1.ROTL(b, 30);
@@ -109,7 +112,7 @@ Sha1.hash = function(msg) {
  * Function 'f' [§4.1.1].
  * @private
  */
-Sha1.f = function(s, x, y, z) {
+Sha1.f = function (s, x, y, z) {
     switch (s) {
         case 0:
             return (x & y) ^ (~x & z); // Ch()
@@ -126,7 +129,7 @@ Sha1.f = function(s, x, y, z) {
  * Rotates left (circular left shift) value x by n positions [§3.2.5].
  * @private
  */
-Sha1.ROTL = function(x, n) {
+Sha1.ROTL = function (x, n) {
     return (x << n) | (x >>> (32 - n));
 };
 
@@ -135,12 +138,12 @@ Sha1.ROTL = function(x, n) {
  * Hexadecimal representation of a number.
  * @private
  */
-Sha1.toHexStr = function(n) {
+Sha1.toHexStr = function (n) {
     // note can't use toString(16) as it is implementation-dependant,
     // and in IE returns signed numbers when used on full words
-    var s = '',
+    let s = '',
         v;
-    for (var i = 7; i >= 0; i--) {
+    for (let i = 7; i >= 0; i--) {
         v = (n >>> (i * 4)) & 0xf;
         s += v.toString(16);
     }

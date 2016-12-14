@@ -2,10 +2,10 @@ import bean from 'bean';
 import bonzo from 'bonzo';
 
 function fullscreener() {
-    var player = this,
+    let player = this,
         clickbox = bonzo.create('<div class="vjs-fullscreen-clickbox"></div>')[0],
         events = {
-            click: function(e) {
+            click(e) {
                 if (this.paused()) {
                     this.play();
                 } else {
@@ -13,14 +13,14 @@ function fullscreener() {
                 }
                 e.stop();
             },
-            dblclick: function(e) {
+            dblclick(e) {
                 e.stop();
                 if (this.isFullscreen()) {
                     this.exitFullscreen();
                 } else {
                     this.requestFullscreen();
                 }
-            }
+            },
         };
 
     bonzo(clickbox)
@@ -29,7 +29,7 @@ function fullscreener() {
     bean.on(clickbox, 'click', events.click.bind(player));
     bean.on(clickbox, 'dblclick', events.dblclick.bind(player));
 
-    player.on('fullscreenchange', function() {
+    player.on('fullscreenchange', function () {
         if (this.isFullscreen()) {
             player.trigger('player:fullscreen');
         }

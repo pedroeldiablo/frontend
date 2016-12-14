@@ -5,7 +5,7 @@ import Promise from 'Promise';
 import qwery from 'qwery';
 import map from 'lodash/collections/map';
 import isEqual from 'lodash/objects/isEqual';
-var keyPressHistory = [],
+let keyPressHistory = [],
     cheatCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
     tones = map([
         'special-report',
@@ -20,14 +20,12 @@ var keyPressHistory = [],
         'review',
         'letters',
         'external',
-        'news'
-    ], function(tone) {
-        return 'tone-' + tone + '--item';
-    });
+        'news',
+    ], tone => `tone-${tone}--item`);
 
 function listenForCheatCode() {
-    return new Promise(function(resolve) {
-        var onKeyDown = function(event) {
+    return new Promise((resolve) => {
+        const onKeyDown = function (event) {
             keyPressHistory.push(event.keyCode);
 
             if (isEqual(cheatCode.slice(0, keyPressHistory.length), keyPressHistory)) {
@@ -53,11 +51,11 @@ function randomTone() {
 }
 
 function startToneDisco() {
-    var $items = map(qwery('.js-fc-item'), bonzo);
-    setInterval(function() {
-        fastdom.write(function() {
-            $items.forEach(function($item) {
-                tones.forEach(function(tone) {
+    const $items = map(qwery('.js-fc-item'), bonzo);
+    setInterval(() => {
+        fastdom.write(() => {
+            $items.forEach(($item) => {
+                tones.forEach((tone) => {
                     $item.removeClass(tone);
                 });
 
@@ -67,6 +65,6 @@ function startToneDisco() {
     }, 1000);
 }
 
-export default function() {
+export default function () {
     listenForCheatCode().then(startToneDisco);
-};
+}

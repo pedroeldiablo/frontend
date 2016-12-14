@@ -3,12 +3,12 @@ import React from 'react';
 import constants from 'common/modules/sudoku/constants';
 import map from 'lodash/collections/map';
 import range from 'lodash/arrays/range';
-var Button = React.createClass({
-    render: function() {
+const Button = React.createClass({
+    render() {
         return React.DOM.g({
-                className: 'sudoku__button',
-                onClick: this.props.onClick
-            },
+            className: 'sudoku__button',
+            onClick: this.props.onClick,
+        },
             React.DOM.rect({
                 className: 'sudoku__button-background',
                 x: this.props.x,
@@ -16,55 +16,55 @@ var Button = React.createClass({
                 rx: constants.buttonBorderRadius,
                 ry: constants.buttonBorderRadius,
                 width: constants.buttonSize,
-                height: constants.buttonSize
+                height: constants.buttonSize,
             }), React.DOM.text({
                 className: 'sudoku__button-text',
                 x: this.props.x + constants.buttonSize / 2,
-                y: this.props.y + constants.buttonTopMargin
+                y: this.props.y + constants.buttonTopMargin,
             }, this.props.text)
         );
-    }
+    },
 });
 
 export default React.createClass({
-    render: function() {
-        var self = this,
+    render() {
+        let self = this,
             x = this.props.x,
             y = this.props.y,
             buttonsPerRow = 7,
-            buttonOffset = function(n) {
+            buttonOffset = function (n) {
                 return n * (constants.buttonSize + constants.buttonMargin);
             },
-            numberButtons = map(range(9), function(n) {
-                var col = n % buttonsPerRow,
+            numberButtons = map(range(9), (n) => {
+                let col = n % buttonsPerRow,
                     row = Math.floor(n / buttonsPerRow),
                     buttonX = x + buttonOffset(col),
                     buttonY = y + buttonOffset(row);
 
                 return Button({
-                    key: 'button_' + n,
+                    key: `button_${n}`,
                     x: buttonX,
                     y: buttonY,
-                    text: n + 1 + '',
-                    onClick: function() {
+                    text: `${n + 1}`,
+                    onClick() {
                         self.props.onClickNumber(n + 1);
-                    }
+                    },
                 });
             });
 
         return React.DOM.g({
-                className: 'sudoku__controls'
-            },
+            className: 'sudoku__controls',
+        },
             Button({
                 key: 'button_erase',
                 x: x + buttonOffset(2),
                 y: y + buttonOffset(1),
                 text: '-',
-                onClick: function() {
+                onClick() {
                     self.props.onClickDelete();
-                }
+                },
             }),
             numberButtons
         );
-    }
+    },
 });

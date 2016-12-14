@@ -10,11 +10,11 @@ import memoize from 'lodash/functions/memoize';
 //
 // maximum time (in ms) to wait for images to be loaded and rich links
 // to be upgraded
-var LOADING_TIMEOUT = 5000;
+const LOADING_TIMEOUT = 5000;
 
 // find spaces in articles for inserting ads and other inline content
 // minAbove and minBelow are measured in px from the top of the paragraph element being tested
-var defaultRules = { // these are written for adverts
+const defaultRules = { // these are written for adverts
     bodySelector: '.js-article__body',
     slotSelector: ' > p',
     absoluteMinAbove: 0, // minimum from slot to top of page
@@ -22,17 +22,17 @@ var defaultRules = { // these are written for adverts
     minBelow: 300, // minimum from (top of) para to bottom of article
     clearContentMeta: 50, // vertical px to clear the content meta element (byline etc) by. 0 to ignore
     selectors: { // custom rules using selectors. format:
-        //'.selector': {
+        // '.selector': {
         //   minAbove: <min px above para to bottom of els matching selector>,
         //   minBelow: <min px below (top of) para to top of els matching selector> }
         ' > h2': {
             minAbove: 0,
-            minBelow: 250
+            minBelow: 250,
         }, // hug h2s
         ' > *:not(p):not(h2)': {
             minAbove: 25,
-            minBelow: 250
-        } // require spacing for all other elements
+            minBelow: 250,
+        }, // require spacing for all other elements
     },
 
     // filter:(slot:Element, index:Integer, slots:Collection<Element>) -> Boolean
@@ -49,14 +49,14 @@ var defaultRules = { // these are written for adverts
 
     // fromBotton:Boolean
     // will reverse the order of slots (this is useful for lazy loaded content)
-    fromBottom: false
+    fromBottom: false,
 };
 
-var defaultOptions = {
+const defaultOptions = {
     waitForImages: true,
     waitForLinks: true,
     waitForInteractives: false,
-    waitForAds: false
+    waitForAds: false,
 };
 
 function expire(resolve) {
@@ -67,15 +67,13 @@ function getFuncId(rules) {
     return rules.bodySelector || 'document';
 }
 
-var onImagesLoaded = memoize(function(rules) {
-    var notLoaded = qwery('img', rules.body).filter(function(img) {
-        return !img.complete;
-    });
+const onImagesLoaded = memoize((rules) => {
+    let notLoaded = qwery('img', rules.body).filter(img => !img.complete);
 
     return notLoaded.length === 0 ?
         true :
-        new Promise(function(resolve) {
-            var loadedCount = 0;
+        new Promise((resolve) => {
+            let loadedCount = 0;
             bean.on(rules.body, 'load', notLoaded, function onImgLoaded() {
                 loadedCount += 1;
                 if (loadedCount === notLoaded.length) {
@@ -87,46 +85,42 @@ var onImagesLoaded = memoize(function(rules) {
         });
 }, getFuncId);
 
-var onRichLinksUpgraded = memoize(function(rules) {
-    return qwery('.element-rich-link--not-upgraded', rules.body).length === 0 ?
+const onRichLinksUpgraded = memoize(rules => qwery('.element-rich-link--not-upgraded', rules.body).length === 0 ?
         true :
-        new Promise(function(resolve) {
+        new Promise((resolve) => {
             mediator.once('rich-link:loaded', resolve);
-        });
-}, getFuncId);
+        }), getFuncId);
 
-var onInteractivesLoaded = memoize(function(rules) {
-    var notLoaded = qwery('.element-interactive', rules.body).filter(function(interactive) {
-        var iframe = qwery(interactive.children).filter(isIframe);
+const onInteractivesLoaded = memoize((rules) => {
+    const notLoaded = qwery('.element-interactive', rules.body).filter((interactive) => {
+        const iframe = qwery(interactive.children).filter(isIframe);
         return !(iframe.length && isIframeLoaded(iframe[0]));
     });
 
     return notLoaded.length === 0 || !('MutationObserver' in window) ?
         true :
-        Promise.all(notLoaded.map(function(interactive) {
-            return new Promise(function(resolve) {
-                new MutationObserver(function(records, instance) {
-                    if (!(records.length > 0 &&
+        Promise.all(notLoaded.map(interactive => new Promise((resolve) => {
+            new MutationObserver((records, instance) => {
+                if (!(records.length > 0 &&
                             records[0].addedNodes.length > 0 &&
                             isIframe(records[0].addedNodes[0]))) {
-                        return;
-                    }
+                    return;
+                }
 
-                    var iframe = records[0].addedNodes[0];
-                    if (isIframeLoaded(iframe)) {
+                const iframe = records[0].addedNodes[0];
+                if (isIframeLoaded(iframe)) {
+                    instance.disconnect();
+                    resolve();
+                } else {
+                    iframe.addEventListener('load', () => {
                         instance.disconnect();
                         resolve();
-                    } else {
-                        iframe.addEventListener('load', function() {
-                            instance.disconnect();
-                            resolve();
-                        });
-                    }
-                }).observe(interactive, {
-                    childList: true
-                });
+                    });
+                }
+            }).observe(interactive, {
+                childList: true,
             });
-        }));
+        })));
 
     function isIframe(node) {
         return node.nodeName === 'IFRAME';
@@ -143,19 +137,15 @@ var onInteractivesLoaded = memoize(function(rules) {
     }
 }, getFuncId);
 
-var onAdsLoaded = memoize(function(rules) {
-    return Promise.all(qwery('.js-ad-slot', rules.body)
-        .map(function(ad) {
-            return ad.id;
-        })
-        .map(trackAdRender)
-    );
-}, getFuncId);
+const onAdsLoaded = memoize(rules => Promise.all(qwery('.js-ad-slot', rules.body)
+    .map(ad => ad.id)
+    .map(trackAdRender)
+    ), getFuncId);
 
 // test one element vs another for the given rules
 function _testCandidate(rules, challenger, opponent) {
-    var isMinAbove = challenger.top - opponent.bottom >= rules.minAbove;
-    var isMinBelow = opponent.top - challenger.top >= rules.minBelow;
+    const isMinAbove = challenger.top - opponent.bottom >= rules.minAbove;
+    const isMinBelow = opponent.top - challenger.top >= rules.minBelow;
 
     return isMinAbove || isMinBelow;
 }
@@ -166,11 +156,11 @@ function _testCandidates(rules, challenger, opponents) {
 }
 
 function _mapElementToComputedDimensions(el) {
-    var rect = el.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
     return {
         top: rect.top,
         bottom: rect.bottom,
-        element: el
+        element: el,
     };
 }
 
@@ -178,40 +168,34 @@ function _mapElementToDimensions(el) {
     return {
         top: el.offsetTop,
         bottom: el.offsetTop + el.offsetHeight,
-        element: el
+        element: el,
     };
 }
 
 function _enforceRules(data, rules) {
-    var candidates = data.candidates;
+    let candidates = data.candidates;
 
     // enforce absoluteMinAbove rule
     if (rules.absoluteMinAbove) {
-        candidates = candidates.filter(function(candidate) {
-            return candidate.top >= rules.absoluteMinAbove;
-        });
+        candidates = candidates.filter(candidate => candidate.top >= rules.absoluteMinAbove);
     }
 
     // enforce minAbove and minBelow rules
-    candidates = candidates.filter(function(candidate) {
-        var farEnoughFromTopOfBody = candidate.top >= rules.minAbove;
-        var farEnoughFromBottomOfBody = candidate.top + rules.minBelow <= data.bodyHeight;
+    candidates = candidates.filter((candidate) => {
+        const farEnoughFromTopOfBody = candidate.top >= rules.minAbove;
+        const farEnoughFromBottomOfBody = candidate.top + rules.minBelow <= data.bodyHeight;
         return farEnoughFromTopOfBody && farEnoughFromBottomOfBody;
     });
 
     // enforce content meta rule
     if (rules.clearContentMeta) {
-        candidates = candidates.filter(function(candidate) {
-            return candidate.top > (data.contentMeta.bottom + rules.clearContentMeta);
-        });
+        candidates = candidates.filter(candidate => candidate.top > (data.contentMeta.bottom + rules.clearContentMeta));
     }
 
     // enforce selector rules
     if (rules.selectors) {
-        Object.keys(rules.selectors).forEach(function(selector) {
-            candidates = candidates.filter(function(candidate) {
-                return _testCandidates(rules.selectors[selector], candidate, data.opponents[selector]);
-            });
+        Object.keys(rules.selectors).forEach((selector) => {
+            candidates = candidates.filter(candidate => _testCandidates(rules.selectors[selector], candidate, data.opponents[selector]));
         });
     }
 
@@ -224,14 +208,14 @@ function _enforceRules(data, rules) {
 
 function SpaceError(rules) {
     this.name = 'SpaceError';
-    this.message = 'There is no space left matching rules from ' + rules.bodySelector;
+    this.message = `There is no space left matching rules from ${rules.bodySelector}`;
     this.stack = (new Error()).stack;
 }
 
 // Rather than calling this directly, use spaceFiller to inject content into the page.
 // SpaceFiller will safely queue up all the various asynchronous DOM actions to avoid any race conditions.
 function findSpace(rules, options) {
-    var getDimensions;
+    let getDimensions;
 
     rules || (rules = defaultRules);
     options || (options = defaultOptions);
@@ -251,19 +235,19 @@ function findSpace(rules, options) {
                 options.waitForImages ? onImagesLoaded(rules) : true,
                 options.waitForLinks ? onRichLinksUpgraded(rules) : true,
                 options.waitForInteractives ? onInteractivesLoaded(rules) : true,
-                options.waitForAds ? onAdsLoaded(rules) : true
-            ])
+                options.waitForAds ? onAdsLoaded(rules) : true,
+            ]),
         ]);
     }
 
     function getCandidates() {
-        var candidates = qwery(rules.bodySelector + rules.slotSelector);
+        let candidates = qwery(rules.bodySelector + rules.slotSelector);
         if (rules.fromBottom) {
             candidates.reverse();
         }
         if (rules.startAt) {
-            var drop = true;
-            candidates = candidates.filter(function(candidate) {
+            let drop = true;
+            candidates = candidates.filter((candidate) => {
                 if (candidate === rules.startAt) {
                     drop = false;
                 }
@@ -271,8 +255,8 @@ function findSpace(rules, options) {
             });
         }
         if (rules.stopAt) {
-            var keep = true;
-            candidates = candidates.filter(function(candidate) {
+            let keep = true;
+            candidates = candidates.filter((candidate) => {
                 if (candidate === rules.stopAt) {
                     keep = false;
                 }
@@ -283,23 +267,21 @@ function findSpace(rules, options) {
     }
 
     function getMeasurements(candidates) {
-        var contentMeta = rules.clearContentMeta ?
+        const contentMeta = rules.clearContentMeta ?
             document.querySelector('.js-content-meta') :
             null;
-        var opponents = rules.selectors ?
-            Object.keys(rules.selectors).map(function(selector) {
-                return [selector, qwery(rules.bodySelector + selector)];
-            }) :
+        const opponents = rules.selectors ?
+            Object.keys(rules.selectors).map(selector => [selector, qwery(rules.bodySelector + selector)]) :
             null;
 
-        return fastdom.read(function() {
-            var bodyDims = rules.body.getBoundingClientRect();
-            var candidatesWithDims = candidates.map(getDimensions);
-            var contentMetaWithDims = rules.clearContentMeta ?
+        return fastdom.read(() => {
+            const bodyDims = rules.body.getBoundingClientRect();
+            const candidatesWithDims = candidates.map(getDimensions);
+            const contentMetaWithDims = rules.clearContentMeta ?
                 getDimensions(contentMeta) :
                 null;
-            var opponentsWithDims = opponents ?
-                opponents.reduce(function(result, selectorAndElements) {
+            const opponentsWithDims = opponents ?
+                opponents.reduce((result, selectorAndElements) => {
                     result[selectorAndElements[0]] = selectorAndElements[1].map(getDimensions);
                     return result;
                 }, {}) :
@@ -313,7 +295,7 @@ function findSpace(rules, options) {
                 bodyHeight: bodyDims.height,
                 candidates: candidatesWithDims,
                 contentMeta: contentMetaWithDims,
-                opponents: opponentsWithDims
+                opponents: opponentsWithDims,
             };
         });
     }
@@ -324,9 +306,7 @@ function findSpace(rules, options) {
 
     function returnCandidates(candidates) {
         if (candidates.length) {
-            return candidates.map(function(candidate) {
-                return candidate.element;
-            });
+            return candidates.map(candidate => candidate.element);
         } else {
             throw new SpaceError(rules);
         }
@@ -334,9 +314,9 @@ function findSpace(rules, options) {
 }
 
 export default {
-    findSpace: findSpace,
-    SpaceError: SpaceError,
+    findSpace,
+    SpaceError,
 
-    _testCandidate: _testCandidate, // exposed for unit testing
-    _testCandidates: _testCandidates // exposed for unit testing
+    _testCandidate, // exposed for unit testing
+    _testCandidates, // exposed for unit testing
 };

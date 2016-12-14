@@ -13,7 +13,7 @@ import page from 'common/utils/page';
 import storage from 'common/utils/storage';
 import googleAnalytics from 'common/modules/analytics/google';
 import find from 'lodash/collections/find';
-var insertBottomOfArticle = function($iframeEl) {
+let insertBottomOfArticle = function ($iframeEl) {
         $iframeEl.appendTo('.js-article__body');
     },
     isUSMinuteArticle = config.page.isMinuteArticle && config.page.keywordIds.indexOf('us-news/us-elections-2016') > -1,
@@ -27,13 +27,13 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up to the Guardian US Campaign minute',
             successDescription: 'We will send you the biggest political story lines of the day',
             modClass: isUSMinuteArticle ? 'post-article' : 'end-article',
-            insertMethod: function($iframeEl) {
+            insertMethod($iframeEl) {
                 if (isUSMinuteArticle) {
                     $iframeEl.insertAfter('.js-article__container');
                 } else {
                     insertBottomOfArticle($iframeEl);
                 }
-            }
+            },
         },
         theFilmToday: {
             listId: '1950',
@@ -44,7 +44,7 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up to Film Today',
             successDescription: 'We will send you our picks of the most important headlines tomorrow afternoon.',
             modClass: 'end-article',
-            insertMethod: insertBottomOfArticle
+            insertMethod: insertBottomOfArticle,
         },
         theFiver: {
             listId: '218',
@@ -55,7 +55,7 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up',
             successDescription: 'You\'ll receive the Fiver daily, around 5pm.',
             modClass: 'end-article',
-            insertMethod: insertBottomOfArticle
+            insertMethod: insertBottomOfArticle,
         },
         labNotes: {
             listId: '3701',
@@ -66,7 +66,7 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up for Lab notes',
             successDescription: 'You\'ll receive an email every week.',
             modClass: 'end-article',
-            insertMethod: insertBottomOfArticle
+            insertMethod: insertBottomOfArticle,
         },
         euRef: {
             listId: '3698',
@@ -77,7 +77,7 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up for the Brexit weekly briefing',
             successDescription: 'You\'ll receive an email every morning.',
             modClass: 'end-article',
-            insertMethod: insertBottomOfArticle
+            insertMethod: insertBottomOfArticle,
         },
         usBriefing: {
             listId: '1493',
@@ -88,15 +88,15 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up to the Guardian US briefing',
             successDescription: 'We will send you our pick of the most important stories.',
             modClass: 'end-article',
-            insertMethod: insertBottomOfArticle
+            insertMethod: insertBottomOfArticle,
         },
         theGuardianToday: {
-            listId: (function() {
+            listId: (function () {
                 switch (config.page.edition) {
                     default: return '37';
 
                     case 'AU':
-                            return '1506';
+                        return '1506';
                 }
             }()),
             listName: 'theGuardianToday',
@@ -106,10 +106,10 @@ var insertBottomOfArticle = function($iframeEl) {
             successHeadline: 'Thank you for signing up to the Guardian Today',
             successDescription: 'We will send you our picks of the most important headlines tomorrow morning.',
             modClass: 'end-article',
-            insertMethod: insertBottomOfArticle
-        }
+            insertMethod: insertBottomOfArticle,
+        },
     },
-    getSpacefinderRules = function() {
+    getSpacefinderRules = function () {
         return {
             bodySelector: '.js-article__body',
             slotSelector: ' > p',
@@ -120,43 +120,43 @@ var insertBottomOfArticle = function($iframeEl) {
             selectors: {
                 ' .element-rich-link': {
                     minAbove: 100,
-                    minBelow: 100
+                    minBelow: 100,
                 },
                 ' > h2': {
                     minAbove: 200,
-                    minBelow: 0
+                    minBelow: 0,
                 },
                 ' > *:not(p):not(h2):not(blockquote)': {
                     minAbove: 35,
-                    minBelow: 200
+                    minBelow: 200,
                 },
                 ' .ad-slot': {
                     minAbove: 150,
-                    minBelow: 200
-                }
-            }
+                    minBelow: 200,
+                },
+            },
         };
     },
-    addListToPage = function(listConfig) {
+    addListToPage = function (listConfig) {
         if (listConfig) {
-            var iframe = bonzo.create(template(iframeTemplate, listConfig))[0],
+            let iframe = bonzo.create(template(iframeTemplate, listConfig))[0],
                 $iframeEl = $(iframe);
 
-            bean.on(iframe, 'load', function() {
+            bean.on(iframe, 'load', () => {
                 email.init(iframe);
             });
             if (listConfig.insertMethod) {
-                fastdom.write(function() {
+                fastdom.write(() => {
                     listConfig.insertMethod($iframeEl);
 
-                    googleAnalytics.trackNonClickInteraction('rtrt | email form inline | article | ' + listConfig.listId + ' | sign-up shown');
+                    googleAnalytics.trackNonClickInteraction(`rtrt | email form inline | article | ${listConfig.listId} | sign-up shown`);
                     emailRunChecks.setEmailInserted();
                     emailRunChecks.setEmailShown(listConfig.listName);
                 });
             } else {
-                spaceFiller.fillSpace(getSpacefinderRules(), function(paras) {
+                spaceFiller.fillSpace(getSpacefinderRules(), (paras) => {
                     $iframeEl.insertBefore(paras[0]);
-                    googleAnalytics.trackNonClickInteraction('rtrt | email form inline | article | ' + listConfig.listId + ' | sign-up shown');
+                    googleAnalytics.trackNonClickInteraction(`rtrt | email form inline | article | ${listConfig.listId} | sign-up shown`);
                     emailRunChecks.setEmailInserted();
                     emailRunChecks.setEmailShown(listConfig.listName);
                 });
@@ -167,16 +167,16 @@ var insertBottomOfArticle = function($iframeEl) {
     };
 
 export default {
-    init: function() {
+    init() {
         if (emailRunChecks.allEmailCanRun()) {
             // First we need to check the user's email subscriptions
             // so we don't insert the sign-up if they've already subscribed
-            emailRunChecks.getUserEmailSubscriptions().then(function() {
+            emailRunChecks.getUserEmailSubscriptions().then(() => {
                 // Get the first list that is allowed on this page
                 addListToPage(find(listConfigs, emailRunChecks.listCanRun));
-            }).catch(function(error) {
+            }).catch((error) => {
                 robust.log('c-email', error);
             });
         }
-    }
+    },
 };

@@ -26,17 +26,17 @@ import robust from 'common/utils/robust';
 import userTiming from 'common/utils/user-timing';
 import newHeaderNavigation from 'common/modules/navigation/newHeaderNavigation';
 import ga from 'common/modules/analytics/google';
-export default function() {
-    var guardian = window.guardian;
-    var config = guardian.config;
+export default function () {
+    const guardian = window.guardian;
+    const config = guardian.config;
 
     userTiming.mark('standard start');
-    robust.catchErrorsAndLog('ga-user-timing-standard-start', function() {
+    robust.catchErrorsAndLog('ga-user-timing-standard-start', () => {
         ga.trackPerformance('Javascript Load', 'standardStart', 'Standard start parse time');
     });
 
-    var oldOnError = window.onerror;
-    window.onerror = function(message, filename, lineno, colno, error) {
+    const oldOnError = window.onerror;
+    window.onerror = function (message, filename, lineno, colno, error) {
         // Not all browsers pass the error object
         if (!error || !error.reported) {
             oldOnError.apply(window, arguments);
@@ -50,8 +50,8 @@ export default function() {
 
     // Report unhandled promise rejections
     // https://github.com/cujojs/when/blob/master/docs/debug-api.md#browser-window-events
-    window.addEventListener('unhandledRejection', function(event) {
-        var error = event.detail.reason;
+    window.addEventListener('unhandledRejection', (event) => {
+        const error = event.detail.reason;
         if (error && !error.reported) {
             raven.captureException(error);
         }
@@ -64,23 +64,23 @@ export default function() {
      */
 
     if (!config.tests.abWebpack && /Article|LiveBlog/.test(config.page.contentType)) {
-        qwery('figure.interactive').forEach(function(el) {
-            var mainJS = el.getAttribute('data-interactive');
+        qwery('figure.interactive').forEach((el) => {
+            const mainJS = el.getAttribute('data-interactive');
             if (!mainJS) {
                 return;
             }
 
-            require([mainJS], function(interactive) {
-                fastdom.defer(function() {
-                    robust.catchErrorsAndLog('interactive-bootstrap', function() {
+            require([mainJS], (interactive) => {
+                fastdom.defer(() => {
+                    robust.catchErrorsAndLog('interactive-bootstrap', () => {
                         interactive.boot(el, document, config, mediator);
                     });
                 });
             });
 
-            require(['ophan/ng'], function(ophan) {
-                var a = el.querySelector('a');
-                var href = a && a.href;
+            require(['ophan/ng'], (ophan) => {
+                const a = el.querySelector('a');
+                const href = a && a.href;
 
                 if (href) {
                     ophan.trackComponentAttention(href, el);
@@ -88,13 +88,13 @@ export default function() {
             });
         });
 
-        qwery('iframe.interactive-atom-fence').forEach(function(el) {
-            var srcdoc;
+        qwery('iframe.interactive-atom-fence').forEach((el) => {
+            let srcdoc;
             if (!el.srcdoc) {
-                fastdom.read(function() {
+                fastdom.read(() => {
                     srcdoc = el.getAttribute('srcdoc');
                 });
-                fastdom.write(function() {
+                fastdom.write(() => {
                     el.contentWindow.contents = srcdoc;
                     el.src = 'javascript:window["contents"]';
                 });
@@ -105,8 +105,8 @@ export default function() {
     //
     // Set adtest query if url param declares it.
     //
-    var setAdTestCookie = function() {
-        var queryParams = url.getUrlVars();
+    const setAdTestCookie = function () {
+        const queryParams = url.getUrlVars();
         if (queryParams.adtest === 'clear') {
             cookies.remove('adtest');
         } else if (queryParams.adtest) {
@@ -132,7 +132,7 @@ export default function() {
     // set local storage: gu.alreadyVisited
     //
 
-    var alreadyVisited;
+    let alreadyVisited;
     if (guardian.isEnhanced) {
         alreadyVisited = storage.local.get('gu.alreadyVisited') || 0;
         storage.local.set('gu.alreadyVisited', alreadyVisited + 1);
@@ -144,25 +144,25 @@ export default function() {
     // fastdom.read, meaning they can all perform DOM reads for free
     // (after the first one that needs layout triggers it).
     // However, this means it's VITAL that all writes in callbacks are delegated to fastdom
-    var running = false;
+    let running = false;
 
     function onScroll() {
         if (!running) {
             running = true;
-            fastdom.read(function() {
+            fastdom.read(() => {
                 mediator.emitEvent('window:throttledScroll');
                 running = false;
             });
         }
     }
     window.addEventListener('scroll', userPrefs.get('use-idle-callback') && 'requestIdleCallback' in window ?
-        function() {
+        () => {
             window.requestIdleCallback(onScroll);
         } :
         onScroll
     );
 
-    require(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], (ophan) => {
         ophan.setEventEmitter(mediator);
     });
 
@@ -177,32 +177,32 @@ export default function() {
      */
     // Authenticating requires CORS and withCredentials. If we don't cut the mustard then pass through.
     if (config.page.requiresMembershipAccess) {
-        var membershipUrl = config.page.membershipUrl,
+        let membershipUrl = config.page.membershipUrl,
             membershipAccess = config.page.membershipAccess,
             requiresPaidTier = (membershipAccess.indexOf('paid-members-only') !== -1),
-            membershipAuthUrl = membershipUrl + '/membership-content?referringContent=' + config.page.contentId + '&membershipAccess=' + membershipAccess;
+            membershipAuthUrl = `${membershipUrl}/membership-content?referringContent=${config.page.contentId}&membershipAccess=${membershipAccess}`;
 
-        var redirect = function() {
+        const redirect = function () {
             window.location.href = membershipAuthUrl;
         };
 
         if (identity.isUserLoggedIn()) {
             ajax({
-                url: membershipUrl + '/user/me',
+                url: `${membershipUrl}/user/me`,
                 type: 'json',
                 crossOrigin: true,
-                withCredentials: true
-            }).then(function(resp) {
+                withCredentials: true,
+            }).then((resp) => {
                 // Check the users access matches the content
-                var canViewContent = (requiresPaidTier) ? !!resp.tier && resp.isPaidTier : !!resp.tier;
+                const canViewContent = (requiresPaidTier) ? !!resp.tier && resp.isPaidTier : !!resp.tier;
                 if (canViewContent) {
-                    fastdom.write(function() {
+                    fastdom.write(() => {
                         document.body.classList.remove('has-membership-access-requirement');
                     });
                 } else {
                     redirect();
                 }
-            }).fail(function() {
+            }).fail(() => {
                 // If the request fails assume non-member
                 redirect();
             });
@@ -242,7 +242,7 @@ export default function() {
     newHeaderNavigation();
 
     userTiming.mark('standard end');
-    robust.catchErrorsAndLog('ga-user-timing-standard-end', function() {
+    robust.catchErrorsAndLog('ga-user-timing-standard-end', () => {
         ga.trackPerformance('Javascript Load', 'standardEnd', 'Standard end parse time');
     });
-};
+}

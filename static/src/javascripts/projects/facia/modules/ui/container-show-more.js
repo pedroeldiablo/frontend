@@ -13,7 +13,7 @@ import filter from 'lodash/collections/filter';
 import map from 'lodash/collections/map';
 import forEach from 'lodash/collections/forEach';
 import find from 'lodash/collections/find';
-var HIDDEN_CLASS_NAME = 'fc-show-more--hidden',
+let HIDDEN_CLASS_NAME = 'fc-show-more--hidden',
     VISIBLE_CLASS_NAME = 'fc-show-more--visible',
     TEXT_HOOK = 'js-button-text',
     PREF_NAME = 'section-states',
@@ -26,7 +26,7 @@ var HIDDEN_CLASS_NAME = 'fc-show-more--hidden',
     REQUEST_TIMEOUT = 5000;
 
 function setButtonState(button, state) {
-    var text = button.text[state];
+    const text = button.text[state];
     button.$textEl.html(text);
     button.$el.attr('data-link-name', state === STATE_DISPLAYED ? 'less' : 'more')
         .toggleClass('button--primary', state !== STATE_DISPLAYED)
@@ -38,8 +38,8 @@ function setButtonState(button, state) {
 }
 
 function updatePref(containerId, state) {
-    var prefs = userPrefs.get(PREF_NAME, {
-        type: 'session'
+    const prefs = userPrefs.get(PREF_NAME, {
+        type: 'session',
     }) || {};
     if (state !== STATE_DISPLAYED) {
         delete prefs[containerId];
@@ -47,19 +47,19 @@ function updatePref(containerId, state) {
         prefs[containerId] = 'more';
     }
     userPrefs.set(PREF_NAME, prefs, {
-        type: 'session'
+        type: 'session',
     });
 }
 
 function readPrefs(containerId) {
-    var prefs = userPrefs.get(PREF_NAME, {
-        type: 'session'
+    const prefs = userPrefs.get(PREF_NAME, {
+        type: 'session',
     });
     return (prefs && prefs[containerId]) ? STATE_DISPLAYED : STATE_HIDDEN;
 }
 
 function showMore(button) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         /**
          * Do not remove: it should retain context for the click stream module, which recurses upwards through
          * DOM nodes.
@@ -70,7 +70,7 @@ function showMore(button) {
 }
 
 function renderToDom(button) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         button.$container.addClass(HIDDEN_CLASS_NAME)
             .removeClass('js-container--fc-show-more')
             .toggleClass(HIDDEN_CLASS_NAME, button.state === STATE_HIDDEN);
@@ -80,18 +80,18 @@ function renderToDom(button) {
 }
 
 function loadShowMore(pageId, containerId) {
-    var url = '/' + pageId + '/show-more/' + containerId + '.json';
+    const url = `/${pageId}/show-more/${containerId}.json`;
     return timeout(REQUEST_TIMEOUT, fetchJson(url, {
-        mode: 'cors'
+        mode: 'cors',
     }));
 }
 
 function dedupShowMore($container, html) {
-    var seenArticles = itemsByArticleId($container),
+    let seenArticles = itemsByArticleId($container),
         $html = bonzo.create(html);
 
-    $(ITEM_SELECTOR, $html).each(function(article) {
-        var $article = bonzo(article);
+    $(ITEM_SELECTOR, $html).each((article) => {
+        const $article = bonzo(article);
         if ($article.attr(ARTICLE_ID_ATTRIBUTE) in seenArticles) {
             $article.remove();
         }
@@ -101,19 +101,19 @@ function dedupShowMore($container, html) {
 }
 
 function loadShowMoreForContainer(button) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         setButtonState(button, STATE_LOADING);
     });
 
-    loadShowMore(config.page.pageId, button.id).then(function(response) {
-        var dedupedShowMore,
+    loadShowMore(config.page.pageId, button.id).then((response) => {
+        let dedupedShowMore,
             html = response.html.trim();
 
         if (html) {
             dedupedShowMore = dedupShowMore(button.$container, html);
         }
 
-        fastdom.write(function() {
+        fastdom.write(() => {
             if (dedupedShowMore) {
                 button.$placeholder.replaceWith(dedupedShowMore);
             }
@@ -122,20 +122,20 @@ function loadShowMoreForContainer(button) {
             mediator.emit('modules:show-more:loaded');
         });
         button.isLoaded = true;
-    }).catch(function(err) {
-        fastdom.write(function() {
+    }).catch((err) => {
+        fastdom.write(() => {
             setButtonState(button, STATE_HIDDEN);
         });
 
         showErrorMessage(button);
         reportError(err, {
-            feature: 'container-show-more'
+            feature: 'container-show-more',
         }, false);
     });
 }
 
 function hideErrorMessage($errorMessage) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         $errorMessage.addClass('show-more__error-message--invisible');
     });
 }
@@ -151,23 +151,21 @@ function showErrorMessage(button) {
         '</div>'
     ));
 
-    fastdom.write(function() {
+    fastdom.write(() => {
         button.$errorMessage.insertAfter(button.$el);
 
-        setTimeout(function() {
+        setTimeout(() => {
             hideErrorMessage(button.$errorMessage);
         }, 5000);
     });
 }
 
 function itemsByArticleId($el) {
-    return groupBy(qwery(ITEM_SELECTOR, $el), function(el) {
-        return bonzo(el).attr(ARTICLE_ID_ATTRIBUTE);
-    });
+    return groupBy(qwery(ITEM_SELECTOR, $el), el => bonzo(el).attr(ARTICLE_ID_ATTRIBUTE));
 }
 
 function makeButton($container) {
-    var id,
+    let id,
         state,
         button,
         $el = $('.js-show-more-button', $container);
@@ -177,20 +175,20 @@ function makeButton($container) {
         state = readPrefs(id);
 
         button = {
-            $el: $el,
-            $container: $container,
+            $el,
+            $container,
             $iconEl: $('.i', $el),
             $placeholder: $('.js-show-more-placeholder', $container),
-            $textEl: $('.' + TEXT_HOOK, $el),
-            id: id,
+            $textEl: $(`.${TEXT_HOOK}`, $el),
+            id,
             text: {
                 hidden: $('.js-button-text', $el).text(),
                 displayed: 'Less',
-                loading: 'Loading&hellip;'
+                loading: 'Loading&hellip;',
             },
-            state: state,
+            state,
             isLoaded: false,
-            $errorMessage: null
+            $errorMessage: null,
         };
 
         if (state === STATE_DISPLAYED) {
@@ -202,19 +200,17 @@ function makeButton($container) {
 }
 
 export default {
-    itemsByArticleId: itemsByArticleId,
-    dedupShowMore: dedupShowMore,
-    init: function() {
-        fastdom.read(function() {
-            var containers = qwery('.js-container--fc-show-more').map(bonzo),
+    itemsByArticleId,
+    dedupShowMore,
+    init() {
+        fastdom.read(() => {
+            let containers = qwery('.js-container--fc-show-more').map(bonzo),
                 buttons = filter(map(containers, makeButton));
 
             forEach(buttons, renderToDom);
 
-            mediator.on('module:clickstream:click', function(clickSpec) {
-                var clickedButton = find(buttons, function(button) {
-                    return button.$el[0] === clickSpec.target;
-                });
+            mediator.on('module:clickstream:click', (clickSpec) => {
+                const clickedButton = find(buttons, button => button.$el[0] === clickSpec.target);
                 if (clickedButton && clickedButton.state !== STATE_LOADING) {
                     if (clickedButton.isLoaded) {
                         showMore(clickedButton);
@@ -227,5 +223,5 @@ export default {
                 }
             });
         });
-    }
+    },
 };

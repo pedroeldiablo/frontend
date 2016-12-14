@@ -9,11 +9,11 @@ export default function reportError(err, meta, shouldThrow) {
         shouldThrow = true;
     }
     raven.captureException(err, {
-        tags: meta
+        tags: meta,
     });
     if (shouldThrow) {
         // Flag to ensure it is not reported to Sentry again via global handlers
         err.reported = true;
         throw err;
     }
-};
+}

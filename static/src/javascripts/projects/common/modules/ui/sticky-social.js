@@ -5,7 +5,7 @@ import mediator from 'common/utils/mediator';
 import ab from 'common/modules/experiments/ab';
 import memoize from 'lodash/functions/memoize';
 
-var selectorTopEl = '.social--top',
+let selectorTopEl = '.social--top',
     selectorBottomEl = '.social--bottom',
     stickyClassName = 'meta__social--sticky',
     stickyRevealClassName = 'meta__social--sticky--reveal',
@@ -13,18 +13,14 @@ var selectorTopEl = '.social--top',
 
     deadzone = 100,
 
-    topEl = memoize(function() {
-        return $(selectorTopEl)[0];
-    }),
-    bottomEl = memoize(function() {
-        return $(selectorBottomEl)[0];
-    }),
+    topEl = memoize(() => $(selectorTopEl)[0]),
+    bottomEl = memoize(() => $(selectorBottomEl)[0]),
 
     inited = false,
     revealed = false;
 
 function setStickiness() {
-    fastdom.read(function() {
+    fastdom.read(() => {
         if (topEl().getBoundingClientRect().top + deadzone < 0) {
             reveal();
         } else {
@@ -36,12 +32,10 @@ function setStickiness() {
 function determineStickiness() {
     if (inited) {
         setStickiness();
-
     } else if (!topEl() || !bottomEl()) {
-        return;
 
     } else {
-        fastdom.write(function() {
+        fastdom.write(() => {
             $(bottomEl()).addClass(stickyClassName);
             setTimeout(makeRevealable);
             inited = true;
@@ -50,7 +44,7 @@ function determineStickiness() {
 }
 
 function makeRevealable() {
-    fastdom.write(function() {
+    fastdom.write(() => {
         $(bottomEl()).addClass(stickyRevealableClassName);
     });
 }
@@ -58,7 +52,7 @@ function makeRevealable() {
 function reveal() {
     if (!revealed) {
         revealed = true;
-        fastdom.write(function() {
+        fastdom.write(() => {
             $(bottomEl()).addClass(stickyRevealClassName);
         });
     }
@@ -67,7 +61,7 @@ function reveal() {
 function unreveal() {
     if (revealed) {
         revealed = false;
-        fastdom.write(function() {
+        fastdom.write(() => {
             $(bottomEl()).removeClass(stickyRevealClassName);
         });
     }
@@ -78,22 +72,22 @@ function moveToFirstPosition($el) {
 }
 
 function init() {
-    var testVariant = ab.getTestVariantId('ShareButtons2'),
+    let testVariant = ab.getTestVariantId('ShareButtons2'),
         socialContext;
 
     if (testVariant.indexOf('referrer') > -1) {
         socialContext = detect.socialContext();
 
         if (socialContext) {
-            fastdom.read(function() {
-                [topEl(), bottomEl()].forEach(function(el) {
+            fastdom.read(() => {
+                [topEl(), bottomEl()].forEach((el) => {
                     if (el) {
-                        fastdom.write(function() {
+                        fastdom.write(() => {
                             if (testVariant.indexOf('only') > -1) {
                                 $(el).addClass('social--referred-only');
                             }
 
-                            moveToFirstPosition($('.social__item--' + socialContext, el).addClass('social__item--referred'));
+                            moveToFirstPosition($(`.social__item--${socialContext}`, el).addClass('social__item--referred'));
                         });
                     }
                 });
@@ -107,5 +101,5 @@ function init() {
 }
 
 export default {
-    init: init
+    init,
 };

@@ -13,7 +13,7 @@ function Queue() {
  * @param  {Object} item  item to add
  * @return {Number}       queue length
  */
-Queue.prototype.enqueue = function(item) {
+Queue.prototype.enqueue = function (item) {
     return this.queue.push(item);
 };
 
@@ -22,7 +22,7 @@ Queue.prototype.enqueue = function(item) {
  *
  * @return {Object} the item
  */
-Queue.prototype.dequeue = function() {
+Queue.prototype.dequeue = function () {
     return this.queue.shift();
 };
 
@@ -31,7 +31,7 @@ Queue.prototype.dequeue = function() {
  *
  * @return {Boolean}
  */
-Queue.prototype.empty = function() {
+Queue.prototype.empty = function () {
     return this.queue.length === 0;
 };
 

@@ -5,10 +5,10 @@ import Promise from 'Promise';
  * If any function throws an error, that is captured by the errorHandler.
  */
 export default function QueueAsync(errorHandler) {
-    var runningOperation = Promise.resolve();
+    let runningOperation = Promise.resolve();
 
     this.add = function add(operation) {
         runningOperation = runningOperation.then(operation).catch(errorHandler);
         return runningOperation;
     };
-};
+}

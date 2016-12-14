@@ -1,14 +1,14 @@
 import config from 'common/utils/config';
 import assign from 'common/utils/assign';
 import adSizes from 'common/modules/commercial/ad-sizes';
-var inlineDefinition = {
+const inlineDefinition = {
     sizeMappings: {
         mobile: compile(adSizes.outOfPage, adSizes.empty, adSizes.mpu, adSizes.fluid),
-        desktop: compile(adSizes.outOfPage, adSizes.empty, adSizes.mpu, adSizes.video, adSizes.fluid)
-    }
+        desktop: compile(adSizes.outOfPage, adSizes.empty, adSizes.mpu, adSizes.video, adSizes.fluid),
+    },
 };
 
-var rightMappings = {
+const rightMappings = {
     mobile: compile(
         adSizes.outOfPage,
         adSizes.empty,
@@ -16,29 +16,29 @@ var rightMappings = {
         adSizes.halfPage,
         config.page.edition === 'US' ? adSizes.portrait : null,
         adSizes.fluid
-    )
+    ),
 };
 
-var adSlotDefinitions = {
+const adSlotDefinitions = {
     right: {
-        sizeMappings: rightMappings
+        sizeMappings: rightMappings,
     },
     'right-sticky': {
         name: 'right',
-        sizeMappings: rightMappings
+        sizeMappings: rightMappings,
     },
     'right-small': {
         name: 'right',
         sizeMappings: {
-            mobile: compile(adSizes.outOfPage, adSizes.empty, adSizes.mpu, adSizes.fluid)
-        }
+            mobile: compile(adSizes.outOfPage, adSizes.empty, adSizes.mpu, adSizes.fluid),
+        },
     },
     im: {
         label: false,
         refresh: false,
         sizeMappings: {
-            mobile: compile(adSizes.outOfPage, adSizes.empty, adSizes.inlineMerchandising, adSizes.fluid)
-        }
+            mobile: compile(adSizes.outOfPage, adSizes.empty, adSizes.inlineMerchandising, adSizes.fluid),
+        },
     },
     inline: inlineDefinition,
     mostpop: inlineDefinition,
@@ -52,36 +52,36 @@ var adSlotDefinitions = {
                 adSizes.fluid250,
                 adSizes.fabric,
                 adSizes.fluid
-            )
-        }
-    }
+            ),
+        },
+    },
 };
 
 function compile(size1) {
-    var result = size1;
-    for (var i = 1; i < arguments.length; i++) {
+    let result = size1;
+    for (let i = 1; i < arguments.length; i++) {
         if (arguments[i]) {
-            result += '|' + arguments[i];
+            result += `|${arguments[i]}`;
         }
     }
     return result;
 }
 
 function createAdSlotElement(name, attrs, classes) {
-    var adSlot = document.createElement('div');
-    adSlot.id = 'dfp-ad--' + name;
-    adSlot.className = 'js-ad-slot ad-slot ad-slot--dfp ' + classes.join(' ');
-    adSlot.setAttribute('data-link-name', 'ad slot ' + name);
-    adSlot.setAttribute('data-test-id', 'ad-slot-' + name);
+    const adSlot = document.createElement('div');
+    adSlot.id = `dfp-ad--${name}`;
+    adSlot.className = `js-ad-slot ad-slot ad-slot--dfp ${classes.join(' ')}`;
+    adSlot.setAttribute('data-link-name', `ad slot ${name}`);
+    adSlot.setAttribute('data-test-id', `ad-slot-${name}`);
     adSlot.setAttribute('data-name', name);
-    Object.keys(attrs).forEach(function(attr) {
+    Object.keys(attrs).forEach((attr) => {
         adSlot.setAttribute(attr, attrs[attr]);
     });
     return adSlot;
 }
 
-export default function(name, slotTypes, series, keywords, slotTarget) {
-    var slotName = slotTarget ? slotTarget : name,
+export default function (name, slotTypes, series, keywords, slotTarget) {
+    let slotName = slotTarget ? slotTarget : name,
         attributes = {},
         definition,
         classes = [];
@@ -112,19 +112,17 @@ export default function(name, slotTypes, series, keywords, slotTarget) {
     }
 
     if (slotTypes) {
-        classes = (Array.isArray(slotTypes) ? slotTypes : [slotTypes]).map(function(type) {
-            return 'ad-slot--' + type;
-        });
+        classes = (Array.isArray(slotTypes) ? slotTypes : [slotTypes]).map(type => `ad-slot--${type}`);
     }
 
-    classes.push('ad-slot--' + name);
+    classes.push(`ad-slot--${name}`);
 
     return createAdSlotElement(
         name,
-        Object.keys(attributes).reduce(function(result, key) {
-            result['data-' + key] = attributes[key];
+        Object.keys(attributes).reduce((result, key) => {
+            result[`data-${key}`] = attributes[key];
             return result;
         }, {}),
         classes
     );
-};
+}

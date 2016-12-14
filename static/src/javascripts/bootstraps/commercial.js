@@ -26,7 +26,7 @@ import paidforBand from 'commercial/modules/paidfor-band';
 import paidContainers from 'commercial/modules/paid-containers';
 import performanceLogging from 'commercial/modules/dfp/performance-logging';
 import ga from 'common/modules/analytics/google';
-var primaryModules = [
+const primaryModules = [
     ['cm-thirdPartyTags', thirdPartyTags.init],
     ['cm-prepare-sonobi-tag', prepareSonobiTag.init],
     ['cm-prepare-googletag', prepareGoogletag.init, prepareGoogletag.customTiming],
@@ -35,21 +35,21 @@ var primaryModules = [
     ['cm-sliceAdverts', sliceAdverts.init],
     ['cm-galleryAdverts', galleryAdverts.init],
     ['cm-liveblogAdverts', liveblogAdverts.init],
-    ['cm-closeDisabledSlots', closeDisabledSlots.init]
+    ['cm-closeDisabledSlots', closeDisabledSlots.init],
 ];
 
-var secondaryModules = [
+const secondaryModules = [
     ['cm-fill-advert-slots', fillAdvertSlots.init],
     ['cm-paidforBand', paidforBand.init],
     ['cm-paidContainers', paidContainers.init],
-    ['cm-ready', function() {
+    ['cm-ready', function () {
         mediator.emit('page:commercial:ready');
         userTiming.mark('commercial end');
-        robust.catchErrorsAndLog('ga-user-timing-commercial-end', function() {
+        robust.catchErrorsAndLog('ga-user-timing-commercial-end', () => {
             ga.trackPerformance('Javascript Load', 'commercialEnd', 'Commercial end parse time');
         });
         return Promise.resolve();
-    }]
+    }],
 ];
 
 if (config.page.isHosted) {
@@ -67,19 +67,17 @@ if ((config.switches.disableStickyAdBannerOnMobile && detect.getBreakpoint() ===
 }
 
 function loadModules(modules, baseline) {
-
     performanceLogging.addStartTimeBaseline(baseline);
 
-    var modulePromises = [];
+    const modulePromises = [];
 
-    modules.forEach(function(pair) {
+    modules.forEach((pair) => {
+        const moduleName = pair[0];
+        const moduleInit = pair[1];
+        const hasCustomTiming = pair[2];
 
-        var moduleName = pair[0];
-        var moduleInit = pair[1];
-        var hasCustomTiming = pair[2];
-
-        robust.catchErrorsAndLog(moduleName, function() {
-            var modulePromise = moduleInit(moduleName).then(function() {
+        robust.catchErrorsAndLog(moduleName, () => {
+            const modulePromise = moduleInit(moduleName).then(() => {
                 if (!hasCustomTiming) {
                     performanceLogging.moduleCheckpoint(moduleName, baseline);
                 }
@@ -90,35 +88,35 @@ function loadModules(modules, baseline) {
     });
 
     return Promise.all(modulePromises)
-        .then(function(moduleLoadResult) {
+        .then((moduleLoadResult) => {
             performanceLogging.addEndTimeBaseline(baseline);
             return moduleLoadResult;
         });
 }
 
 function isItRainingAds() {
-    var testName = 'ItsRainingInlineAds';
+    const testName = 'ItsRainingInlineAds';
     return !config.page.isImmersive && ab.testCanBeRun(testName) && ['geo', 'nogeo'].indexOf(ab.getTestVariantId(testName)) > -1;
 }
 
 export default {
-    init: function() {
+    init() {
         if (!config.switches.commercial) {
             return;
         }
 
         userTiming.mark('commercial start');
-        robust.catchErrorsAndLog('ga-user-timing-commercial-start', function() {
+        robust.catchErrorsAndLog('ga-user-timing-commercial-start', () => {
             ga.trackPerformance('Javascript Load', 'commercialStart', 'Commercial start parse time');
         });
 
         // Stub the command queue
         window.googletag = {
-            cmd: []
+            cmd: [],
         };
 
-        loadModules(primaryModules, performanceLogging.primaryBaseline).then(function() {
+        loadModules(primaryModules, performanceLogging.primaryBaseline).then(() => {
             loadModules(secondaryModules, performanceLogging.secondaryBaseline);
         });
-    }
+    },
 };

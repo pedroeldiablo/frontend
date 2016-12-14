@@ -11,20 +11,20 @@ import ab from 'common/modules/experiments/ab';
 import common from './common';
 import sport from './sport';
 import ga from 'common/modules/analytics/google';
-export default function() {
-    var bootstrapContext = function(featureName, bootstrap) {
+export default function () {
+    const bootstrapContext = function (featureName, bootstrap) {
         raven.context({
-                tags: {
-                    feature: featureName
-                }
+            tags: {
+                feature: featureName,
             },
+        },
             bootstrap.init, []
         );
     };
 
 
     userTiming.mark('App Begin');
-    robust.catchErrorsAndLog('ga-user-timing-enhanced-start', function() {
+    robust.catchErrorsAndLog('ga-user-timing-enhanced-start', () => {
         ga.trackPerformance('Javascript Load', 'enhancedStart', 'Enhanced start parse time');
     });
 
@@ -34,7 +34,7 @@ export default function() {
     // A/B tests
     //
 
-    robust.catchErrorsAndLog('ab-tests', function() {
+    robust.catchErrorsAndLog('ab-tests', () => {
         ab.segmentUser();
 
         robust.catchErrorsAndLog('ab-tests-run', ab.run);
@@ -46,76 +46,76 @@ export default function() {
 
     // Front
     if (config.page.isFront) {
-        require(['bootstraps/enhanced/facia'], function(facia) {
+        require(['bootstraps/enhanced/facia'], (facia) => {
             bootstrapContext('facia', facia);
         });
     }
 
     if (config.page.section === 'lifeandstyle' && config.page.series === 'Sudoku') {
-        require(['bootstraps/enhanced/sudoku'], function(sudoku) {
+        require(['bootstraps/enhanced/sudoku'], (sudoku) => {
             bootstrapContext('sudoku', sudoku);
         });
     }
 
     if (config.page.contentType === 'Article' && !config.page.isMinuteArticle) {
-        require(['bootstraps/enhanced/article', 'bootstraps/enhanced/image-content'], function(article, imageContent) {
+        require(['bootstraps/enhanced/article', 'bootstraps/enhanced/image-content'], (article, imageContent) => {
             bootstrapContext('article', article);
             bootstrapContext('article : image-content', imageContent);
         });
     }
 
     if (config.page.contentType === 'Crossword') {
-        require(['bootstraps/enhanced/crosswords'], function(crosswords) {
+        require(['bootstraps/enhanced/crosswords'], (crosswords) => {
             bootstrapContext('crosswords', crosswords);
         });
     }
 
     if (config.page.contentType === 'LiveBlog') {
-        require(['bootstraps/enhanced/liveblog', 'bootstraps/enhanced/image-content'], function(liveBlog, imageContent) {
+        require(['bootstraps/enhanced/liveblog', 'bootstraps/enhanced/image-content'], (liveBlog, imageContent) => {
             bootstrapContext('liveBlog', liveBlog);
             bootstrapContext('liveBlog : image-content', imageContent);
         });
     }
 
     if (config.page.isMinuteArticle) {
-        require(['bootstraps/enhanced/article-minute', 'bootstraps/enhanced/image-content'], function(articleMinute, imageContent) {
+        require(['bootstraps/enhanced/article-minute', 'bootstraps/enhanced/image-content'], (articleMinute, imageContent) => {
             bootstrapContext('articleMinute', articleMinute);
             bootstrapContext('article : image-content', imageContent);
         });
     }
 
     if (config.isMedia || config.page.contentType === 'Interactive') {
-        require(['bootstraps/enhanced/trail'], function(trail) {
+        require(['bootstraps/enhanced/trail'], (trail) => {
             bootstrapContext('media : trail', {
-                init: trail
+                init: trail,
             });
         });
     }
 
     if ((config.isMedia || qwery('video, audio').length) && !config.page.isHosted) {
-        require(['bootstraps/enhanced/media/main'], function(media) {
+        require(['bootstraps/enhanced/media/main'], (media) => {
             bootstrapContext('media', media);
         });
     }
 
     if (config.page.contentType === 'Gallery') {
-        require(['bootstraps/enhanced/gallery', 'bootstraps/enhanced/image-content'], function(gallery, imageContent) {
+        require(['bootstraps/enhanced/gallery', 'bootstraps/enhanced/image-content'], (gallery, imageContent) => {
             bootstrapContext('gallery', gallery);
             bootstrapContext('gallery : image-content', imageContent);
         });
     }
 
     if (config.page.contentType === 'ImageContent') {
-        require(['bootstraps/enhanced/image-content', 'bootstraps/enhanced/trail'], function(imageContent, trail) {
+        require(['bootstraps/enhanced/image-content', 'bootstraps/enhanced/trail'], (imageContent, trail) => {
             bootstrapContext('image-content', imageContent);
             bootstrapContext('image-content : trail', {
-                init: trail
+                init: trail,
             });
         });
     }
 
     if (config.page.section === 'football') {
-        require(['bootstraps/enhanced/football'], function(football) {
+        require(['bootstraps/enhanced/football'], (football) => {
             bootstrapContext('football', football);
         });
     }
@@ -126,40 +126,40 @@ export default function() {
     }
 
     if (config.page.section === 'identity') {
-        require(['bootstraps/enhanced/profile'], function(profile) {
+        require(['bootstraps/enhanced/profile'], (profile) => {
             bootstrapContext('profile', profile);
         });
     }
 
     if (config.page.isPreferencesPage) {
-        require(['bootstraps/enhanced/preferences'], function(preferences) {
+        require(['bootstraps/enhanced/preferences'], (preferences) => {
             bootstrapContext('preferences', preferences);
         });
     }
 
     if (config.page.section === 'newsletter-signup-page') {
-        require(['bootstraps/enhanced/signup'], function(signup) {
+        require(['bootstraps/enhanced/signup'], (signup) => {
             bootstrapContext('signup', signup);
         });
     }
 
     // use a #force-sw hash fragment to force service worker registration for local dev
     if ((window.location.protocol === 'https:' && config.page.section !== 'identity') || window.location.hash === '#force-sw') {
-        var navigator = window.navigator;
+        const navigator = window.navigator;
         if (navigator && navigator.serviceWorker) {
             navigator.serviceWorker.register('/service-worker.js');
         }
     }
 
     if (config.page.pageId === 'help/accessibility-help') {
-        require(['bootstraps/enhanced/accessibility'], function(accessibility) {
+        require(['bootstraps/enhanced/accessibility'], (accessibility) => {
             bootstrapContext('accessibility', accessibility);
         });
     }
 
-    fastdom.read(function() {
+    fastdom.read(() => {
         if ($('.youtube-media-atom').length > 0) {
-            require(['bootstraps/enhanced/youtube'], function(youtube) {
+            require(['bootstraps/enhanced/youtube'], (youtube) => {
                 bootstrapContext('youtube', youtube);
             });
         }
@@ -167,7 +167,7 @@ export default function() {
 
     // Mark the end of synchronous execution.
     userTiming.mark('App End');
-    robust.catchErrorsAndLog('ga-user-timing-enhanced-end', function() {
+    robust.catchErrorsAndLog('ga-user-timing-enhanced-end', () => {
         ga.trackPerformance('Javascript Load', 'enhancedEnd', 'Enhanced end parse time');
     });
-};
+}

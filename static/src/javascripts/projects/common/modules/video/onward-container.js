@@ -4,18 +4,18 @@ import Component from 'common/modules/component';
 import mediator from 'common/utils/mediator';
 
 function getEndpoint(mediaType) {
-    var isInSeries = Boolean(config.page.seriesTags);
+    const isInSeries = Boolean(config.page.seriesTags);
 
     if (isInSeries) {
-        return '/video/in-series/' + config.page.seriesId + '.json';
+        return `/video/in-series/${config.page.seriesId}.json`;
     } else {
-        return '/' + (config.page.isPodcast ? 'podcast' : mediaType) + '/most-viewed.json';
+        return `/${config.page.isPodcast ? 'podcast' : mediaType}/most-viewed.json`;
     }
 }
 
 function initEvents(el, manipulationType, endpoint) {
-    bean.on(el, 'click', '.most-viewed-navigation__button', function(ev) {
-        var page = ev.currentTarget.getAttribute('data-page');
+    bean.on(el, 'click', '.most-viewed-navigation__button', (ev) => {
+        const page = ev.currentTarget.getAttribute('data-page');
 
         createComponent(el, endpoint, manipulationType, page);
 
@@ -25,8 +25,8 @@ function initEvents(el, manipulationType, endpoint) {
 }
 
 function createComponent(el, endpoint, manipulationType, page) {
-    var component = new Component();
-    var paginatedEndpoint = endpoint + (page ? '?page=' + page : '');
+    const component = new Component();
+    const paginatedEndpoint = endpoint + (page ? `?page=${page}` : '');
     component.manipulationType = manipulationType;
     component.endpoint = paginatedEndpoint;
 
@@ -36,15 +36,15 @@ function createComponent(el, endpoint, manipulationType, page) {
 }
 
 function init(el, mediaType) {
-    var manipulationType = mediaType === 'video' ? 'append' : 'html';
-    var endpoint = getEndpoint(mediaType);
+    const manipulationType = mediaType === 'video' ? 'append' : 'html';
+    const endpoint = getEndpoint(mediaType);
 
-    createComponent(el, endpoint, manipulationType).then(function() {
+    createComponent(el, endpoint, manipulationType).then(() => {
         mediator.emit('page:new-content');
         initEvents(el, manipulationType, endpoint);
     });
 }
 
 export default {
-    init: init
+    init,
 };

@@ -14,27 +14,26 @@ function Audience(config) {
 Component.define(Audience);
 
 Audience.prototype.config = {
-    tests: []
+    tests: [],
 };
 
 Audience.prototype.templateName = 'audience-template';
 Audience.prototype.componentClass = 'audience-breakdown';
 Audience.prototype.useBem = true;
 
-Audience.prototype.prerender = function() {
+Audience.prototype.prerender = function () {
+    const testsContainer = this.getElem('tests');
 
-    var testsContainer = this.getElem('tests');
-
-    this.config.tests.forEach(function(test) {
-        /*eslint-disable new-cap*/
+    this.config.tests.forEach((test) => {
+        /* eslint-disable new-cap*/
         new AudienceItem({
-            test: test
+            test,
         }).render(testsContainer);
-        /*eslint-enable new-cap*/
+        /* eslint-enable new-cap*/
     });
 };
 
-Audience.prototype.ready = function() {
+Audience.prototype.ready = function () {
 
 };
 

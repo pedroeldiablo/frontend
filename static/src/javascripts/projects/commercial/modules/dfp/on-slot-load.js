@@ -1,6 +1,6 @@
 import getAdvertById from 'commercial/modules/dfp/get-advert-by-id';
 import postMessage from 'commercial/modules/messenger/post-message';
-var host = location.protocol + '//' + location.host;
+const host = `${location.protocol}//${location.host}`;
 export default onLoad;
 
 /* This is for native ads. We send two pieces of information:
@@ -12,12 +12,12 @@ export default onLoad;
      we resort to sending it as a token of welcome :)
 */
 function onLoad(event) {
-    var advert = getAdvertById(event.slot.getSlotElementId());
+    const advert = getAdvertById(event.slot.getSlotElementId());
     if (advert.size === 'fluid') {
-        var iframe = advert.node.getElementsByTagName('iframe')[0];
+        const iframe = advert.node.getElementsByTagName('iframe')[0];
         postMessage({
             id: iframe.id,
-            host: host
+            host,
         }, iframe.contentWindow);
     }
 }

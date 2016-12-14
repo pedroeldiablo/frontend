@@ -5,7 +5,7 @@ import Component from 'common/modules/component';
  * @return Component
  */
 function blankComponent(url) {
-    var c = new Component();
+    const c = new Component();
     c.endpoint = url;
     return c;
 }
@@ -16,7 +16,7 @@ function blankComponent(url) {
  * @return Component
  */
 function matchDayFor(competition, date) {
-    return blankComponent('/football/match-day/' + competition + '/' + date + '.json');
+    return blankComponent(`/football/match-day/${competition}/${date}.json`);
 }
 
 /**
@@ -24,7 +24,7 @@ function matchDayFor(competition, date) {
  * @return Component
  */
 function tableFor(competition) {
-    return blankComponent('/football/' + competition + '/table.json');
+    return blankComponent(`/football/${competition}/table.json`);
 }
 
 /**
@@ -34,11 +34,11 @@ function tableFor(competition) {
  * So therefor take the whole URL
  */
 function statsFor(url) {
-    return blankComponent(url + '.json');
+    return blankComponent(`${url}.json`);
 }
 
 export default {
-    matchDayFor: matchDayFor,
-    tableFor: tableFor,
-    statsFor: statsFor
-}; //define
+    matchDayFor,
+    tableFor,
+    statsFor,
+}; // define

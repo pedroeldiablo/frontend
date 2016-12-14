@@ -5,10 +5,10 @@ import template from 'common/utils/template';
 import adsSkipOverlayTemplate from 'text!common/views/ui/video-ads-skip-overlay.html';
 
 function skipAd(mediaType, skipTimeout) {
-    var intervalId;
-    var events = {
-        update: function() {
-            var adsManager = this.ima.getAdsManager(),
+    let intervalId;
+    const events = {
+        update() {
+            let adsManager = this.ima.getAdsManager(),
                 currentTime = adsManager.getCurrentAd().getDuration() - adsManager.getRemainingTime(),
                 skipTime = parseInt((skipTimeout - currentTime).toFixed(), 10);
 
@@ -26,9 +26,9 @@ function skipAd(mediaType, skipTimeout) {
                 bean.on(qwery('.js-ads-skip-button')[0], 'click', events.skip.bind(this));
             }
         },
-        skip: function() {
+        skip() {
             $('.js-ads-skip', this.el()).hide();
-            this.trigger(mediaType + ':preroll:skip');
+            this.trigger(`${mediaType}:preroll:skip`);
             // This is to follow more closely the videojs convention
             this.trigger('adskip');
             // in lieu of a 'skip' api, rather hacky way of achieving it
@@ -36,26 +36,25 @@ function skipAd(mediaType, skipTimeout) {
             this.ima.onContentResumeRequested_();
             this.ima.getAdsManager().stop();
         },
-        init: function() {
-            var adDuration = this.ima.getAdsManager().getCurrentAd().getDuration();
+        init() {
+            const adDuration = this.ima.getAdsManager().getCurrentAd().getDuration();
 
-            var skipButton = template(adsSkipOverlayTemplate, {
-                adDuration: adDuration,
-                skipTimeout: skipTimeout
+            const skipButton = template(adsSkipOverlayTemplate, {
+                adDuration,
+                skipTimeout,
             });
 
             $(this.el()).append(skipButton);
             intervalId = setInterval(events.update.bind(this), 500);
-
         },
-        end: function() {
+        end() {
             $('.js-ads-skip', this.el()).hide();
             window.clearInterval(intervalId);
-        }
+        },
     };
 
-    this.one(mediaType + ':preroll:play', events.init.bind(this));
-    this.one(mediaType + ':preroll:end', events.end.bind(this));
+    this.one(`${mediaType}:preroll:play`, events.init.bind(this));
+    this.one(`${mediaType}:preroll:end`, events.end.bind(this));
 }
 
 export default skipAd;

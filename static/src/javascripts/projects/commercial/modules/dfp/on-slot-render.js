@@ -9,7 +9,7 @@ import Advert from 'commercial/modules/dfp/Advert';
 import renderAdvert from 'commercial/modules/dfp/render-advert';
 import emptyAdvert from 'commercial/modules/dfp/empty-advert';
 import getAdvertById from 'commercial/modules/dfp/get-advert-by-id';
-var recordFirstAdRendered = once(function() {
+const recordFirstAdRendered = once(() => {
     beacon.beaconCounts('ad-render');
 });
 
@@ -19,7 +19,7 @@ function onSlotRender(event) {
     dfpEnv.firstAdRendered = true;
     recordFirstAdRendered();
 
-    var advert = getAdvertById(event.slot.getSlotElementId());
+    const advert = getAdvertById(event.slot.getSlotElementId());
     Advert.stopLoading(advert, true);
     Advert.startRendering(advert);
     advert.isEmpty = event.isEmpty;
@@ -46,24 +46,22 @@ function reportEmptyResponse(adSlotId, event) {
     // let's report these and diagnose the problem in sentry.
     // Keep the sample rate low, otherwise we'll get rate-limited (report-error will also sample down)
     if (Math.random() < 0.0001) {
-        var adUnitPath = event.slot.getAdUnitPath();
-        var adTargetingMap = event.slot.getTargetingMap();
-        var adTargetingKValues = adTargetingMap ? adTargetingMap['k'] : [];
-        var adKeywords = adTargetingKValues ? adTargetingKValues.join(', ') : '';
+        const adUnitPath = event.slot.getAdUnitPath();
+        const adTargetingMap = event.slot.getTargetingMap();
+        const adTargetingKValues = adTargetingMap ? adTargetingMap.k : [];
+        const adKeywords = adTargetingKValues ? adTargetingKValues.join(', ') : '';
 
         reportError(new Error('dfp returned an empty ad response'), {
             feature: 'commercial',
             adUnit: adUnitPath,
             adSlot: adSlotId,
-            adKeywords: adKeywords
+            adKeywords,
         }, false);
     }
 }
 
 function allAdsRendered() {
-    if (dfpEnv.adverts.every(function(_) {
-            return _.isRendered || _.isEmpty || _.isHidden;
-        })) {
+    if (dfpEnv.adverts.every(_ => _.isRendered || _.isEmpty || _.isHidden)) {
         userTiming.mark('All ads are rendered');
         mediator.emit('modules:commercial:dfp:alladsrendered');
     }

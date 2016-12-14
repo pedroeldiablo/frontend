@@ -4,22 +4,20 @@ import detect from 'common/utils/detect';
 import raven from 'common/utils/raven';
 
 function connect(config) {
-
     if (!detect.hasWebSocket()) {
         return;
     }
 
-    var $pushedContent,
+    let $pushedContent,
         chatSocket = new window.WebSocket(config.page.onwardWebSocket),
-        receiveEvent = function(event) {
-
+        receiveEvent = function (event) {
             if (event && 'data' in event) {
-                var data = JSON.parse(event.data);
+                const data = JSON.parse(event.data);
 
                 if (data.error) {
                     chatSocket.close();
                 } else {
-                    $pushedContent = bonzo.create('<div>' + data.headline + ' ' + data.url + '</div>');
+                    $pushedContent = bonzo.create(`<div>${data.headline} ${data.url}</div>`);
                     bonzo($pushedContent).addClass('pushed-content lazyloaded');
                     $('.monocolumn-wrapper').after($pushedContent);
                 }
@@ -27,7 +25,7 @@ function connect(config) {
                 raven.captureMessage('Invalid data returned from socket');
             }
         },
-        disconnectEvent = function() {
+        disconnectEvent = function () {
             chatSocket.close();
             connect(config);
         };
@@ -38,5 +36,5 @@ function connect(config) {
 }
 
 export default {
-    connect: connect
+    connect,
 };

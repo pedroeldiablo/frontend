@@ -4,16 +4,16 @@ import fastdom from 'fastdom';
 import filter from 'lodash/collections/filter';
 import debounce from 'lodash/functions/debounce';
 
-var items = [],
+let items = [],
     scroll = {
         top: 0,
-        bottom: 0
+        bottom: 0,
     },
     doProximityLoadingDebounced,
-    doProximityLoading = function() {
+    doProximityLoading = function () {
         scroll.top = window.pageYOffset;
         scroll.bottom = scroll.top + bonzo.viewport().height;
-        items = filter(items, function(item) {
+        items = filter(items, (item) => {
             if (item.conditionFn()) {
                 item.loadFn();
             } else {
@@ -29,9 +29,9 @@ doProximityLoadingDebounced = debounce(doProximityLoading, 2000); // used on loa
 
 function addItem(conditionFn, loadFn) {
     // calls `loadFn` when `conditionFn` is true
-    var item = {
-        conditionFn: conditionFn,
-        loadFn: loadFn
+    const item = {
+        conditionFn,
+        loadFn,
     };
     items.push(item);
     if (items.length === 1) {
@@ -42,10 +42,10 @@ function addItem(conditionFn, loadFn) {
 
 function addProximityLoader(el, distanceThreshold, loadFn) {
     // calls `loadFn` when screen is within `distanceThreshold` of `el`
-    fastdom.read(function() {
-        var $el = bonzo(el),
-            conditionFn = function() {
-                var elOffset = $el.offset(),
+    fastdom.read(() => {
+        let $el = bonzo(el),
+            conditionFn = function () {
+                let elOffset = $el.offset(),
                     loadAfter = elOffset.top - distanceThreshold,
                     loadBefore = elOffset.top + elOffset.height + distanceThreshold;
                 return scroll.top > loadAfter && scroll.bottom < loadBefore;
@@ -55,5 +55,5 @@ function addProximityLoader(el, distanceThreshold, loadFn) {
 }
 
 export default {
-    add: addProximityLoader
+    add: addProximityLoader,
 };

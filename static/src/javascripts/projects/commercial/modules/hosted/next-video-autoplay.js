@@ -2,33 +2,33 @@ import bean from 'bean';
 import fastdom from 'fastdom';
 import $ from 'common/utils/$';
 import googleAnalytics from 'common/modules/analytics/google';
-var nextVideoInterval;
-var $hostedNext = $('.js-hosted-next-autoplay');
-var $timer = $('.js-autoplay-timer');
-var nextVideoPage = $timer.length && $timer.data('next-page');
+let nextVideoInterval;
+const $hostedNext = $('.js-hosted-next-autoplay');
+const $timer = $('.js-autoplay-timer');
+const nextVideoPage = $timer.length && $timer.data('next-page');
 
 function cancelAutoplay() {
-    fastdom.write(function() {
+    fastdom.write(() => {
         $hostedNext.addClass('hosted-slide-out');
     });
     clearInterval(nextVideoInterval);
 }
 
 function cancelAutoplayMobile($hostedNext) {
-    fastdom.write(function() {
+    fastdom.write(() => {
         $hostedNext.addClass('u-h');
     });
 }
 
 function triggerAutoplay(getCurrentTimeFn, duration) {
-    nextVideoInterval = setInterval(function() {
-        var timeLeft = duration - Math.floor(getCurrentTimeFn());
-        var countdownLength = 10; //seconds before the end when to show the timer
+    nextVideoInterval = setInterval(() => {
+        const timeLeft = duration - Math.floor(getCurrentTimeFn());
+        const countdownLength = 10; // seconds before the end when to show the timer
 
         if (timeLeft <= countdownLength) {
-            fastdom.write(function() {
+            fastdom.write(() => {
                 $hostedNext.addClass('js-autoplay-start');
-                $timer.text(timeLeft + 's');
+                $timer.text(`${timeLeft}s`);
             });
         }
         if (timeLeft <= 0) {
@@ -39,16 +39,16 @@ function triggerAutoplay(getCurrentTimeFn, duration) {
 }
 
 function triggerEndSlate() {
-    fastdom.write(function() {
+    fastdom.write(() => {
         $hostedNext.addClass('js-autoplay-start');
     });
-    bean.on(document, 'click', $('.js-autoplay-cancel'), function() {
+    bean.on(document, 'click', $('.js-autoplay-cancel'), () => {
         cancelAutoplayMobile($hostedNext);
     });
 }
 
 function addCancelListener() {
-    bean.on(document, 'click', $('.js-autoplay-cancel'), function() {
+    bean.on(document, 'click', $('.js-autoplay-cancel'), () => {
         cancelAutoplay();
     });
 }
@@ -58,8 +58,8 @@ function canAutoplay() {
 }
 
 export default {
-    canAutoplay: canAutoplay,
-    triggerEndSlate: triggerEndSlate,
-    triggerAutoplay: triggerAutoplay,
-    addCancelListener: addCancelListener
+    canAutoplay,
+    triggerEndSlate,
+    triggerAutoplay,
+    addCancelListener,
 };

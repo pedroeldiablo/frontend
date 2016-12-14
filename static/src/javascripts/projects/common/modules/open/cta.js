@@ -3,7 +3,7 @@ import clamp from 'common/utils/clamp';
 import Component from 'common/modules/component';
 
 /** @constructor */
-var Cta = function(mediator, options) {
+const Cta = function (mediator, options) {
     this.mediator = mediator;
     this.setOptions(options);
 };
@@ -29,12 +29,12 @@ Cta.prototype.useBem = true;
 
 /** @type {Object.<string.*>} */
 Cta.prototype.defaultOptions = {
-    discussionKey: null
+    discussionKey: null,
 };
 
 /** @override */
-Cta.prototype.prerender = function() {
-    var comments = $('.comment', this.elem),
+Cta.prototype.prerender = function () {
+    let comments = $('.comment', this.elem),
         comment = comments[Math.floor(Math.random() * comments.length) + 0];
 
     if (comments.length === 0) {
@@ -45,7 +45,7 @@ Cta.prototype.prerender = function() {
 };
 
 /** @override */
-Cta.prototype.ready = function() {
+Cta.prototype.ready = function () {
     clamp(this.getElem('body'), 10, true);
 };
 

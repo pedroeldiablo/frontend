@@ -14,7 +14,7 @@ Component.define(ParticipationItem);
 ParticipationItem.prototype.config = {
     test: '',
     examplePath: '',
-    variant: ''
+    variant: '',
 };
 
 ParticipationItem.prototype.templateName = 'participation-item-template';
@@ -22,9 +22,9 @@ ParticipationItem.prototype.componentClass = 'participation-item';
 ParticipationItem.prototype.classes = {};
 ParticipationItem.prototype.useBem = true;
 
-ParticipationItem.prototype.prerender = function() {
-    var origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin,
-        href = this.config.examplePath + '=' + this.config.variant;
+ParticipationItem.prototype.prerender = function () {
+    let origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin,
+        href = `${this.config.examplePath}=${this.config.variant}`;
     this.elem.textContent = this.config.variant;
     this.elem.href = origin + href;
 };

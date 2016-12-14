@@ -23,31 +23,29 @@ import 'commercial/modules/creatives/template';
  * This looks for any such data and, if we find it, renders the appropriate component.
  */
 export default function applyCreativeTemplate(adSlot) {
-    return getAdvertIframe(adSlot).then(function(iframe) {
-        return renderCreativeTemplate(adSlot, iframe);
-    });
-};
+    return getAdvertIframe(adSlot).then(iframe => renderCreativeTemplate(adSlot, iframe));
+}
 
 function getAdvertIframe(adSlot) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         // DFP will sometimes return empty iframes, denoted with a '__hidden__' parameter embedded in its ID.
         // We need to be sure only to select the ad content frame.
-        var contentFrame = adSlot.querySelector('iframe:not([id*="__hidden__"])');
+        const contentFrame = adSlot.querySelector('iframe:not([id*="__hidden__"])');
 
         if (!contentFrame) {
             reject();
         }
         // On IE, wait for the frame to load before interacting with it
         else if (contentFrame.readyState && contentFrame.readyState !== 'complete') {
-            bean.on(contentFrame, 'readystatechange', function(e) {
-                var updatedIFrame = e.srcElement;
+            bean.on(contentFrame, 'readystatechange', (e) => {
+                const updatedIFrame = e.srcElement;
 
                 if (
-                    /*eslint-disable valid-typeof*/
+                    /* eslint-disable valid-typeof*/
                     updatedIFrame &&
                     typeof updatedIFrame.readyState !== 'unknown' &&
                     updatedIFrame.readyState === 'complete'
-                    /*eslint-enable valid-typeof*/
+                    /* eslint-enable valid-typeof*/
                 ) {
                     bean.off(updatedIFrame, 'readystatechange');
                     resolve(contentFrame);
@@ -60,14 +58,14 @@ function getAdvertIframe(adSlot) {
 }
 
 function renderCreativeTemplate(adSlot, iFrame) {
-    var creativeConfig = fetchCreativeConfig();
+    const creativeConfig = fetchCreativeConfig();
 
     if (creativeConfig) {
         return hideIframe()
             .then(JSON.parse)
             .then(renderCreative)
-            .catch(function(err) {
-                reportError('Failed to get creative JSON ' + err);
+            .catch((err) => {
+                reportError(`Failed to get creative JSON ${err}`);
             });
     } else {
         return Promise.resolve(true);
@@ -75,24 +73,23 @@ function renderCreativeTemplate(adSlot, iFrame) {
 
     function fetchCreativeConfig() {
         try {
-            var breakoutScript = iFrame.contentDocument.body.querySelector('.breakout__script[type="application/json"]');
+            const breakoutScript = iFrame.contentDocument.body.querySelector('.breakout__script[type="application/json"]');
             return breakoutScript ? breakoutScript.innerHTML : null;
         } catch (err) {
             return null;
         }
-
     }
 
     function renderCreative(config) {
-        return new Promise(function(resolve) {
-            require(['commercial/modules/creatives/' + config.name], function(Creative) {
+        return new Promise((resolve) => {
+            require([`commercial/modules/creatives/${config.name}`], (Creative) => {
                 resolve(new Creative(bonzo(adSlot), config.params, config.opts).create());
             });
         });
     }
 
     function hideIframe() {
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             iFrame.style.display = 'none';
             return creativeConfig;
         });

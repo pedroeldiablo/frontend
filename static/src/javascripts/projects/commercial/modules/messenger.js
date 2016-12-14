@@ -2,25 +2,25 @@ import Promise from 'Promise';
 import reportError from 'common/utils/report-error';
 import dfpOrigin from 'commercial/modules/messenger/dfp-origin';
 import postMessage from 'commercial/modules/messenger/post-message';
-var allowedHosts = [
+const allowedHosts = [
     dfpOrigin,
-    location.protocol + '//' + location.host
+    `${location.protocol}//${location.host}`,
 ];
-var listeners = {};
-var registeredListeners = 0;
+const listeners = {};
+let registeredListeners = 0;
 
-var error405 = {
+const error405 = {
     code: 405,
-    message: 'Service %% not implemented'
+    message: 'Service %% not implemented',
 };
-var error500 = {
+const error500 = {
     code: 500,
-    message: 'Internal server error\n\n%%'
+    message: 'Internal server error\n\n%%',
 };
 
 export default {
-    register: register,
-    unregister: unregister
+    register,
+    unregister,
 };
 
 function register(type, callback, options) {
@@ -53,16 +53,14 @@ function unregister(type, callback, options) {
     if (callback === undefined) {
         registeredListeners -= listeners[type].length;
         listeners[type].length = 0;
+    } else if (listeners[type] === callback) {
+        listeners[type] = null;
+        registeredListeners -= 1;
     } else {
-        if (listeners[type] === callback) {
-            listeners[type] = null;
+        const idx = listeners[type].indexOf(callback);
+        if (idx > -1) {
             registeredListeners -= 1;
-        } else {
-            var idx = listeners[type].indexOf(callback);
-            if (idx > -1) {
-                registeredListeners -= 1;
-                listeners[type].splice(idx, 1);
-            }
+            listeners[type].splice(idx, 1);
         }
     }
 
@@ -107,7 +105,7 @@ function onMessage(event) {
         // Because any listener can have side-effects (by unregistering itself),
         // we run the promise chain on a copy of the `listeners` array.
         // Hat tip @piuccio
-        var promise = listeners[data.type].slice()
+        const promise = listeners[data.type].slice()
             // We offer, but don't impose, the possibility that a listener returns
             // a value that must be sent back to the calling frame. To do this,
             // we pass the cumulated returned value as a second argument to each
@@ -118,18 +116,16 @@ function onMessage(event) {
             // We don't know what each callack will be made of, we don't want to.
             // And so we wrap each call in a promise chain, in case one drops the
             // occasional fastdom bomb in the middle.
-            .reduce(function(promise, listener) {
-                return promise.then(function promiseCallback(ret) {
-                    var thisRet = listener(data.value, ret, getIframe(data));
-                    return thisRet === undefined ? ret : thisRet;
-                });
-            }, Promise.resolve(true));
+            .reduce((promise, listener) => promise.then((ret) => {
+                const thisRet = listener(data.value, ret, getIframe(data));
+                return thisRet === undefined ? ret : thisRet;
+            }), Promise.resolve(true));
 
-        return promise.then(function(response) {
+        return promise.then((response) => {
             respond(null, response);
-        }).catch(function(ex) {
+        }).catch((ex) => {
             reportError(ex, {
-                feature: 'native-ads'
+                feature: 'native-ads',
             });
             respond(formatError(error500, ex), null);
         });
@@ -146,8 +142,8 @@ function onMessage(event) {
     function respond(error, result) {
         postMessage({
             id: data.id,
-            error: error,
-            result: result
+            error,
+            result,
         }, event.source, event.origin);
     }
 }
@@ -187,8 +183,8 @@ function toStandardMessage(payload) {
         type: 'resize',
         iframeId: payload.value.id,
         value: {
-            height: +payload.value.height
-        }
+            height: +payload.value.height,
+        },
     };
 }
 
@@ -210,8 +206,8 @@ function formatError() {
         return arguments[0] || '';
     }
 
-    var error = arguments[0];
-    Array.prototype.slice.call(arguments, 1).forEach(function(arg) {
+    const error = arguments[0];
+    Array.prototype.slice.call(arguments, 1).forEach((arg) => {
         // Keep in mind that when the first argument is a string,
         // String.replace only replaces the first occurence
         error.message = error.message.replace('%%', arg);

@@ -29,10 +29,10 @@ import pluck from 'lodash/collections/pluck';
 import last from 'lodash/arrays/last';
 import sortBy from 'lodash/collections/sortBy';
 import reduceRight from 'lodash/collections/reduceRight';
-var editions = [
+let editions = [
         'uk',
         'us',
-        'au'
+        'au',
     ],
     editionalised = [
         'business',
@@ -42,27 +42,27 @@ var editions = [
         'media',
         'money',
         'sport',
-        'technology'
+        'technology',
     ],
     pageMeta = [{
         tid: 'section',
-        tname: 'sectionName'
+        tname: 'sectionName',
     }, {
         tid: 'keywordIds',
-        tname: 'keywords'
+        tname: 'keywords',
     }, {
         tid: 'seriesId',
-        tname: 'series'
+        tname: 'series',
     }, {
         tid: 'authorIds',
-        tname: 'author'
+        tname: 'author',
     }],
     buckets = [{
         type: 'content',
-        indexInRecord: 1
+        indexInRecord: 1,
     }, {
         type: 'front',
-        indexInRecord: 2
+        indexInRecord: 2,
     }],
     summaryPeriodDays = 90,
     forgetUniquesAfter = 10,
@@ -79,8 +79,8 @@ var editions = [
 
     inMegaNav = false,
 
-    isEditionalisedRx = new RegExp('^(' + editions.join('|') + ')\/(' + editionalised.join('|') + ')$'),
-    stripEditionRx = new RegExp('^(' + editions.join('|') + ')\/');
+    isEditionalisedRx = new RegExp(`^(${editions.join('|')})\/(${editionalised.join('|')})$`),
+    stripEditionRx = new RegExp(`^(${editions.join('|')})\/`);
 
 function saveHistory(history) {
     historyCache = history;
@@ -105,7 +105,7 @@ function getSummary() {
             summaryCache = {
                 periodEnd: today,
                 tags: {},
-                showInMegaNav: true
+                showInMegaNav: true,
             };
         }
     }
@@ -114,60 +114,48 @@ function getSummary() {
 
 function seriesSummary() {
     function views(item) {
-        return reduce(item, function(acc, record) {
-            return acc + record[1];
-        }, 0);
+        return reduce(item, (acc, record) => acc + record[1], 0);
     }
 
     return chain(getSummary().tags)
-        .and(pick, function(v, k) {
-            return contains(k, 'series');
-        })
-        .and(mapValues, function(tag) {
-            return views(tag[1]) + views(tag[2]);
-        })
+        .and(pick, (v, k) => contains(k, 'series'))
+        .and(mapValues, tag => views(tag[1]) + views(tag[2]))
         .value();
 }
 
 function mostViewedSeries() {
-    return reduce(seriesSummary(), function(best, views, tag, summary) {
-        return views > (summary[best] || 0) ? tag : best;
-    }, '');
+    return reduce(seriesSummary(), (best, views, tag, summary) => views > (summary[best] || 0) ? tag : best, '');
 }
 
 function deleteFromSummary(tag) {
-    var summary = getSummary();
+    const summary = getSummary();
 
     delete summary.tags[tag];
     saveSummary(summary);
 }
 
 function isRevisit(pageId) {
-    return (find(getHistory(), function(page) {
-        return (page[0] === pageId);
-    }) || [])[1] > 1;
+    return (find(getHistory(), page => (page[0] === pageId)) || [])[1] > 1;
 }
 
 function pruneSummary(summary, mockToday) {
-    var newToday = mockToday || today,
+    let newToday = mockToday || today,
         updateBy = newToday - summary.periodEnd;
 
     if (updateBy !== 0) {
         summary.periodEnd = newToday;
 
-        forEach(summary.tags, function(record, tid) {
-            var result = chain(buckets).and(map, function(bucket) {
-                var visits = chain(record[bucket.indexInRecord]).and(map, function(day) {
-                    var newAge = day[0] + updateBy;
+        forEach(summary.tags, (record, tid) => {
+            const result = chain(buckets).and(map, (bucket) => {
+                const visits = chain(record[bucket.indexInRecord]).and(map, (day) => {
+                    const newAge = day[0] + updateBy;
                     return newAge < summaryPeriodDays && newAge >= 0 ? [newAge, day[1]] : false;
                 }).and(compact).value();
 
                 return (visits.length > 1 || (visits.length === 1 && visits[0][0] < forgetUniquesAfter)) ? visits : [];
             }).value();
 
-            if (some(result, function(r) {
-                    return r.length;
-                })) {
+            if (some(result, r => r.length)) {
                 summary.tags[tid] = [record[0]].concat(result);
             } else {
                 delete summary.tags[tid];
@@ -179,32 +167,26 @@ function pruneSummary(summary, mockToday) {
 }
 
 function getPopular(opts) {
-    var tags = getSummary().tags,
+    let tags = getSummary().tags,
         tids = keys(tags),
         op = assign({
             number: 100,
             weights: {},
-            thresholds: {}
+            thresholds: {},
         }, opts);
 
-    tids = op.whitelist ? tids.filter(function(tid) {
-        return op.whitelist.indexOf(tid) > -1;
-    }) : tids;
-    tids = op.blacklist ? tids.filter(function(tid) {
-        return op.blacklist.indexOf(tid) === -1;
-    }) : tids;
+    tids = op.whitelist ? tids.filter(tid => op.whitelist.indexOf(tid) > -1) : tids;
+    tids = op.blacklist ? tids.filter(tid => op.blacklist.indexOf(tid) === -1) : tids;
 
-    return chain(tids).and(map, function(tid) {
-            var record = tags[tid],
-                rank = reduce(buckets, function(rank, bucket) {
-                    return rank + tally(record[bucket.indexInRecord], op.weights[bucket.type], op.thresholds[bucket.type]);
-                }, 0);
+    return chain(tids).and(map, (tid) => {
+        let record = tags[tid],
+            rank = reduce(buckets, (rank, bucket) => rank + tally(record[bucket.indexInRecord], op.weights[bucket.type], op.thresholds[bucket.type]), 0);
 
-            return {
-                idAndName: [tid, record[0]],
-                rank: rank
-            };
-        })
+        return {
+            idAndName: [tid, record[0]],
+            rank,
+        };
+    })
         .and(compact)
         .and(sortBy, 'rank')
         .and(last, op.number)
@@ -214,7 +196,7 @@ function getPopular(opts) {
 }
 
 function getContributors() {
-    var contibutors = [],
+    let contibutors = [],
         tagId,
         tags = getSummary().tags;
     for (tagId in tags) {
@@ -226,33 +208,33 @@ function getContributors() {
 }
 
 function getPopularFiltered(opts) {
-    var flush = opts && opts.flush;
+    const flush = opts && opts.flush;
 
     popularFilteredCache = (!flush && popularFilteredCache) || getPopular({
         blacklist: getTopNavItems(),
         number: 10,
         weights: {
-            'content': 1,
-            'front': 5
+            content: 1,
+            front: 5,
         },
         thresholds: {
-            'content': 5,
-            'front': 1
-        }
+            content: 5,
+            front: 1,
+        },
     });
 
     return popularFilteredCache;
 }
 
 function tally(visits, weight, minimum) {
-    var totalVisits = 0,
+    let totalVisits = 0,
         result;
 
     weight = weight || 1;
     minimum = minimum || 1;
 
-    result = reduce(visits, function(tally, day) {
-        var dayOffset = day[0],
+    result = reduce(visits, (tally, day) => {
+        let dayOffset = day[0],
             dayVisits = day[1];
 
         totalVisits += dayVisits;
@@ -288,14 +270,14 @@ function reset() {
 }
 
 function logHistory(pageConfig) {
-    var pageId = pageConfig.pageId,
+    let pageId = pageConfig.pageId,
         history,
         foundCount = 0;
 
     if (!pageConfig.isFront) {
         history = getHistory()
-            .filter(function(item) {
-                var isArr = isArray(item),
+            .filter((item) => {
+                let isArr = isArray(item),
                     found = isArr && (item[0] === pageId);
 
                 foundCount = found ? item[1] : foundCount;
@@ -308,12 +290,12 @@ function logHistory(pageConfig) {
 }
 
 function logSummary(pageConfig, mockToday) {
-    var summary = pruneSummary(getSummary(), mockToday),
+    let summary = pruneSummary(getSummary(), mockToday),
         page = collapsePath(pageConfig.pageId),
         isFront = false;
 
-    chain(pageMeta).and(reduceRight, function(tagMeta, tag) {
-        var tid = collapsePath(firstCsv(pageConfig[tag.tid])),
+    chain(pageMeta).and(reduceRight, (tagMeta, tag) => {
+        let tid = collapsePath(firstCsv(pageConfig[tag.tid])),
             tname = tid && firstCsv(pageConfig[tag.tname]);
 
         if (tid && tname) {
@@ -321,24 +303,22 @@ function logSummary(pageConfig, mockToday) {
         }
         isFront = isFront || tid === page;
         return tagMeta;
-    }, {}).and(forEach, function(tname, tid) {
-        var record = summary.tags[tid] || [],
+    }, {}).and(forEach, (tname, tid) => {
+        let record = summary.tags[tid] || [],
             visits,
             today;
 
-        forEach(buckets, function(bucket) {
+        forEach(buckets, (bucket) => {
             record[bucket.indexInRecord] = record[bucket.indexInRecord] || [];
         });
 
         record[0] = tname;
 
         visits = record[isFront ? 2 : 1];
-        today = find(visits, function(day) {
-            return day[0] === 0;
-        });
+        today = find(visits, day => day[0] === 0);
 
         if (today) {
-            today[1] = today[1] + 1;
+            today[1] += 1;
         } else {
             visits.unshift([0, 1]);
         }
@@ -350,9 +330,7 @@ function logSummary(pageConfig, mockToday) {
 }
 
 function getTopNavItems() {
-    topNavItemsCache = topNavItemsCache || $('.js-navigation-header .js-top-navigation a').map(function(item) {
-        return collapsePath(url.getPath($(item).attr('href')));
-    });
+    topNavItemsCache = topNavItemsCache || $('.js-navigation-header .js-top-navigation a').map(item => collapsePath(url.getPath($(item).attr('href'))));
 
     return topNavItemsCache;
 }
@@ -362,7 +340,8 @@ function getMegaNav() {
 }
 
 function showInMegaNav() {
-    var tags, tagsHTML;
+    let tags,
+        tagsHTML;
 
     if (getSummary().showInMegaNav === false) {
         return;
@@ -376,9 +355,9 @@ function showInMegaNav() {
 
     if (tags.length) {
         tagsHTML = template(viewMegaNav, {
-            tags: tags.map(tagHtml).join('')
+            tags: tags.map(tagHtml).join(''),
         });
-        fastdom.write(function() {
+        fastdom.write(() => {
             getMegaNav().prepend(tagsHTML);
         });
         inMegaNav = true;
@@ -386,8 +365,8 @@ function showInMegaNav() {
 }
 
 function removeFromMegaNav() {
-    getMegaNav().each(function(megaNav) {
-        fastdom.write(function() {
+    getMegaNav().each((megaNav) => {
+        fastdom.write(() => {
             $('.js-global-navigation__section--history', megaNav).remove();
         });
     });
@@ -399,7 +378,7 @@ function showInMegaNavEnabled() {
 }
 
 function showInMegaNavEnable(bool) {
-    var summary = getSummary();
+    const summary = getSummary();
 
     summary.showInMegaNav = !!bool;
 
@@ -416,29 +395,29 @@ function tagHtml(tag, index) {
     return template(viewTag, {
         id: tag[0],
         name: tag[1],
-        index: index + 1
+        index: index + 1,
     });
 }
 
 export default {
-    logHistory: logHistory,
-    logSummary: logSummary,
-    showInMegaNav: showInMegaNav,
-    showInMegaNavEnable: showInMegaNavEnable,
-    showInMegaNavEnabled: showInMegaNavEnabled,
-    getPopular: getPopular,
-    getPopularFiltered: getPopularFiltered,
-    getContributors: getContributors,
-    deleteFromSummary: deleteFromSummary,
-    isRevisit: isRevisit,
-    reset: reset,
-    seriesSummary: seriesSummary,
-    mostViewedSeries: mostViewedSeries,
+    logHistory,
+    logSummary,
+    showInMegaNav,
+    showInMegaNavEnable,
+    showInMegaNavEnabled,
+    getPopular,
+    getPopularFiltered,
+    getContributors,
+    deleteFromSummary,
+    isRevisit,
+    reset,
+    seriesSummary,
+    mostViewedSeries,
 
     test: {
-        getSummary: getSummary,
-        getHistory: getHistory,
-        pruneSummary: pruneSummary,
-        seriesSummary: seriesSummary
-    }
+        getSummary,
+        getHistory,
+        pruneSummary,
+        seriesSummary,
+    },
 };

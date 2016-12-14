@@ -5,26 +5,23 @@ import HostedCarousel from 'commercial/modules/hosted/onward-journey-carousel';
 import Promise from 'Promise';
 
 export default {
-    init: loadOnwardComponent
+    init: loadOnwardComponent,
 };
 
 function loadOnwardComponent() {
-
-    var placeholders = document.querySelectorAll('.js-onward-placeholder');
+    const placeholders = document.querySelectorAll('.js-onward-placeholder');
 
     if (placeholders.length) {
-        return fetchJson(config.page.ajaxUrl + '/' + config.page.pageId + '/' + config.page.contentType.toLowerCase() + '/' + 'onward.json', {
-                mode: 'cors'
-            })
-            .then(function(json) {
-                return fastdom.write(function() {
-                    var i;
-                    for (i = 0; i < placeholders.length; i++) {
-                        placeholders[i].innerHTML = json.html;
-                    }
-                    new HostedCarousel.init();
-                });
-            });
+        return fetchJson(`${config.page.ajaxUrl}/${config.page.pageId}/${config.page.contentType.toLowerCase()}/` + 'onward.json', {
+            mode: 'cors',
+        })
+            .then(json => fastdom.write(() => {
+                let i;
+                for (i = 0; i < placeholders.length; i++) {
+                    placeholders[i].innerHTML = json.html;
+                }
+                new HostedCarousel.init();
+            }));
     }
     return Promise.resolve();
 }

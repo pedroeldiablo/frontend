@@ -1,8 +1,8 @@
-/*global FB:false*/
-/*global guardian*/
+/* global FB:false*/
+/* global guardian*/
 import loadScript from 'common/utils/load-script';
-var scriptId = 'facebook-jssdk';
-var scriptSrc = '//connect.facebook.net/en_US/sdk/xfbml.ad.js#xfbml=1&version=v2.5';
+const scriptId = 'facebook-jssdk';
+const scriptSrc = '//connect.facebook.net/en_US/sdk/xfbml.ad.js#xfbml=1&version=v2.5';
 
 function FacebookAuthorizer(appId) {
     this.appId = appId;
@@ -15,7 +15,7 @@ function FacebookAuthorizer(appId) {
 }
 
 FacebookAuthorizer.DEFAULT_PERMISSIONS = {
-    scope: 'email,publish_actions,publish_stream'
+    scope: 'email,publish_actions,publish_stream',
 };
 
 FacebookAuthorizer.prototype.onConnected = null;
@@ -36,29 +36,29 @@ FacebookAuthorizer.userId = null;
 
 FacebookAuthorizer.userData = null;
 
-FacebookAuthorizer.prototype.login = function(permissions, force) {
+FacebookAuthorizer.prototype.login = function (permissions, force) {
     if (force || (!this.accessToken && !this.loginPending)) {
         this.cancelledLogin.reset();
         this.onConnected.reset();
         this.loginPending = true;
-        this._loadFacebookAPI().then(function(FB) {
+        this._loadFacebookAPI().then((FB) => {
             FB.login(this._handleGotLoginStatus.bind(this, true), permissions || FacebookAuthorizer.DEFAULT_PERMISSIONS);
-        }.bind(this));
+        });
     }
     return this.onConnected;
 };
 
-FacebookAuthorizer.prototype.getLoginStatus = function(permissions) {
+FacebookAuthorizer.prototype.getLoginStatus = function (permissions) {
     if (!this.loginStatusPending) {
         this.loginStatusPending = true;
-        this._loadFacebookAPI().then(function(FB) {
+        this._loadFacebookAPI().then((FB) => {
             FB.getLoginStatus(this._handleGotLoginStatus.bind(this, false), permissions || FacebookAuthorizer.DEFAULT_PERMISSIONS);
-        }.bind(this));
+        });
     }
     return this.onConnected;
 };
 
-FacebookAuthorizer.prototype._handleGotLoginStatus = function(wasDirectUserAction, response) {
+FacebookAuthorizer.prototype._handleGotLoginStatus = function (wasDirectUserAction, response) {
     this.loginStatusPending = false;
     this.loginPending = false;
     switch (response.status) {
@@ -80,18 +80,18 @@ FacebookAuthorizer.prototype._handleGotLoginStatus = function(wasDirectUserActio
     }
 };
 
-FacebookAuthorizer.prototype._getUserData = function() {
+FacebookAuthorizer.prototype._getUserData = function () {
     FB.api('/me', this._handleGotUserData.bind(this));
 };
 
-FacebookAuthorizer.prototype._handleGotUserData = function(data) {
+FacebookAuthorizer.prototype._handleGotUserData = function (data) {
     if (data && !data.error) {
         this.userData = data;
         this.onUserDataLoaded.resolve(data);
     }
 };
 
-FacebookAuthorizer.prototype._loadFacebookAPI = function() {
+FacebookAuthorizer.prototype._loadFacebookAPI = function () {
     if (window.FB) {
         this.onFBScriptLoaded.resolve(window.FB);
     } else if (!document.getElementById(scriptId) && !this._requiredAlready) {
@@ -101,18 +101,17 @@ FacebookAuthorizer.prototype._loadFacebookAPI = function() {
     return this.onFBScriptLoaded;
 };
 
-FacebookAuthorizer.prototype._loadFacebookScript = function() {
+FacebookAuthorizer.prototype._loadFacebookScript = function () {
     // don't tell Facebook about pages that have not launched yet
     if (!guardian.config.page.isPreview) {
         loadScript({
             id: scriptId,
-            src: scriptSrc + '&appId=' + this.appId
+            src: `${scriptSrc}&appId=${this.appId}`,
         });
     }
 };
 
-FacebookAuthorizer.prototype._handleScriptLoaded = function() {
-
+FacebookAuthorizer.prototype._handleScriptLoaded = function () {
     if (!FB) {
         return;
     }
@@ -121,35 +120,35 @@ FacebookAuthorizer.prototype._handleScriptLoaded = function() {
         appId: this.appId,
         status: true, // check login status
         cookie: true, // enable cookies to allow the server to access the session
-        xfbml: true // parse XFBML
+        xfbml: true, // parse XFBML
     });
 
     this.onFBScriptLoaded.resolve(FB);
-
 };
 
 function RepeatablePromise() {
     this.callbacks = [];
 }
 
-RepeatablePromise.prototype.resolve = function() {
+RepeatablePromise.prototype.resolve = function () {
     this.args = Array.prototype.slice.apply(arguments);
-    var i, numCallbacks = this.callbacks.length;
+    let i,
+        numCallbacks = this.callbacks.length;
     for (i = 0; i < numCallbacks; i++) {
         this.callbacks[i].apply(null, this.args);
     }
     this.callbacks = [];
 };
 
-RepeatablePromise.prototype.then = function(fn) {
+RepeatablePromise.prototype.then = function (fn) {
     if (this.args !== undefined) {
-        fn.apply(null, this.args);
+        fn(...this.args);
     } else {
         this.callbacks.push(fn);
     }
 };
 
-RepeatablePromise.prototype.reset = function() {
+RepeatablePromise.prototype.reset = function () {
     this.args = undefined;
 };
 

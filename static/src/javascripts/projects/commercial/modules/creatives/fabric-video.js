@@ -6,16 +6,19 @@ import detect from 'common/utils/detect';
 import template from 'common/utils/template';
 import addTrackingPixel from 'commercial/modules/creatives/add-tracking-pixel';
 import fabricVideoStr from 'text!commercial/views/creatives/fabric-video.html';
-var fabricVideoTpl;
+let fabricVideoTpl;
 
 export default FabricVideo;
 
 function FabricVideo(adSlot, params) {
-    var isUpdating = false;
-    var isSmallScreen = detect.isBreakpoint({
-        max: 'phablet'
+    let isUpdating = false;
+    const isSmallScreen = detect.isBreakpoint({
+        max: 'phablet',
     });
-    var hasVideo, video, layer2, inView;
+    let hasVideo,
+        video,
+        layer2,
+        inView;
 
     adSlot = adSlot instanceof HTMLElement ? adSlot : adSlot[0];
     fabricVideoTpl || (fabricVideoTpl = template(fabricVideoStr));
@@ -23,38 +26,38 @@ function FabricVideo(adSlot, params) {
     hasVideo = !(detect.isIOS() || detect.isAndroid() || isSmallScreen);
 
     if (isSmallScreen) {
-        params.posterMobile = '<div class="creative__poster" style="background-image:url(' + params.Videobackupimage + ')"></div>';
+        params.posterMobile = `<div class="creative__poster" style="background-image:url(${params.Videobackupimage})"></div>`;
     } else {
         if (hasVideo) {
-            params.video = '<video muted class="creative__video creative__video--' + params.Videoalignment + '"><source src="' + params.VideoURL + '" type="video/mp4"></video>';
+            params.video = `<video muted class="creative__video creative__video--${params.Videoalignment}"><source src="${params.VideoURL}" type="video/mp4"></video>`;
         }
 
-        params.posterTablet = '<div class="creative__poster" style="background-image:url(' + params.BackgroundImagemobile + ')"></div>';
+        params.posterTablet = `<div class="creative__poster" style="background-image:url(${params.BackgroundImagemobile})"></div>`;
     }
 
     return Object.freeze({
-        create: create
+        create,
     });
 
     function create() {
-        return fastdom.write(function() {
+        return fastdom.write(() => {
             if (params.Trackingpixel) {
                 addTrackingPixel(bonzo(adSlot), params.Trackingpixel + params.cacheBuster);
             }
             adSlot.insertAdjacentHTML('beforeend', fabricVideoTpl({
-                data: params
+                data: params,
             }));
             adSlot.classList.add('ad-slot--fabric');
             if (adSlot.parentNode.classList.contains('top-banner-ad-container')) {
                 adSlot.parentNode.classList.add('top-banner-ad-container--fabric');
             }
-        }).then(function() {
+        }).then(() => {
             layer2 = qwery('.creative__layer2', adSlot);
 
             addEventListener(window, 'scroll', onScroll, {
-                passive: true
+                passive: true,
             });
-            addEventListener(adSlot, 'animationend', function() {
+            addEventListener(adSlot, 'animationend', () => {
                 window.removeEventListener('scroll', onScroll);
             });
 
@@ -75,8 +78,8 @@ function FabricVideo(adSlot, params) {
     }
 
     function onScroll() {
-        var viewportHeight = detect.getViewport().height;
-        var rect = adSlot.getBoundingClientRect();
+        const viewportHeight = detect.getViewport().height;
+        const rect = adSlot.getBoundingClientRect();
         inView = rect.top >= 0 && rect.bottom < viewportHeight;
         if (!isUpdating) {
             isUpdating = true;
@@ -109,15 +112,14 @@ function FabricVideo(adSlot, params) {
     }
 
     function playAnimation() {
-        layer2.forEach(function(l) {
+        layer2.forEach((l) => {
             l.classList.add('is-animating');
         });
     }
 
     function pauseAnimation() {
-        layer2.forEach(function(l) {
+        layer2.forEach((l) => {
             l.classList.remove('is-animating');
         });
     }
-
 }

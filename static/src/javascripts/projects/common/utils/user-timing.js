@@ -1,11 +1,10 @@
-var perf = window.performance || window.msPerformance || window.webkitPerformance || window.mozPerformance;
-var timings = {};
+const perf = window.performance || window.msPerformance || window.webkitPerformance || window.mozPerformance;
+const timings = {};
 
 // use this time as the start time to resolve Date().getTime() from absolute times to relative times.
-var startDate = new Date().getTime();
+const startDate = new Date().getTime();
 
 function mark(label) {
-
     if (perf && 'mark' in perf) {
         perf.mark(label);
     } else {
@@ -16,7 +15,7 @@ function mark(label) {
 // Returns the ms time when the mark was made.
 function getTiming(label) {
     if (perf) {
-        var performanceMark = perf.getEntriesByName(label, 'mark')[0];
+        const performanceMark = perf.getEntriesByName(label, 'mark')[0];
         if (performanceMark && 'startTime' in performanceMark) {
             return performanceMark.startTime;
         }
@@ -35,7 +34,7 @@ function getCurrentTime() {
 }
 
 export default {
-    mark: mark,
-    getTiming: getTiming,
-    getCurrentTime: getCurrentTime
+    mark,
+    getTiming,
+    getCurrentTime,
 };

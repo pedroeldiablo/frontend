@@ -4,37 +4,34 @@ import ReportItem from 'admin/modules/abtests/abtest-report-item';
 import Audience from 'admin/modules/abtests/audience';
 
 function renderTests(tests, active, elem) {
-    var items = tests.map(function(test) {
-        return new ReportItem({
-            test: test,
-            active: active
-        });
-    });
-    items.forEach(function(i) {
+    const items = tests.map(test => new ReportItem({
+        test,
+        active,
+    }));
+    items.forEach((i) => {
         i.render(elem);
     });
     return items;
 }
 
 function initialise() {
-
     renderTests(abTests.getActiveTests(), true, document.querySelector('.abtests-report__data'));
-    var expiredTestItems = renderTests(abTests.getExpiredTests(), false, document.querySelector('.abtests-expired'));
+    const expiredTestItems = renderTests(abTests.getExpiredTests(), false, document.querySelector('.abtests-expired'));
 
     // Display audience breakdown.
-    var audience = new Audience({
-        tests: abTests.getActiveTests()
+    const audience = new Audience({
+        tests: abTests.getActiveTests(),
     });
     audience.render(document.querySelector('.abtests-audience'));
 
-    var expired = document.querySelector('.abtests-expired');
+    const expired = document.querySelector('.abtests-expired');
 
-    document.querySelectory('.abtests-expired-title a').addEventListener('click', function(e) {
+    document.querySelectory('.abtests-expired-title a').addEventListener('click', (e) => {
         e.preventDefault();
         if (e.target.textContent === 'show') {
             e.target.textContent = 'hide';
             expired.style.display = 'block';
-            expiredTestItems.forEach(function(t) {
+            expiredTestItems.forEach((t) => {
                 t.renderChart();
             });
         } else {
@@ -44,11 +41,11 @@ function initialise() {
     });
 
     // timeout on this to allow google charts to render before hiding the container
-    setTimeout(function() {
+    setTimeout(() => {
         expired.style.display = 'none';
     }, 0);
 }
 
 export default {
-    init: initialise
+    init: initialise,
 };

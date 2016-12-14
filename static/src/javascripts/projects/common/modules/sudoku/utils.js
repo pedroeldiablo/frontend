@@ -7,11 +7,11 @@ function position(a) {
 }
 
 function highlights(focusX, focusY) {
-    var focusSquareX = Math.floor(focusX / 3),
+    let focusSquareX = Math.floor(focusX / 3),
         focusSquareY = Math.floor(focusY / 3);
 
-    return function(x, y) {
-        var squareX = Math.floor(x / 3),
+    return function (x, y) {
+        let squareX = Math.floor(x / 3),
             squareY = Math.floor(y / 3);
 
         return x === focusX ||
@@ -31,7 +31,7 @@ function numberFromKeyCode(keyCode) {
 }
 
 export default {
-    position: position,
-    highlights: highlights,
-    numberFromKeyCode: numberFromKeyCode
+    position,
+    highlights,
+    numberFromKeyCode,
 };

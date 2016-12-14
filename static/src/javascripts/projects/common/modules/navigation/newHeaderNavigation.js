@@ -3,13 +3,13 @@ import fastdom from 'fastdom';
 import ophan from 'ophan/ng';
 import editionPicker from 'common/modules/navigation/edition-picker';
 import userAccount from 'common/modules/navigation/user-account';
-var html = qwery('html')[0];
-var menuItems = qwery('.js-close-nav-list');
-var buttonClickHandlers = {
+const html = qwery('html')[0];
+const menuItems = qwery('.js-close-nav-list');
+const buttonClickHandlers = {
     'main-menu-toggle': veggieBurgerClickHandler,
-    'edition-picker': editionPicker
+    'edition-picker': editionPicker,
 };
-var enhanced = {};
+const enhanced = {};
 
 function weShouldEnhance(checkbox) {
     return !enhanced[checkbox.id] && checkbox && !checkbox.checked;
@@ -17,21 +17,21 @@ function weShouldEnhance(checkbox) {
 
 
 function applyEnhancementsTo(checkbox) {
-    fastdom.read(function() {
-        var button = document.createElement('button');
-        var checkboxId = checkbox.id;
-        var checkboxControls = checkbox.getAttribute('aria-controls');
-        var checkboxClasses = Array.prototype.slice.call(checkbox.classList);
+    fastdom.read(() => {
+        const button = document.createElement('button');
+        const checkboxId = checkbox.id;
+        const checkboxControls = checkbox.getAttribute('aria-controls');
+        const checkboxClasses = Array.prototype.slice.call(checkbox.classList);
 
-        checkboxClasses.forEach(function(c) {
+        checkboxClasses.forEach((c) => {
             button.classList.add(c);
         });
         button.setAttribute('id', checkboxId);
         button.setAttribute('aria-controls', checkboxControls);
         button.setAttribute('aria-expanded', 'false');
 
-        fastdom.write(function() {
-            var eventHandler = buttonClickHandlers[button.id];
+        fastdom.write(() => {
+            const eventHandler = buttonClickHandlers[button.id];
 
             checkbox.parentNode.replaceChild(button, checkbox);
             if (eventHandler) {
@@ -43,7 +43,7 @@ function applyEnhancementsTo(checkbox) {
 }
 
 function closeAllOtherPrimaryLists(targetItem) {
-    menuItems.forEach(function(item) {
+    menuItems.forEach((item) => {
         if (item !== targetItem) {
             item.removeAttribute('open');
         }
@@ -51,18 +51,18 @@ function closeAllOtherPrimaryLists(targetItem) {
 }
 
 function removeOrderingFromLists() {
-    var mainListItems = qwery('.js-navigation-item');
+    const mainListItems = qwery('.js-navigation-item');
 
-    mainListItems.forEach(function(item) {
+    mainListItems.forEach((item) => {
         item.style.order = '';
     });
 }
 
 function enhanceCheckboxesToButtons() {
-    var checkboxIds = ['main-menu-toggle', 'edition-picker'];
+    const checkboxIds = ['main-menu-toggle', 'edition-picker'];
 
-    checkboxIds.forEach(function(checkboxId) {
-        var checkbox = document.getElementById(checkboxId);
+    checkboxIds.forEach((checkboxId) => {
+        const checkbox = document.getElementById(checkboxId);
 
         if (!checkbox) {
             return;
@@ -79,7 +79,7 @@ function enhanceCheckboxesToButtons() {
                 // i.e. standard JS had not been loaded when menu was first opened
                 ophan.record({
                     component: 'main-navigation',
-                    value: 'is fully expanded'
+                    value: 'is fully expanded',
                 });
             }
         }
@@ -87,9 +87,9 @@ function enhanceCheckboxesToButtons() {
 }
 
 function veggieBurgerClickHandler(event) {
-    var button = event.target;
-    var mainMenu = document.getElementById('main-menu');
-    var veggieBurgerLink = qwery('.js-change-link')[0];
+    const button = event.target;
+    const mainMenu = document.getElementById('main-menu');
+    const veggieBurgerLink = qwery('.js-change-link')[0];
 
     function menuIsOpen() {
         return button.getAttribute('aria-expanded') === 'true';
@@ -99,7 +99,7 @@ function veggieBurgerClickHandler(event) {
         return;
     }
     if (menuIsOpen()) {
-        fastdom.write(function() {
+        fastdom.write(() => {
             button.setAttribute('aria-expanded', 'false');
             mainMenu.setAttribute('aria-hidden', 'true');
             veggieBurgerLink.classList.remove('new-header__nav__menu-button--open');
@@ -110,8 +110,8 @@ function veggieBurgerClickHandler(event) {
             html.classList.remove('nav-is-open');
         });
     } else {
-        fastdom.write(function() {
-            var firstButton = qwery('.js-navigation-button')[0];
+        fastdom.write(() => {
+            const firstButton = qwery('.js-navigation-button')[0];
 
             button.setAttribute('aria-expanded', 'true');
             mainMenu.setAttribute('aria-hidden', 'false');
@@ -130,7 +130,7 @@ function veggieBurgerClickHandler(event) {
 }
 
 function bindMenuItemClickEvents() {
-    menuItems.forEach(function(item) {
+    menuItems.forEach((item) => {
         item.addEventListener('click', closeAllOtherPrimaryLists.bind(null, item));
     });
 }

@@ -14,32 +14,32 @@ import debounce from 'lodash/functions/debounce';
  * eVar67: User ID of person being acted upon
  * eVar68: Only for event51. comment || response
  */
-var track = {};
+const track = {};
 track.seen = false;
 
-var ga = window.ga;
-var gaTracker = config.googleAnalytics.trackers.editorial;
+const ga = window.ga;
+const gaTracker = config.googleAnalytics.trackers.editorial;
 
 function sendToGA(label, customDimensions) {
-    var fieldsObject = assign({
-        nonInteraction: true // to avoid affecting bounce rate
+    const fieldsObject = assign({
+        nonInteraction: true, // to avoid affecting bounce rate
     }, (customDimensions || {}));
-    ga(gaTracker + '.send', 'event', 'element view', 'onpage item', label, fieldsObject);
+    ga(`${gaTracker}.send`, 'event', 'element view', 'onpage item', label, fieldsObject);
 }
 
-track.jumpedToComments = function() {
+track.jumpedToComments = function () {
     if (!track.seen) {
         track.seen = true;
     }
 };
 
-track.commentPermalink = function() {
+track.commentPermalink = function () {
     if (!track.seen) {
         track.seen = true;
     }
 };
 
-track.scrolledToComments = function() {
+track.scrolledToComments = function () {
     if (!track.seen) {
         sendToGA('scroll to comments');
         track.seen = true;
@@ -47,9 +47,9 @@ track.scrolledToComments = function() {
 };
 
 // Convenience functions
-track.areCommentsSeen = function() {
-    var timer,
-        scroll = function() {
+track.areCommentsSeen = function () {
+    let timer,
+        scroll = function () {
             if (!track.seen && !timer && track.areCommentsVisible()) {
                 track.scrolledToComments();
                 mediator.off('window:throttledScroll', debounce(scroll, 200));
@@ -61,8 +61,8 @@ track.areCommentsSeen = function() {
     }
 };
 
-track.areCommentsVisible = function() {
-    var comments = $('#comments').offset(),
+track.areCommentsVisible = function () {
+    let comments = $('#comments').offset(),
         scrollTop = window.pageYOffset,
         viewport = bonzo.viewport().height;
 
@@ -75,11 +75,11 @@ track.areCommentsVisible = function() {
 };
 
 export default {
-    init: function() {
+    init() {
         mediator.on('discussion:seen:comment-permalink', track.commentPermalink.bind(track));
         mediator.on('discussion:seen:comments-anchor', track.jumpedToComments.bind(track));
         mediator.on('discussion:seen:comments-scrolled-to', track.scrolledToComments.bind(track));
 
         track.areCommentsSeen();
-    }
+    },
 }; // define
