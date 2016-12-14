@@ -6,6 +6,7 @@ module.exports = {
         'import/no-unresolved': 'off',
         'import/extensions': 'off',
         'import/no-webpack-loader-syntax': 'off', // used for require plugins still
+        'global-require': 'off',
 
         // these are bad habits in react that we're already abusing.
         // if we go more [p]react we should look at them,

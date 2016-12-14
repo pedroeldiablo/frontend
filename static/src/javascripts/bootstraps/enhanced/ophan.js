@@ -1,1 +1,1 @@
-require(['ophan/ng'], () => {});
+import 'ophan/ng';
