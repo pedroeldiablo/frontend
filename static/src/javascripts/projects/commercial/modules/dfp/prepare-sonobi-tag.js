@@ -16,7 +16,7 @@ function catchPolyfillErrors() {
     }
 
     const nativeGetOwnPropertyNames = Object.getOwnPropertyNames;
-    Object.getOwnPropertyNames = function (obj) {
+    Object.getOwnPropertyNames = (obj) => {
         try {
             return nativeGetOwnPropertyNames(obj);
         } catch (e) {

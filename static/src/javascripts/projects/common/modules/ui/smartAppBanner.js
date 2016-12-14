@@ -8,6 +8,7 @@ import loadCssPromise from 'common/utils/load-css-promise';
 import userPrefs from 'common/modules/user-prefs';
 import Message from 'common/modules/ui/message';
 import config from 'common/utils/config';
+
 /**
  * Rules:
  *
@@ -15,27 +16,31 @@ import config from 'common/utils/config';
  * Less than 4 impressions
  * Persist close state
  */
-let COOKIE_IMPRESSION_KEY = 'GU_SMARTAPPBANNER',
-    DATA = {
-        IOS: {
-            LOGO: 'https://assets.guim.co.uk/images/apps/ios-logo.png',
-            SCREENSHOTS: 'https://assets.guim.co.uk/images/apps/ios-screenshots.jpg',
-            LINK: 'https://app.adjust.com/w97upi?deep_link=gnmguardian://root?contenttype=front&source=adjust',
-            STORE: 'on the App Store',
-        },
-        ANDROID: {
-            LOGO: 'https://assets.guim.co.uk/images/apps/android-logo-2x.png',
-            SCREENSHOTS: 'https://assets.guim.co.uk/images/apps/ios-screenshots.jpg',
-            LINK: 'https://app.adjust.com/642i3r?deep_link=x-gu://www.theguardian.com/?source=adjust',
-            STORE: 'in Google Play',
-        },
+let COOKIE_IMPRESSION_KEY = 'GU_SMARTAPPBANNER';
+
+let DATA = {
+    IOS: {
+        LOGO: 'https://assets.guim.co.uk/images/apps/ios-logo.png',
+        SCREENSHOTS: 'https://assets.guim.co.uk/images/apps/ios-screenshots.jpg',
+        LINK: 'https://app.adjust.com/w97upi?deep_link=gnmguardian://root?contenttype=front&source=adjust',
+        STORE: 'on the App Store',
     },
-    cookieVal = cookies.get(COOKIE_IMPRESSION_KEY),
-    impressions = cookieVal && !isNaN(cookieVal) ? parseInt(cookieVal, 10) : 0,
-    tmp = '<img src="<%=LOGO%>" class="app__logo" alt="Guardian App logo" /><div class="app__cta"><h4 class="app__heading">The Guardian app</h4>' +
-    '<p class="app__copy">Instant alerts. Offline reading.<br/>Tailored to you.</p>' +
-    '<p class="app__copy"><strong>FREE</strong> – <%=STORE%></p></div><a href="<%=LINK%>" class="app__link">View</a>',
-    tablet = '<img src="<%=SCREENSHOTS%>" class="app__screenshots" alt="screenshots" />';
+    ANDROID: {
+        LOGO: 'https://assets.guim.co.uk/images/apps/android-logo-2x.png',
+        SCREENSHOTS: 'https://assets.guim.co.uk/images/apps/ios-screenshots.jpg',
+        LINK: 'https://app.adjust.com/642i3r?deep_link=x-gu://www.theguardian.com/?source=adjust',
+        STORE: 'in Google Play',
+    },
+};
+
+let cookieVal = cookies.get(COOKIE_IMPRESSION_KEY);
+let impressions = cookieVal && !isNaN(cookieVal) ? parseInt(cookieVal, 10) : 0;
+
+let tmp = '<img src="<%=LOGO%>" class="app__logo" alt="Guardian App logo" /><div class="app__cta"><h4 class="app__heading">The Guardian app</h4>' +
+'<p class="app__copy">Instant alerts. Offline reading.<br/>Tailored to you.</p>' +
+'<p class="app__copy"><strong>FREE</strong> – <%=STORE%></p></div><a href="<%=LINK%>" class="app__link">View</a>';
+
+let tablet = '<img src="<%=SCREENSHOTS%>" class="app__screenshots" alt="screenshots" />';
 
 function isDevice() {
     return ((detect.isIOS() || detect.isAndroid()) && !detect.isFireFoxOSApp());
@@ -51,9 +56,9 @@ function canUseSmartBanner() {
 
 function showMessage() {
     loadCssPromise.then(() => {
-        let platform = (detect.isIOS()) ? 'ios' : 'android',
-            msg = new Message(platform),
-            fullTemplate = tmp + (detect.getBreakpoint() === 'mobile' ? '' : tablet);
+        let platform = (detect.isIOS()) ? 'ios' : 'android';
+        let msg = new Message(platform);
+        let fullTemplate = tmp + (detect.getBreakpoint() === 'mobile' ? '' : tablet);
 
         msg.show(template(fullTemplate, DATA[platform.toUpperCase()]));
 

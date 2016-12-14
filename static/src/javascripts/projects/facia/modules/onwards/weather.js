@@ -25,9 +25,9 @@ import userPrefs from 'common/modules/user-prefs';
 import SearchTool from 'facia/modules/onwards/search-tool';
 import contains from 'lodash/collections/contains';
 
-let $holder = null,
-    searchTool = null,
-    prefName = 'weather-location';
+let $holder = null;
+let searchTool = null;
+let prefName = 'weather-location';
 
 export default {
     init() {
@@ -176,8 +176,8 @@ export default {
     },
 
     renderForecast(forecastData) {
-        let $forecastHolder = $('.js-weather-forecast'),
-            tmpl = forecastData.html;
+        let $forecastHolder = $('.js-weather-forecast');
+        let tmpl = forecastData.html;
 
         $forecastHolder.empty().html(tmpl);
     },

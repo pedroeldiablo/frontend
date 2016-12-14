@@ -8,9 +8,9 @@ import range from 'lodash/arrays/range';
 import map from 'lodash/collections/map';
 export default function () {
     $('.js-sudoku').each((element) => {
-        let $element = bonzo(element),
-            sudokuData,
-            cells;
+        let $element = bonzo(element);
+        let sudokuData;
+        let cells;
 
         if ($element.attr('data-sudoku-data')) {
             sudokuData = JSON.parse($element.attr('data-sudoku-data'));

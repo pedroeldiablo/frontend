@@ -27,15 +27,13 @@ export default function () {
     this.audienceCriteria = 'All';
     this.dataLinkNames = '';
     this.idealOutcome = 'We are able to determine which Epic variant to use in the US end of year campaign';
-    this.canRun = function () {
+    this.canRun = () => {
         const userHasNeverContributed = !cookies.get('gu.contributions.contrib-timestamp');
         const worksWellWithPageTemplate = (config.page.contentType === 'Article') && !config.page.isMinuteArticle; // may render badly on other types
         return userHasNeverContributed && commercialFeatures.canReasonablyAskForMoney && worksWellWithPageTemplate;
     };
 
-    const makeEvent = (function (name) {
-        return `${this.id}:${name}`;
-    }).bind(this);
+    const makeEvent = name => `${this.id}:${name}`;
 
     function makeUrl(urlPrefix, intcmp) {
         return `${urlPrefix}INTCMP=${intcmp}`;
@@ -75,7 +73,7 @@ export default function () {
 
     };
 
-    const componentWriter = function (component) {
+    const componentWriter = component => {
         ajax({
             url: 'https://api.nextgen.guardianapps.co.uk/geolocation',
             method: 'GET',

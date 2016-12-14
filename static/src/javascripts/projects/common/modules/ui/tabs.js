@@ -22,12 +22,15 @@ const Tabs = function () {
     const view = {
 
         showTab(container, clickedTab, originalEvent) {
-            let classes = 'tabs__tab--selected tone-colour tone-accent-border',
-                // find the active tab in the set. returns an array of 1 item, hence [0]
-                currentTab = $('.tabs__tab--selected a', container)[0],
-                // trim the leading # and find the matching panel element
-                paneToShow = container.querySelector(`#${clickedTab.getAttribute('href').substring(1)}`),
-                paneToHide = container.querySelector(`#${currentTab.getAttribute('href').substring(1)}`);
+            let classes = 'tabs__tab--selected tone-colour tone-accent-border';
+
+            let // find the active tab in the set. returns an array of 1 item, hence [0]
+            currentTab = $('.tabs__tab--selected a', container)[0];
+
+            let // trim the leading # and find the matching panel element
+            paneToShow = container.querySelector(`#${clickedTab.getAttribute('href').substring(1)}`);
+
+            let paneToHide = container.querySelector(`#${currentTab.getAttribute('href').substring(1)}`);
 
             // show hide stuff
             bonzo(currentTab.parentNode).removeClass(classes);
@@ -42,11 +45,11 @@ const Tabs = function () {
         },
     };
 
-    this.init = function () {
+    this.init = () => {
         Array.prototype.forEach.call(document.body.querySelectorAll('.tabs'), (container) => {
-            let tabSet = $('.js-tabs', container)[0],
-                vPos = 0,
-                vScroll = 0;
+            let tabSet = $('.js-tabs', container)[0];
+            let vPos = 0;
+            let vScroll = 0;
 
             if (tabSet) {
                 if (tabSet.getAttribute('data-is-bound') === true) {

@@ -86,15 +86,13 @@ export default {
     banners,
 
     getBanners(edition) {
-        let editionFilter = function (banner) {
-                return typeof banner.editions[edition] !== 'undefined';
-            },
-            mergeVariantConfigurations = function (banner) {
-                return map(banner.variants, variant => merge({
-                    edition,
-                    template: banner.template,
-                }, banner.defaults, variant, banner.editions[edition] || {}));
-            };
+        let editionFilter = banner => typeof banner.editions[edition] !== 'undefined';
+
+        let mergeVariantConfigurations = banner => map(banner.variants, variant => merge({
+            edition,
+            template: banner.template,
+        }, banner.defaults, variant, banner.editions[edition] || {}));
+
         return map(filter(this.banners, editionFilter), mergeVariantConfigurations);
     },
 };

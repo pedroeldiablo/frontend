@@ -15,20 +15,21 @@ import once from 'lodash/functions/once';
 import find from 'lodash/collections/find';
 import debounce from 'lodash/functions/debounce';
 import Promise from 'Promise';
-let clientProcessedTypes = ['document', 'fragment', 'json.html'],
-    snapIframes = [],
-    bindIframeMsgReceiverOnce = once(() => {
-        bean.on(window, 'message', (event) => {
-            let iframe = find(snapIframes, iframe => iframe.contentWindow === event.source),
-                message;
-            if (iframe) {
-                message = JSON.parse(event.data);
-                if (message.type === 'set-height') {
-                    bonzo(iframe).parent().css('height', message.value);
-                }
+let clientProcessedTypes = ['document', 'fragment', 'json.html'];
+let snapIframes = [];
+
+let bindIframeMsgReceiverOnce = once(() => {
+    bean.on(window, 'message', (event) => {
+        let iframe = find(snapIframes, iframe => iframe.contentWindow === event.source),
+            message;
+        if (iframe) {
+            message = JSON.parse(event.data);
+            if (message.type === 'set-height') {
+                bonzo(iframe).parent().css('height', message.value);
             }
-        });
+        }
     });
+});
 
 function init() {
     // First, init any existing inlined embeds already on the page.
@@ -38,10 +39,10 @@ function init() {
     // Second, init non-inlined embeds.
     const snaps = toArray($('.js-snappable.js-snap'))
         .filter((el) => {
-            let isInlinedSnap = $(el).hasClass('facia-snap-embed'),
-                snapType = el.getAttribute('data-snap-type');
-            return !isInlinedSnap && snapType && clientProcessedTypes.indexOf(snapType) > -1;
-        })
+        let isInlinedSnap = $(el).hasClass('facia-snap-embed');
+        let snapType = el.getAttribute('data-snap-type');
+        return !isInlinedSnap && snapType && clientProcessedTypes.indexOf(snapType) > -1;
+    })
         .filter(el => el.getAttribute('data-snap-uri'));
 
     snaps.forEach(initStandardSnap);
@@ -55,10 +56,10 @@ function addCss(el, isResize) {
 }
 
 function setSnapPoint(el, isResize) {
-    let width,
-        breakpoints,
-        $el = bonzo(el),
-        prefix = 'facia-snap-point--';
+    let width;
+    let breakpoints;
+    let $el = bonzo(el);
+    let prefix = 'facia-snap-point--';
 
     breakpoints = [{
         width: 0,
@@ -98,14 +99,16 @@ function setSnapPoint(el, isResize) {
 }
 
 function injectIframe(el) {
-    let spec = bonzo(el).offset(),
-        minIframeHeight = Math.ceil((spec.width || 0) / 2),
-        maxIframeHeight = 400,
-        src = el.getAttribute('data-snap-uri'),
-        height = Math.min(Math.max(spec.height || 0, minIframeHeight), maxIframeHeight),
-        containerEl = bonzo.create(`<div style="width: 100%; height: ${height}px; ` +
-            'overflow: hidden; -webkit-overflow-scrolling:touch"></div>')[0],
-        iframe = bonzo.create(`<iframe src="${src}" style="width: 100%; height: 100%; border: none;"></iframe>`)[0];
+    let spec = bonzo(el).offset();
+    let minIframeHeight = Math.ceil((spec.width || 0) / 2);
+    let maxIframeHeight = 400;
+    let src = el.getAttribute('data-snap-uri');
+    let height = Math.min(Math.max(spec.height || 0, minIframeHeight), maxIframeHeight);
+
+    let containerEl = bonzo.create(`<div style="width: 100%; height: ${height}px; ` +
+        'overflow: hidden; -webkit-overflow-scrolling:touch"></div>')[0];
+
+    let iframe = bonzo.create(`<iframe src="${src}" style="width: 100%; height: 100%; border: none;"></iframe>`)[0];
 
     bonzo(containerEl).append(iframe);
     snapIframes.push(iframe);

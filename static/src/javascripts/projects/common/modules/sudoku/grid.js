@@ -26,9 +26,9 @@ export default React.createClass({
     },
 
     onKeyDown(event) {
-        let x,
-            y,
-            n;
+        let x;
+        let y;
+        let n;
 
         if (this.state.focus) {
             x = this.state.focus.x;
@@ -116,10 +116,10 @@ export default React.createClass({
     },
 
     updateCellStatesAndRender() {
-        let focus = this.state.focus,
-            isHighlighted = focus ? utils.highlights(focus.x, focus.y) : constant(false),
-            focussedCell = this.getFocussedCell(),
-            valueInFocus = focussedCell ? focussedCell.value : null;
+        let focus = this.state.focus;
+        let isHighlighted = focus ? utils.highlights(focus.x, focus.y) : constant(false);
+        let focussedCell = this.getFocussedCell();
+        let valueInFocus = focussedCell ? focussedCell.value : null;
 
         this.mapCells(cell => assign({}, cell, {
             isHighlighted: isHighlighted(cell.x, cell.y),
@@ -132,10 +132,10 @@ export default React.createClass({
     },
 
     highlightErrors() {
-        let self = this,
-            rows,
-            columns,
-            squares;
+        let self = this;
+        let rows;
+        let columns;
+        let squares;
 
         this.mapCells(cell => assign({}, cell, {
             isError: false,
@@ -183,16 +183,18 @@ export default React.createClass({
     },
 
     render() {
-        let self = this,
-            cells = map(this.state.cells, (cell) => {
-                const data = assign({}, cell, {
-                    key: `${cell.x}_${cell.y}`,
-                    onClick: self.focusCell,
-                });
+        let self = this;
 
-                return Cell(data);
-            }),
-            gridSize = utils.position(9);
+        let cells = map(this.state.cells, (cell) => {
+            const data = assign({}, cell, {
+                key: `${cell.x}_${cell.y}`,
+                onClick: self.focusCell,
+            });
+
+            return Cell(data);
+        });
+
+        let gridSize = utils.position(9);
 
         return React.DOM.svg({
             width: gridSize,

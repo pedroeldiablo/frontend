@@ -36,7 +36,7 @@ AudienceItem.prototype.prerender = function () {
     bonzo(this.getElem('caption-range')).append(`${audienceOffset}% to ${audienceEnd}%`);
 };
 
-AudienceItem.prototype.ready = function () {
+AudienceItem.prototype.ready = () => {
 
 };
 

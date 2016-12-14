@@ -27,45 +27,51 @@ function translate(v) {
  * @param {Object.<string, *>} o the options
  * @return {Bonzo} SVG Element
  */
-const Doughnut = function (data, o) {
+const Doughnut = (data, o) => {
     o = assign({
         percentCutout: 35,
         unit: '',
         showValues: false,
     }, o || {});
 
-    let w = o.width,
-        h = o.height || w,
-        radius = Math.min(h / 2, w / 2),
-        cutoutRadius = radius * (o.percentCutout / 100),
-        totalValue = data.reduce((a, b) => ({
-            value: a.value + b.value,
-        })).value,
-        halfPI = Math.PI / 2,
-        doublePI = Math.PI * 2,
-        c = [w / 2, h / 2],
-        center = {
-            x: w / 2,
-            y: h / 2,
-        },
-        $svg = $.create('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart chart--doughnut"></svg>')
-        .attr({
-            width: w,
-            height: h,
-            viewbox: `0 0 ${[w, h].join(' ')}`,
-        }),
-        // Segments
-        segmentAngle,
-        endRadius,
-        arc,
-        outer,
-        inner,
-        r,
-        a,
-        d,
-        $g,
-        $t,
-        startRadius = -halfPI;
+    let w = o.width;
+    let h = o.height || w;
+    let radius = Math.min(h / 2, w / 2);
+    let cutoutRadius = radius * (o.percentCutout / 100);
+
+    let totalValue = data.reduce((a, b) => ({
+        value: a.value + b.value,
+    })).value;
+
+    let halfPI = Math.PI / 2;
+    let doublePI = Math.PI * 2;
+    let c = [w / 2, h / 2];
+
+    let center = {
+        x: w / 2,
+        y: h / 2,
+    };
+
+    let $svg = $.create('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="chart chart--doughnut"></svg>')
+    .attr({
+        width: w,
+        height: h,
+        viewbox: `0 0 ${[w, h].join(' ')}`,
+    });
+
+    let // Segments
+    segmentAngle;
+
+    let endRadius;
+    let arc;
+    let outer;
+    let inner;
+    let r;
+    let a;
+    let d;
+    let $g;
+    let $t;
+    let startRadius = -halfPI;
 
     data.forEach((datum) => {
         segmentAngle = (datum.value / totalValue * doublePI);

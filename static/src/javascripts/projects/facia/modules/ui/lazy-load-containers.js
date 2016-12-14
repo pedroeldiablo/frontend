@@ -7,28 +7,29 @@ import throttle from 'lodash/functions/throttle';
 const distanceBeforeLoad = detect.getViewport().height;
 
 export default function () {
-    let $frontBottom = bonzo(qwery('.js-front-bottom')),
-        containers = qwery('.js-container--lazy-load'),
-        lazyLoad = throttle(() => {
-            if (containers.length === 0) {
-                mediator.off('window:throttledScroll', lazyLoad);
-            } else {
-                fastdom.read(() => {
-                    let scrollTop = window.pageYOffset,
-                        scrollBottom = scrollTop + bonzo.viewport().height,
-                        bottomOffset = $frontBottom.offset().top,
-                        $container;
+    let $frontBottom = bonzo(qwery('.js-front-bottom'));
+    let containers = qwery('.js-container--lazy-load');
 
-                    if (scrollBottom > bottomOffset - distanceBeforeLoad) {
-                        $container = bonzo(containers.shift());
+    let lazyLoad = throttle(() => {
+        if (containers.length === 0) {
+            mediator.off('window:throttledScroll', lazyLoad);
+        } else {
+            fastdom.read(() => {
+                let scrollTop = window.pageYOffset,
+                    scrollBottom = scrollTop + bonzo.viewport().height,
+                    bottomOffset = $frontBottom.offset().top,
+                    $container;
 
-                        fastdom.write(() => {
-                            $container.removeClass('fc-container--lazy-load');
-                        });
-                    }
-                });
-            }
-        }, 500);
+                if (scrollBottom > bottomOffset - distanceBeforeLoad) {
+                    $container = bonzo(containers.shift());
+
+                    fastdom.write(() => {
+                        $container.removeClass('fc-container--lazy-load');
+                    });
+                }
+            });
+        }
+    }, 500);
 
     mediator.on('window:throttledScroll', lazyLoad);
     lazyLoad();

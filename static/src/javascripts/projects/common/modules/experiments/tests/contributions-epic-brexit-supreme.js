@@ -27,7 +27,7 @@ export default function () {
     this.audienceCriteria = 'All';
     this.dataLinkNames = '';
     this.idealOutcome = 'We receive contributions and membership sign-ups';
-    this.canRun = function () {
+    this.canRun = () => {
         const includedKeywordIds = ['politics/eu-referendum'];
 
         const includedSeriesIds = [];
@@ -36,7 +36,7 @@ export default function () {
 
         const excludedSeriesIds = ['theobserver/series/the-observer-at-225'];
 
-        const tagsMatch = function () {
+        const tagsMatch = () => {
             const pageKeywords = config.page.keywordIds;
             if (typeof (pageKeywords) !== 'undefined') {
                 const keywordList = pageKeywords.split(',');
@@ -57,9 +57,7 @@ export default function () {
     const membershipUrlPrefix = 'gdnwb_copts_mem_epic_brexit_supreme';
 
 
-    const makeUrl = function (urlPrefix, intcmp) {
-        return `${urlPrefix}INTCMP=${intcmp}`;
-    };
+    const makeUrl = (urlPrefix, intcmp) => `${urlPrefix}INTCMP=${intcmp}`;
 
     const membershipUrl = 'https://membership.theguardian.com/supporter?';
     const contributeUrl = 'https://contribute.theguardian.com/?';
@@ -84,7 +82,7 @@ export default function () {
 
     };
 
-    const componentWriter = function (component) {
+    const componentWriter = component => {
         fastdom.write(() => {
             const submetaElement = $('.submeta');
             if (submetaElement.length > 0) {
@@ -94,7 +92,7 @@ export default function () {
         });
     };
 
-    const completer = function (complete) {
+    const completer = complete => {
         mediator.on('contributions-embed:view', complete);
     };
 

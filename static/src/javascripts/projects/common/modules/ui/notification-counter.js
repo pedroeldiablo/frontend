@@ -22,7 +22,7 @@ NotificationCounter.prototype.setCount = function (count) {
     }
 };
 
-NotificationCounter.prototype.restorePageTitle = function () {
+NotificationCounter.prototype.restorePageTitle = () => {
     document.title = originalPageTitle;
 };
 

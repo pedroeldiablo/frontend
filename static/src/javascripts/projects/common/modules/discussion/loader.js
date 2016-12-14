@@ -23,7 +23,7 @@ import Id from 'common/modules/identity/api';
 import userPrefs from 'common/modules/user-prefs';
 import isNumber from 'lodash/objects/isNumber';
 
-const Loader = function () {
+const Loader = () => {
     register.begin('discussion');
 };
 Component.define(Loader);
@@ -56,8 +56,8 @@ Loader.prototype.initTopComments = function () {
 };
 
 Loader.prototype.initMainComments = function () {
-    let self = this,
-        commentId = this.getCommentIdFromHash();
+    let self = this;
+    let commentId = this.getCommentIdFromHash();
 
     const order = userPrefs.get('discussion.order') || (this.getDiscussionClosed() ? 'oldest' : 'newest');
     const threading = userPrefs.get('discussion.threading') || 'collapsed';
@@ -85,9 +85,9 @@ Loader.prototype.initMainComments = function () {
 
 
     this.comments.on('rendered', (paginationHtml) => {
-        let newPagination = bonzo.create(paginationHtml),
-            toolbarEl = qwery('.js-discussion-toolbar', this.elem)[0],
-            container = $('.js-discussion-pagination', toolbarEl).empty();
+        let newPagination = bonzo.create(paginationHtml);
+        let toolbarEl = qwery('.js-discussion-toolbar', this.elem)[0];
+        let container = $('.js-discussion-pagination', toolbarEl).empty();
 
         // When the pagesize is 'All', do not show any pagination.
         if (!this.comments.isAllPageSizeActive()) {
@@ -103,8 +103,8 @@ Loader.prototype.initMainComments = function () {
         if (this.user) {
             this.comments.addUser(this.user);
 
-            let userPageSize = userPrefs.get('discussion.pagesize'),
-                pageSize = defaultPagesize;
+            let userPageSize = userPrefs.get('discussion.pagesize');
+            let pageSize = defaultPagesize;
 
             if (isNumber(userPageSize)) {
                 pageSize = userPageSize;
@@ -139,8 +139,8 @@ Loader.prototype.initMainComments = function () {
 };
 
 Loader.prototype.logError = function (commentType, error) {
-    let reportMsg = `${commentType} failed to load: `,
-        request = error.request || {};
+    let reportMsg = `${commentType} failed to load: `;
+    let request = error.request || {};
     if (error.message === 'Request is aborted: timeout') {
         reportMsg += 'XHR timeout';
     } else if (error.message) {
@@ -200,7 +200,7 @@ Loader.prototype.initToolbar = function () {
 
     if (config.page.section === 'crosswords') {
         const $timestampsLabel = $('.js-timestamps');
-        const updateLabelText = function (prefValue) {
+        const updateLabelText = prefValue => {
             $timestampsLabel.text(prefValue ? 'Relative' : 'Absolute');
         };
         updateLabelText(undefined);
@@ -304,9 +304,9 @@ Loader.prototype.renderCommentBar = function () {
     }
 };
 
-Loader.prototype.commentPosted = function () {
+Loader.prototype.commentPosted = function(...args) {
     this.removeState('truncated');
-    this.comments.addComment.apply(this.comments, arguments);
+    this.comments.addComment(...args);
 };
 
 Loader.prototype.renderCommentBox = function (elem) {
@@ -344,12 +344,12 @@ Loader.prototype.renderCommentCount = function () {
     }
 };
 
-Loader.prototype.getCommentIdFromHash = function () {
+Loader.prototype.getCommentIdFromHash = () => {
     const reg = (/#comment-(\d+)/);
     return reg.exec(window.location.hash) ? parseInt(reg.exec(window.location.hash)[1], 10) : null;
 };
 
-Loader.prototype.setCommentHash = function (id) {
+Loader.prototype.setCommentHash = id => {
     window.location.replace(`#comment-${id}`);
 };
 

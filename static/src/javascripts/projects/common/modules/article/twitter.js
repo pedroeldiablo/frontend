@@ -20,13 +20,13 @@ function enhanceTweets() {
         return;
     }
 
-    let tweetElements = qwery('blockquote.js-tweet'),
-        viewportHeight = bonzo.viewport().height,
-        scrollTop = window.pageYOffset;
+    let tweetElements = qwery('blockquote.js-tweet');
+    let viewportHeight = bonzo.viewport().height;
+    let scrollTop = window.pageYOffset;
 
     tweetElements.forEach((element) => {
-        let $el = bonzo(element),
-            elOffset = $el.offset();
+        let $el = bonzo(element);
+        let elOffset = $el.offset();
         if (((scrollTop + (viewportHeight * 2.5)) > elOffset.top) && (scrollTop < (elOffset.top + elOffset.height))) {
             fastdom.write(() => {
                 $(element).removeClass('js-tweet').addClass('twitter-tweet');
@@ -38,9 +38,9 @@ function enhanceTweets() {
 }
 
 function renderTweets() {
-    let scriptElement,
-        nativeTweetElements = qwery('blockquote.twitter-tweet'),
-        widgetScript = qwery('#twitter-widget');
+    let scriptElement;
+    let nativeTweetElements = qwery('blockquote.twitter-tweet');
+    let widgetScript = qwery('#twitter-widget');
 
     if (nativeTweetElements.length > 0) {
         if (widgetScript.length === 0) {

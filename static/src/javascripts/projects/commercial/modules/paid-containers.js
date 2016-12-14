@@ -16,7 +16,7 @@ function init() {
 }
 
 function onKeyPress(handler) {
-    return function (event) {
+    return event => {
         if (event.keyCode === 0x20 || event.keyCode === 0x0D) {
             handler(event);
         }

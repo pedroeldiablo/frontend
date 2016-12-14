@@ -75,22 +75,22 @@ function insertOnMobile(containers, getSlotName) {
 
     slots = containers
         .map((container, index) => {
-            const adName = getSlotName(index);
-            const classNames = ['container-inline', 'mobile'];
-            let slot,
-                section;
-            if (config.page.isAdvertisementFeature) {
-                classNames.push('adfeature');
-            }
+        const adName = getSlotName(index);
+        const classNames = ['container-inline', 'mobile'];
+        let slot;
+        let section;
+        if (config.page.isAdvertisementFeature) {
+            classNames.push('adfeature');
+        }
 
-            slot = createSlot(adName, classNames);
+        slot = createSlot(adName, classNames);
 
-            // Wrap each ad slot in a SECTION element
-            section = document.createElement('section');
-            section.appendChild(slot);
+        // Wrap each ad slot in a SECTION element
+        section = document.createElement('section');
+        section.appendChild(slot);
 
-            return section;
-        });
+        return section;
+    });
 
     return fastdom.write(() => {
         slots.forEach((slot, index) => {

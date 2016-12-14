@@ -1,8 +1,6 @@
 import React from 'react';
 import map from 'lodash/collections/map';
-const round = function (x) {
-    return Math.round(x * 100) / 100;
-};
+const round = x => Math.round(x * 100) / 100;
 const Ring = React.createClass({
     /**
      * Get coordinates for a letter as percentages.

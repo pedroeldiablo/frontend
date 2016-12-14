@@ -56,8 +56,8 @@ function load(target) {
     const $outbrain = $(selectors.outbrain.widget);
     const $container = $(selectors.outbrain.container, $outbrain[0]);
     const breakpoint = detect.getBreakpoint();
-    let widgetCodes,
-        widgetHtml;
+    let widgetCodes;
+    let widgetHtml;
 
     widgetCodes = getCode({
         slot,

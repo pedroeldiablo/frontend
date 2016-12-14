@@ -8,14 +8,14 @@ import trackAdRender from 'common/modules/commercial/dfp/track-ad-render';
 import messenger from 'commercial/modules/messenger';
 const topSlotId = 'dfp-ad--top-above-nav';
 let updateQueued = false;
-let win,
-    header,
-    headerHeight,
-    topSlot,
-    topSlotHeight,
-    topSlotStyles,
-    stickyBanner,
-    scrollY;
+let win;
+let header;
+let headerHeight;
+let topSlot;
+let topSlotHeight;
+let topSlotStyles;
+let stickyBanner;
+let scrollY;
 
 export default {
     init,

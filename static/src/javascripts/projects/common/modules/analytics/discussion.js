@@ -27,19 +27,19 @@ function sendToGA(label, customDimensions) {
     ga(`${gaTracker}.send`, 'event', 'element view', 'onpage item', label, fieldsObject);
 }
 
-track.jumpedToComments = function () {
+track.jumpedToComments = () => {
     if (!track.seen) {
         track.seen = true;
     }
 };
 
-track.commentPermalink = function () {
+track.commentPermalink = () => {
     if (!track.seen) {
         track.seen = true;
     }
 };
 
-track.scrolledToComments = function () {
+track.scrolledToComments = () => {
     if (!track.seen) {
         sendToGA('scroll to comments');
         track.seen = true;
@@ -47,24 +47,25 @@ track.scrolledToComments = function () {
 };
 
 // Convenience functions
-track.areCommentsSeen = function () {
-    let timer,
-        scroll = function () {
-            if (!track.seen && !timer && track.areCommentsVisible()) {
-                track.scrolledToComments();
-                mediator.off('window:throttledScroll', debounce(scroll, 200));
-            }
-        };
+track.areCommentsSeen = () => {
+    let timer;
+
+    let scroll = () => {
+        if (!track.seen && !timer && track.areCommentsVisible()) {
+            track.scrolledToComments();
+            mediator.off('window:throttledScroll', debounce(scroll, 200));
+        }
+    };
 
     if (!track.seen) {
         mediator.on('window:throttledScroll', debounce(scroll, 200));
     }
 };
 
-track.areCommentsVisible = function () {
-    let comments = $('#comments').offset(),
-        scrollTop = window.pageYOffset,
-        viewport = bonzo.viewport().height;
+track.areCommentsVisible = () => {
+    let comments = $('#comments').offset();
+    let scrollTop = window.pageYOffset;
+    let viewport = bonzo.viewport().height;
 
     if ((comments.top - ((viewport / 2)) < scrollTop) &&
         ((comments.top + comments.height) - (viewport / 3) > scrollTop)) {

@@ -3,13 +3,15 @@
  Module: storage.js
  Description: Wrapper around localStorage functionality
  */
-let w = window,
-    Storage = function (type) {
-        this.type = type;
-    },
-    isAvailable;
+let w = window;
 
-Storage.prototype.setWindow = function (window) {
+let Storage = function (type) {
+    this.type = type;
+};
+
+let isAvailable;
+
+Storage.prototype.setWindow = window => {
     w = window;
 };
 
@@ -21,8 +23,8 @@ Storage.prototype.isStorageAvailable = function (refresh) {
 };
 
 Storage.prototype.isAvailable = function (data) {
-    let testKey = 'local-storage-module-test',
-        d = data || 'test';
+    let testKey = 'local-storage-module-test';
+    let d = data || 'test';
     try {
         // to fully test, need to set item
         // http://stackoverflow.com/questions/9077101/iphone-localstorage-quota-exceeded-err-issue#answer-12976988
@@ -45,11 +47,13 @@ Storage.prototype.set = function (key, data, options) {
         if (!w[this.type]) {
             return;
         }
-        let opts = options || {},
-            value = JSON.stringify({
-                value: data,
-                expires: opts.expires,
-            });
+        let opts = options || {};
+
+        let value = JSON.stringify({
+            value: data,
+            expires: opts.expires,
+        });
+
         if (!this.isAvailable(value)) {
             return false;
         }
@@ -59,8 +63,8 @@ Storage.prototype.set = function (key, data, options) {
 
 Storage.prototype.get = function (key) {
     if (this.isStorageAvailable()) {
-        let data,
-            dataParsed;
+        let data;
+        let dataParsed;
         if (!w[this.type]) {
             return;
         }
@@ -127,8 +131,9 @@ Storage.prototype.getKey = function (i) {
 Storage.prototype.clearByPrefix = function (prefix) {
     if (this.isStorageAvailable()) {
         // Loop in reverse because storage indexes will change as you delete items.
-        let i,
-            name;
+        let i;
+
+        let name;
         for (i = this.length() - 1; i > -1; --i) {
             name = this.getKey(i);
             if (name.indexOf(prefix) === 0) {

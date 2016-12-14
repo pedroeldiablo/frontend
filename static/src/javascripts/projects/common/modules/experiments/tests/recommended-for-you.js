@@ -34,7 +34,7 @@ export default function () {
     let $opinionSection;
     let $recommendedForYouSection;
 
-    this.canRun = function () {
+    this.canRun = () => {
         $opinionSection = $('#opinion');
         return config.page.contentType === 'Network Front' && $opinionSection.length;
     };

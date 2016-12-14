@@ -2,9 +2,7 @@ import storage from 'common/utils/storage';
 import map from 'lodash/collections/map';
 const localStorage = storage.local;
 
-const localStorageKey = function (id) {
-    return `crosswords.${id}`;
-};
+const localStorageKey = id => `crosswords.${id}`;
 
 function saveGridState(id, grid) {
     /**
@@ -20,9 +18,7 @@ function saveGridState(id, grid) {
     }
 }
 
-const loadGridState = function (id) {
-    return localStorage.get(localStorageKey(id));
-};
+const loadGridState = id => localStorage.get(localStorageKey(id));
 
 export default {
     saveGridState,

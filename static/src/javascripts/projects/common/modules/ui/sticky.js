@@ -42,9 +42,9 @@ Sticky.prototype.init = function init() {
 Sticky.prototype.updatePosition = function updatePosition() {
     const parentRect = this.element.parentNode.getBoundingClientRect();
     const elementHeight = this.element.offsetHeight;
-    let css = {},
-        message,
-        stick;
+    let css = {};
+    let message;
+    let stick;
 
     // have we scrolled past the element
     if (parentRect.top < this.opts.top + paidforBandHeight) {

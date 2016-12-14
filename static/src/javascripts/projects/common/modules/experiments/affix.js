@@ -43,26 +43,22 @@ Affix.prototype.calculateContainerPositioning = function () {
     });
 };
 
-Affix.prototype.getPixels = function (top) {
-    return top !== 'auto' ? parseInt(top, 10) : 0;
-};
+Affix.prototype.getPixels = top => top !== 'auto' ? parseInt(top, 10) : 0;
 
 Affix.prototype.checkPosition = function () {
     const that = this;
-    let oldContainerStyling,
-        topStyle,
+    let oldContainerStyling;
+    let topStyle;
+    let scrollTop = this.$window.scrollTop();
+    let markerTopTop = this.$markerTop.offset().top;
+    let markerBottomTop = this.$markerBottom.offset().top;
+    let elHeight = this.$element.dim().height;
+    let topCheck = scrollTop >= markerTopTop;
+    let bottomCheck = scrollTop + elHeight < markerBottomTop;
+    let viewportCheck = elHeight < bonzo.viewport().height;
 
-        scrollTop = this.$window.scrollTop(),
-        markerTopTop = this.$markerTop.offset().top,
-        markerBottomTop = this.$markerBottom.offset().top,
-        elHeight = this.$element.dim().height,
-
-        topCheck = scrollTop >= markerTopTop,
-        bottomCheck = scrollTop + elHeight < markerBottomTop,
-        viewportCheck = elHeight < bonzo.viewport().height,
-
-        // This is true when the element is positioned below the top threshold and above the bottom threshold.
-        affix = bottomCheck && topCheck && viewportCheck;
+    let // This is true when the element is positioned below the top threshold and above the bottom threshold.
+    affix = bottomCheck && topCheck && viewportCheck;
 
     if (this.affixed !== affix) {
         this.affixed = affix;

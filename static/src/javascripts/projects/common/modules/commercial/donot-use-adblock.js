@@ -15,34 +15,36 @@ import svgs from 'common/views/svgs';
 import sample from 'lodash/collections/sample';
 
 function showAdblockMessage() {
-    let adblockLink = 'https://membership.theguardian.com/supporter',
-        messages = {
-            UK: {
-                campaign: 'ADB_UK',
-                messageText: [
-                    'We notice you\'re using an ad-blocker. Perhaps you\'ll support us another way?',
-                    'Become a Supporter for less than £1 per week',
-                ].join(' '),
-                linkText: 'Find out more',
-            },
-            US: {
-                campaign: 'ADB_US',
-                messageText: [
-                    'We notice you\'re using an ad-blocker. Perhaps you\'ll support us another way?',
-                    'Become a Supporter for less than $1 per week',
-                ].join(' '),
-                linkText: 'Find out more',
-            },
-            INT: {
-                campaign: 'ADB_INT',
-                messageText: [
-                    'We notice you\'re using an ad-blocker. Perhaps you\'ll support us another way?',
-                    'Become a Supporter for less than $1/€1 per week',
-                ].join(' '),
-                linkText: 'Find out more',
-            },
+    let adblockLink = 'https://membership.theguardian.com/supporter';
+
+    let messages = {
+        UK: {
+            campaign: 'ADB_UK',
+            messageText: [
+                'We notice you\'re using an ad-blocker. Perhaps you\'ll support us another way?',
+                'Become a Supporter for less than £1 per week',
+            ].join(' '),
+            linkText: 'Find out more',
         },
-        message = messages[config.page.edition];
+        US: {
+            campaign: 'ADB_US',
+            messageText: [
+                'We notice you\'re using an ad-blocker. Perhaps you\'ll support us another way?',
+                'Become a Supporter for less than $1 per week',
+            ].join(' '),
+            linkText: 'Find out more',
+        },
+        INT: {
+            campaign: 'ADB_INT',
+            messageText: [
+                'We notice you\'re using an ad-blocker. Perhaps you\'ll support us another way?',
+                'Become a Supporter for less than $1/€1 per week',
+            ].join(' '),
+            linkText: 'Find out more',
+        },
+    };
+
+    let message = messages[config.page.edition];
 
     if (message) {
         new Message('adblock-message-2016-06-15', {

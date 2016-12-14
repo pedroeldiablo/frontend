@@ -5,14 +5,14 @@ import mediator from 'common/utils/mediator';
 import contains from 'lodash/collections/contains';
 
 const Toggles = function (parent) {
-    let self = this,
-        controls,
-        doNotReset = ['popup--search'],
-        readyClass = 'js-toggle-ready',
-        isSignedIn = $('.js-profile-nav').hasClass('is-signed-in'),
-        component = parent || document.body;
+    let self = this;
+    let controls;
+    let doNotReset = ['popup--search'];
+    let readyClass = 'js-toggle-ready';
+    let isSignedIn = $('.js-profile-nav').hasClass('is-signed-in');
+    let component = parent || document.body;
 
-    this.init = function () {
+    this.init = () => {
         controls = Array.prototype.slice.call(component.querySelectorAll('[data-toggle]'));
 
         controls.forEach((control) => {
@@ -31,7 +31,7 @@ const Toggles = function (parent) {
         });
     };
 
-    this.reset = function (omitEl) {
+    this.reset = omitEl => {
         controls.filter(control => !(omitEl === control || contains(doNotReset, $(control).attr('data-toggle')))).map(self.close);
     };
 
@@ -52,19 +52,19 @@ Toggles.prototype.toggle = function (control, controls) {
     });
 };
 
-Toggles.prototype.getTarget = function (parent, control) {
+Toggles.prototype.getTarget = (parent, control) => {
     const targetClass = bonzo(control).data('toggle');
     if (targetClass) {
         return parent.querySelector(`.${targetClass}`);
     }
 };
 
-Toggles.prototype.open = function (c) {
+Toggles.prototype.open = c => {
     bonzo(c).addClass('is-active');
     bonzo(c.toggleTarget).removeClass('is-off');
 };
 
-Toggles.prototype.close = function (c) {
+Toggles.prototype.close = c => {
     bonzo(c).removeClass('is-active');
     bonzo(c.toggleTarget).addClass('is-off');
 };

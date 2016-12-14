@@ -56,9 +56,9 @@ function addSessionCookie(name, value) {
 }
 
 function getCookieValues(name) {
-    let cookieVals = [],
-        nameEq = `${name}=`,
-        cookies = getDocument().cookie.split(';');
+    let cookieVals = [];
+    let nameEq = `${name}=`;
+    let cookies = getDocument().cookie.split(';');
 
     cookies.forEach((cookie) => {
         while (cookie.charAt(0) === ' ') {

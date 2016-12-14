@@ -19,12 +19,12 @@ import chain from 'common/utils/chain';
 import filter from 'lodash/collections/filter';
 import forEach from 'lodash/collections/forEach';
 import reduce from 'lodash/collections/reduce';
-let sample = 500,
-    rxPsuedoClass = new RegExp(/:+[^\s\,]+/g),
-    rxSeparator = new RegExp(/\s*,\s*/g),
-    classNameLoggable = 'js-loggable',
-    classNameInlined = 'js-inlined',
-    eventsInitialised = false;
+let sample = 500;
+let rxPsuedoClass = new RegExp(/:+[^\s\,]+/g);
+let rxSeparator = new RegExp(/\s*,\s*/g);
+let classNameLoggable = 'js-loggable';
+let classNameInlined = 'js-inlined';
+let eventsInitialised = false;
 
 function getRules(s) {
     const rules = s ? s.cssRules || s.rules : null;
@@ -49,19 +49,20 @@ function canonicalOrder(s) {
 }
 
 function getAllSelectors(all) {
-    let rand,
-        len,
-        rules = chain(getInlineStylesheets())
-        .and(map, getRules)
-        .and(flatten)
-        .and(map, getRules) // 2nd pass for rules nested in media queries
-        .and(flatten)
-        .and(map, getSplitSelectors)
-        .and(flatten)
-        .and(compact)
-        .and(uniq)
-        .and(map, canonicalise)
-        .value();
+    let rand;
+    let len;
+
+    let rules = chain(getInlineStylesheets())
+    .and(map, getRules)
+    .and(flatten)
+    .and(map, getRules) // 2nd pass for rules nested in media queries
+    .and(flatten)
+    .and(map, getSplitSelectors)
+    .and(flatten)
+    .and(compact)
+    .and(uniq)
+    .and(map, canonicalise)
+    .value();
 
     if (all) {
         return rules;

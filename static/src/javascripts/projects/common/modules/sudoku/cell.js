@@ -10,39 +10,36 @@ export default React.createClass({
     },
 
     render() {
-        let self = this,
-            value = this.props.value,
-            x = utils.position(this.props.x),
-            y = utils.position(this.props.y),
-            jottingX = function (n) {
-                return x + constants.jottingXOffset + ((n - 1) % 3) * constants.jottingWidth;
-            },
-            jottingY = function (n) {
-                return y + constants.jottingYOffset + Math.floor((n - 1) / 3) * constants.jottingHeight;
-            },
-            innerCells = compact([
-                React.DOM.rect({
-                    key: 'background',
-                    x,
-                    y,
-                    width: constants.cellSize,
-                    height: constants.cellSize,
-                    onClick: this.onClick,
-                }),
-                value ? React.DOM.text({
-                    key: 'value',
-                    x: x + constants.textXOffset,
-                    y: y + constants.textYOffset,
-                    className: 'sudoku__cell-text',
-                    onClick: this.onClick,
-                }, value) : null,
-            ]).concat(map(this.props.jottings, n => React.DOM.text({
-                key: `jotting_${n}`,
-                x: jottingX(n),
-                y: jottingY(n),
-                className: 'sudoku__cell-jotting',
-                onClick: self.onClick,
-            }, n)));
+        let self = this;
+        let value = this.props.value;
+        let x = utils.position(this.props.x);
+        let y = utils.position(this.props.y);
+        let jottingX = n => x + constants.jottingXOffset + ((n - 1) % 3) * constants.jottingWidth;
+        let jottingY = n => y + constants.jottingYOffset + Math.floor((n - 1) / 3) * constants.jottingHeight;
+
+        let innerCells = compact([
+            React.DOM.rect({
+                key: 'background',
+                x,
+                y,
+                width: constants.cellSize,
+                height: constants.cellSize,
+                onClick: this.onClick,
+            }),
+            value ? React.DOM.text({
+                key: 'value',
+                x: x + constants.textXOffset,
+                y: y + constants.textYOffset,
+                className: 'sudoku__cell-text',
+                onClick: this.onClick,
+            }, value) : null,
+        ]).concat(map(this.props.jottings, n => React.DOM.text({
+            key: `jotting_${n}`,
+            x: jottingX(n),
+            y: jottingY(n),
+            className: 'sudoku__cell-jotting',
+            onClick: self.onClick,
+        }, n)));
 
         return React.DOM.g({
             className: React.addons.classSet({

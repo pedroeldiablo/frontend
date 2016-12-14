@@ -6,7 +6,7 @@ import $ from 'common/utils/$';
 import bean from 'bean';
 
 function MoreTags() {
-    this.init = function () {
+    this.init = () => {
         const $more = $('.js-more-tags');
         if ($more.length !== 0) {
             $more.removeClass('modern-hidden');

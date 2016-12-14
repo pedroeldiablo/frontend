@@ -10,10 +10,10 @@ import ScoreBoard from 'common/modules/sport/score-board';
 import rhc from 'common/modules/ui/rhc';
 
 function cricket() {
-    let cricketScore,
-        parentEl,
-        matchDate = config.page.cricketMatchDate,
-        team = config.page.cricketTeam;
+    let cricketScore;
+    let parentEl;
+    let matchDate = config.page.cricketMatchDate;
+    let team = config.page.cricketTeam;
 
     if (matchDate && team) {
         cricketScore = new Component();
@@ -45,7 +45,7 @@ function rugby() {
         });
 
         // Rugby score returns the match nav too, to optimise calls.
-        scoreBoard.fetched = function (resp) {
+        scoreBoard.fetched = resp => {
             $('.content--liveblog').addClass('content--liveblog--rugby');
 
             $.create(resp.nav).first().each((nav) => {

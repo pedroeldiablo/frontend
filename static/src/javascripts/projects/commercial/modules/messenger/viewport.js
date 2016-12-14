@@ -5,8 +5,8 @@ let w = window;
 let iframes = {};
 let iframeCounter = 0;
 let taskQueued = false;
-let lastViewportRead,
-    lastViewport;
+let lastViewportRead;
+let lastViewport;
 
 messenger.register('viewport', onMessage, {
     persist: true,

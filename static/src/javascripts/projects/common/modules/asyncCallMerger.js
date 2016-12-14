@@ -9,12 +9,12 @@
  * @return {?Date} the current date
  */
 function mergeCalls(targetFunction) {
-    let callbacks,
-        status,
-        callbackArguments;
+    let callbacks;
+    let status;
+    let callbackArguments;
 
-    function targetCallbackHandler() {
-        callbackArguments = arguments;
+    function targetCallbackHandler(...args) {
+        callbackArguments = args;
         status = 'complete';
 
         for (let i = 0; i < callbacks.length; i++) {

@@ -75,14 +75,14 @@ function GalleryLightbox() {
     bean.on(this.infoBtn, 'click', this.trigger.bind(this, 'toggle-info'));
     this.handleKeyEvents = this.handleKeyEvents.bind(this); // bound for event handler
     this.resize = this.trigger.bind(this, 'resize');
-    this.toggleInfo = function (e) {
+    this.toggleInfo = e => {
         const infoPanelClick =
             bonzo(e.target).hasClass('js-gallery-lightbox-info') ||
             $.ancestor(e.target, 'js-gallery-lightbox-info');
         if (!infoPanelClick) {
             this.trigger('toggle-info');
         }
-    }.bind(this);
+    };
 
     if (detect.hasTouchScreen()) {
         this.disableHover();
@@ -108,24 +108,25 @@ function GalleryLightbox() {
 }
 
 GalleryLightbox.prototype.generateImgHTML = function (img, i) {
-    let blockShortUrl = config.page.shortUrl,
-        urlPrefix = img.src.indexOf('//') === 0 ? 'http:' : '',
-        shareItems = [{
-            text: 'Facebook',
-            css: 'facebook',
-            icon: svgs('shareFacebook', ['icon']),
-            url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${blockShortUrl}/sfb#img-${i}`)}`,
-        }, {
-            text: 'Twitter',
-            css: 'twitter',
-            icon: svgs('shareTwitter', ['icon']),
-            url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(config.page.webTitle)}&url=${encodeURIComponent(`${blockShortUrl}/stw#img-${i}`)}`,
-        }, {
-            text: 'Pinterest',
-            css: 'pinterest',
-            icon: svgs('sharePinterest', ['icon']),
-            url: encodeURI(`http://www.pinterest.com/pin/create/button/?description=${config.page.webTitle}&url=${blockShortUrl}&media=${urlPrefix}${img.src}`),
-        }];
+    let blockShortUrl = config.page.shortUrl;
+    let urlPrefix = img.src.indexOf('//') === 0 ? 'http:' : '';
+
+    let shareItems = [{
+        text: 'Facebook',
+        css: 'facebook',
+        icon: svgs('shareFacebook', ['icon']),
+        url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${blockShortUrl}/sfb#img-${i}`)}`,
+    }, {
+        text: 'Twitter',
+        css: 'twitter',
+        icon: svgs('shareTwitter', ['icon']),
+        url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(config.page.webTitle)}&url=${encodeURIComponent(`${blockShortUrl}/stw#img-${i}`)}`,
+    }, {
+        text: 'Pinterest',
+        css: 'pinterest',
+        icon: svgs('sharePinterest', ['icon']),
+        url: encodeURI(`http://www.pinterest.com/pin/create/button/?description=${config.page.webTitle}&url=${blockShortUrl}&media=${urlPrefix}${img.src}`),
+    }];
 
     return template(blockSharingTpl.replace(/^\s+|\s+$/gm, ''), {
         articleType: 'gallery',
@@ -140,11 +141,11 @@ GalleryLightbox.prototype.generateImgHTML = function (img, i) {
 };
 
 GalleryLightbox.prototype.initSwipe = function () {
-    let threshold,
-        ox,
-        dx,
-        touchMove,
-        updateTime = 20; // time in ms
+    let threshold; // time in ms
+    let ox;
+    let dx;
+    let touchMove;
+    let updateTime = 20;
 
     bean.on(this.$swipeContainer[0], 'touchstart', (e) => {
         threshold = this.swipeContainerWidth * this.swipeThreshold;
@@ -152,14 +153,14 @@ GalleryLightbox.prototype.initSwipe = function () {
         dx = 0;
     });
 
-    touchMove = function (e) {
+    touchMove = e => {
         e.preventDefault();
         if (e.touches.length > 1 || e.scale && e.scale !== 1) {
             return;
         }
         dx = e.touches[0].pageX - ox;
         this.translateContent(this.index, dx, updateTime);
-    }.bind(this);
+    };
 
     bean.on(this.$swipeContainer[0], 'touchmove', throttle(touchMove, updateTime, {
         trailing: false,
@@ -210,8 +211,8 @@ GalleryLightbox.prototype.loadGalleryfromJson = function (galleryJson, startInde
 };
 
 GalleryLightbox.prototype.loadSurroundingImages = function (index, count) {
-    let imageContent,
-        $img;
+    let imageContent;
+    let $img;
     chain([-1, 0, 1]).and(
         map,
         i => index + i === 0 ? count - 1 : (index - 1 + i) % count
@@ -234,8 +235,8 @@ GalleryLightbox.prototype.loadSurroundingImages = function (index, count) {
 };
 
 GalleryLightbox.prototype.translateContent = function (imgIndex, offset, duration) {
-    let px = -1 * (imgIndex - 1) * this.swipeContainerWidth,
-        contentEl = this.$contentEl[0];
+    let px = -1 * (imgIndex - 1) * this.swipeContainerWidth;
+    let contentEl = this.$contentEl[0];
     contentEl.style.webkitTransitionDuration = `${duration}ms`;
     contentEl.style.mozTransitionDuration = `${duration}ms`;
     contentEl.style.msTransitionDuration = `${duration}ms`;
@@ -446,7 +447,7 @@ GalleryLightbox.prototype.hide = function () {
     }, 1);
 };
 
-GalleryLightbox.prototype.pulseButton = function (button) {
+GalleryLightbox.prototype.pulseButton = button => {
     const $btn = bonzo(button);
     $btn.addClass('gallery-lightbox__button-pulse');
     window.setTimeout(() => {
@@ -479,7 +480,7 @@ GalleryLightbox.prototype.loadEndslate = function () {
 
         this.endslate.componentClass = 'gallery-lightbox__endslate';
         this.endslate.endpoint = '/gallery/most-viewed.json';
-        this.endslate.ready = function () {
+        this.endslate.ready = () => {
             mediator.emit('page:new-content');
         };
         this.endslate.prerender = function () {
@@ -492,21 +493,21 @@ GalleryLightbox.prototype.loadEndslate = function () {
 function bootstrap() {
     loadCssPromise.then(() => {
         if ('lightboxImages' in config.page && config.page.lightboxImages.images.length > 0) {
-            let lightbox,
-                galleryId,
-                match,
-                galleryHash = window.location.hash,
-                images = config.page.lightboxImages,
-                res;
+            let lightbox;
+            let galleryId;
+            let match;
+            let galleryHash = window.location.hash;
+            let images = config.page.lightboxImages;
+            let res;
 
             bean.on(document.body, 'click', '.js-gallerythumbs', (e) => {
                 e.preventDefault();
 
-                let $el = bonzo(e.currentTarget),
-                    galleryHref = $el.attr('href') || $el.attr('data-gallery-url'),
-                    galleryHrefParts = galleryHref.split('#img-'),
-                    parsedGalleryIndex = parseInt(galleryHrefParts[1], 10),
-                    galleryIndex = isNaN(parsedGalleryIndex) ? 1 : parsedGalleryIndex; // 1-based index
+                let $el = bonzo(e.currentTarget); // 1-based index
+                let galleryHref = $el.attr('href') || $el.attr('data-gallery-url');
+                let galleryHrefParts = galleryHref.split('#img-');
+                let parsedGalleryIndex = parseInt(galleryHrefParts[1], 10);
+                let galleryIndex = isNaN(parsedGalleryIndex) ? 1 : parsedGalleryIndex;
                 lightbox = lightbox || new GalleryLightbox();
 
                 lightbox.loadGalleryfromJson(images, galleryIndex);

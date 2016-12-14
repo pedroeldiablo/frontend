@@ -14,6 +14,7 @@ import geoMostPopular from 'common/modules/onward/geo-most-popular';
 import quiz from 'common/modules/atoms/quiz';
 import articleLiveblogCommon from 'bootstraps/enhanced/article-liveblog-common';
 import trail from 'bootstraps/enhanced/trail';
+
 let modules = {
         initCmpParam() {
             const allvars = urlutils.getUrlVars();
@@ -43,23 +44,23 @@ let modules = {
                 mediator.on('quiz/ophan-event', ophan.record);
             });
         },
-    },
-
-    ready = function () {
-        trail();
-        articleLiveblogCommon();
-        if (!shouldRemoveGeoMostPop()) {
-            modules.initRightHandComponent();
-        }
-        modules.initCmpParam();
-        modules.initQuizListeners();
-        richLinks.upgradeRichLinks();
-        richLinks.insertTagRichLink();
-        membershipEvents.upgradeEvents();
-        openModule.init();
-        mediator.emit('page:article:ready');
-        quiz.handleCompletion();
     };
+
+let ready = () => {
+    trail();
+    articleLiveblogCommon();
+    if (!shouldRemoveGeoMostPop()) {
+        modules.initRightHandComponent();
+    }
+    modules.initCmpParam();
+    modules.initQuizListeners();
+    richLinks.upgradeRichLinks();
+    richLinks.insertTagRichLink();
+    membershipEvents.upgradeEvents();
+    openModule.init();
+    mediator.emit('page:article:ready');
+    quiz.handleCompletion();
+};
 
 function shouldRemoveGeoMostPop() {
     const testName = 'ItsRainingInlineAds';

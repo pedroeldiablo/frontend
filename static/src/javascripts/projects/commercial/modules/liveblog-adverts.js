@@ -12,10 +12,10 @@ const INTERVAL = 5; // number of posts between ads
 const OFFSET = 1.5; // ratio of the screen height from which ads are loaded
 const MAX_ADS = 8; // maximum number of ads to display
 
-let slotCounter = 0,
-    isMobile,
-    windowHeight,
-    firstSlot;
+let slotCounter = 0;
+let isMobile;
+let windowHeight;
+let firstSlot;
 
 function startListening() {
     mediator.on('modules:autoupdate:updates', onUpdate);
@@ -26,8 +26,8 @@ function stopListening() {
 }
 
 function getSpaceFillerRules(windowHeight, update) {
-    let prevSlot,
-        prevIndex;
+    let prevSlot;
+    let prevIndex;
     update = !!update;
     return {
         bodySelector: '.js-liveblog-body',

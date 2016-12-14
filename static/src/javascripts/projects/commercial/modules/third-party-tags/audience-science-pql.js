@@ -44,7 +44,7 @@ function setAudienceScienceKeys() {
 // Remove all Audience Science related targeting keys as soon as we recieve
 // an AS creative (will get called by the creative itself)
 function setAudienceScienceCallback() {
-    window.onAudienceScienceCreativeLoaded = function () {
+    window.onAudienceScienceCreativeLoaded = () => {
         getSegments().forEach(removeKey);
     };
 }

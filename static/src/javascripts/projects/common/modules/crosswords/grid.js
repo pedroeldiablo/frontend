@@ -49,8 +49,8 @@ const Grid = React.createClass({
         const top = helpers.gridSize(y);
         const left = helpers.gridSize(x);
         const borderWidth = 1;
-        let width,
-            height;
+        let width;
+        let height;
 
         if (direction === 'across') {
             width = constants.cellSize / 4;

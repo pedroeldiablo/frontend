@@ -18,10 +18,8 @@ import svgs from 'common/views/svgs';
 
 
 const PREF_RELATIVE_TIMESTAMPS = 'discussion.enableRelativeTimestamps';
-const shouldMakeTimestampsRelative = function () {
-    // Default to true
-    return userPrefs.get(PREF_RELATIVE_TIMESTAMPS) !== null ? userPrefs.get(PREF_RELATIVE_TIMESTAMPS) : true;
-};
+const shouldMakeTimestampsRelative = () => // Default to true
+(userPrefs.get(PREF_RELATIVE_TIMESTAMPS) !== null ? userPrefs.get(PREF_RELATIVE_TIMESTAMPS) : true);
 
 const Comments = function (options) {
     this.setOptions(options);
@@ -87,9 +85,9 @@ Comments.prototype.ready = function () {
 
 Comments.prototype.handlePickClick = function (e) {
     e.preventDefault();
-    let commentId = e.target.getAttribute('data-comment-id'),
-        $thisButton = $(e.target),
-        promise = $thisButton[0].getAttribute('data-comment-highlighted') === 'true' ? this.unPickComment.bind(this) : this.pickComment.bind(this);
+    let commentId = e.target.getAttribute('data-comment-id');
+    let $thisButton = $(e.target);
+    let promise = $thisButton[0].getAttribute('data-comment-highlighted') === 'true' ? this.unPickComment.bind(this) : this.pickComment.bind(this);
 
     promise(commentId, $thisButton)
         .fail((resp) => {
@@ -99,8 +97,8 @@ Comments.prototype.handlePickClick = function (e) {
 };
 
 Comments.prototype.pickComment = function (commentId, $thisButton) {
-    let self = this,
-        comment = qwery(`#comment-${commentId}`, this.elem);
+    let self = this;
+    let comment = qwery(`#comment-${commentId}`, this.elem);
 
     return DiscussionApi
         .pickComment(commentId)
@@ -112,8 +110,8 @@ Comments.prototype.pickComment = function (commentId, $thisButton) {
 };
 
 Comments.prototype.unPickComment = function (commentId, $thisButton) {
-    let self = this,
-        comment = qwery(`#comment-${commentId}`);
+    let self = this;
+    let comment = qwery(`#comment-${commentId}`);
 
     return DiscussionApi
         .unPickComment(commentId)
@@ -151,10 +149,11 @@ Comments.prototype.fetchComments = function (options) {
         queryParams.maxResponses = 3;
     }
 
-    let promise,
-        ajaxParams = {
-            mode: 'cors',
-        };
+    let promise;
+
+    let ajaxParams = {
+        mode: 'cors',
+    };
 
     if (this.isAllPageSizeActive()) {
         promise = new WholeDiscussion({
@@ -187,8 +186,9 @@ Comments.prototype.renderComments = function (resp) {
     // - paginationHtml - the discussion's pagination based on user page size and number of comments.
     // - postedCommentHtml - an empty comment for when the user successfully posts a comment.
 
-    let contentEl = bonzo.create(resp.commentsHtml),
-        comments = qwery(this.getClass('comment'), contentEl);
+    let contentEl = bonzo.create(resp.commentsHtml);
+
+    let comments = qwery(this.getClass('comment'), contentEl);
 
     bonzo(this.elem).empty().append(contentEl);
     this.addMoreRepliesButtons(comments);
@@ -217,21 +217,21 @@ Comments.prototype.showHiddenComments = function (e) {
 Comments.prototype.addMoreRepliesButtons = function (comments) {
     comments = comments || this.topLevelComments;
     comments.forEach((elem) => {
-        let replies = parseInt(elem.getAttribute('data-comment-replies'), 10),
-            renderedReplies = qwery(this.getClass('reply'), elem);
+        let replies = parseInt(elem.getAttribute('data-comment-replies'), 10);
+        let renderedReplies = qwery(this.getClass('reply'), elem);
 
         if (renderedReplies.length < replies) {
-            let numHiddenReplies = replies - renderedReplies.length,
+            let numHiddenReplies = replies - renderedReplies.length;
 
-                $btn = $.create(
-                    `<button class="u-button-reset button button--show-more button--small button--tone-news d-show-more-replies__button">${
-                    svgs('plus', ['icon'])
-                    }Show ${numHiddenReplies} more ${numHiddenReplies === 1 ? 'reply' : 'replies'
-                    }</button>`).attr({
-                        'data-link-name': 'Show more replies',
-                        'data-is-ajax': '',
-                        'data-comment-id': elem.getAttribute('data-comment-id'),
-                    }).data('source-comment', elem);
+            let $btn = $.create(
+                `<button class="u-button-reset button button--show-more button--small button--tone-news d-show-more-replies__button">${
+                svgs('plus', ['icon'])
+                }Show ${numHiddenReplies} more ${numHiddenReplies === 1 ? 'reply' : 'replies'
+                }</button>`).attr({
+                    'data-link-name': 'Show more replies',
+                    'data-is-ajax': '',
+                    'data-comment-id': elem.getAttribute('data-comment-id'),
+                }).data('source-comment', elem);
 
             $.create(`<li class="${this.getClass('showReplies', true)}"></li>`)
                 .append($btn).appendTo($('.d-thread--responses', elem));
@@ -251,8 +251,8 @@ Comments.prototype.getMoreReplies = function (event) {
     fetchJson(`/discussion/comment/${commentId}.json?displayThreaded=true`, {
         mode: 'cors',
     }).then((resp) => {
-        let comment = bonzo.create(resp.html),
-            replies = qwery(this.getClass('reply'), comment);
+        let comment = bonzo.create(resp.html);
+        let replies = qwery(this.getClass('reply'), comment);
 
         replies = replies.slice(this.options.showRepliesCount);
         bonzo(qwery('.d-thread--responses', source)).append(replies);
@@ -280,31 +280,34 @@ Comments.prototype.isReadOnly = function () {
  * @param {Element=} parent (optional)
  */
 Comments.prototype.addComment = function (comment, focus, parent) {
-    let key,
-        val,
-        selector,
-        elem,
-        attr,
-        map = {
-            username: 'd-comment__author',
-            timestamp: 'js-timestamp',
-            body: 'd-comment__body',
-            report: 'd-comment__action--report',
-            avatar: 'd-comment__avatar',
+    let key;
+    let val;
+    let selector;
+    let elem;
+    let attr;
+
+    let map = {
+        username: 'd-comment__author',
+        timestamp: 'js-timestamp',
+        body: 'd-comment__body',
+        report: 'd-comment__action--report',
+        avatar: 'd-comment__avatar',
+    };
+
+    let values = {
+        username: this.user.displayName,
+        timestamp: 'Just now',
+        body: `<p>${comment.body.replace(/\n+/g, '</p><p>')}</p>`,
+        report: {
+            href: `http://discussion.theguardian.com/components/report-abuse/${comment.id}`,
         },
-        values = {
-            username: this.user.displayName,
-            timestamp: 'Just now',
-            body: `<p>${comment.body.replace(/\n+/g, '</p><p>')}</p>`,
-            report: {
-                href: `http://discussion.theguardian.com/components/report-abuse/${comment.id}`,
-            },
-            avatar: {
-                src: this.user.avatar,
-            },
+        avatar: {
+            src: this.user.avatar,
         },
-        commentElem = bonzo.create(this.postedCommentEl)[0],
-        $commentElem = bonzo(commentElem);
+    };
+
+    let commentElem = bonzo.create(this.postedCommentEl)[0];
+    let $commentElem = bonzo(commentElem);
 
     $commentElem.addClass('d-comment--new');
 
@@ -343,11 +346,11 @@ Comments.prototype.addComment = function (comment, focus, parent) {
 Comments.prototype.replyToComment = function (e) {
     e.preventDefault(); // stop the anchor link firing
 
-    let parentCommentEl,
-        showRepliesElem,
-        replyLink = e.currentTarget,
-        replyToId = replyLink.getAttribute('data-comment-id'),
-        self = this;
+    let parentCommentEl;
+    let showRepliesElem;
+    let replyLink = e.currentTarget;
+    let replyToId = replyLink.getAttribute('data-comment-id');
+    let self = this;
 
     // There is already a comment box for this on the page
     if (document.getElementById(`reply-to-${replyToId}`)) {
@@ -357,25 +360,26 @@ Comments.prototype.replyToComment = function (e) {
 
     $('.d-comment-box--response').remove();
 
-    let replyToComment = qwery(`#comment-${replyToId}`)[0],
-        replyToAuthor = replyToComment.getAttribute('data-comment-author'),
-        replyToAuthorId = replyToComment.getAttribute('data-comment-author-id'),
-        $replyToComment = bonzo(replyToComment),
-        replyToBody = qwery(this.getClass('commentBody'), replyToComment)[0].innerHTML,
-        replyToTimestamp = qwery(this.getClass('commentTimestampJs'), replyToComment)[0].innerHTML,
-        commentBox = new CommentBox({
-            discussionId: this.options.discussionId,
-            premod: this.user.privateFields.isPremoderated,
-            state: 'response',
-            replyTo: {
-                commentId: replyToId,
-                author: replyToAuthor,
-                authorId: replyToAuthorId,
-                body: replyToBody,
-                timestamp: replyToTimestamp,
-            },
-            focus: true,
-        });
+    let replyToComment = qwery(`#comment-${replyToId}`)[0];
+    let replyToAuthor = replyToComment.getAttribute('data-comment-author');
+    let replyToAuthorId = replyToComment.getAttribute('data-comment-author-id');
+    let $replyToComment = bonzo(replyToComment);
+    let replyToBody = qwery(this.getClass('commentBody'), replyToComment)[0].innerHTML;
+    let replyToTimestamp = qwery(this.getClass('commentTimestampJs'), replyToComment)[0].innerHTML;
+
+    let commentBox = new CommentBox({
+        discussionId: this.options.discussionId,
+        premod: this.user.privateFields.isPremoderated,
+        state: 'response',
+        replyTo: {
+            commentId: replyToId,
+            author: replyToAuthor,
+            authorId: replyToAuthorId,
+            body: replyToBody,
+            timestamp: replyToTimestamp,
+        },
+        focus: true,
+    });
 
     // this is a bit toffee, but we don't have .parents() in bonzo
     parentCommentEl = $replyToComment.hasClass(this.getClass('topLevelComment', true)) ? $replyToComment[0] : $replyToComment.parent().parent()[0];
@@ -402,15 +406,15 @@ Comments.prototype.replyToComment = function (e) {
 Comments.prototype.reportComment = function (e) {
     e.preventDefault();
 
-    let self = this,
-        commentId = e.currentTarget.getAttribute('data-comment-id');
+    let self = this;
+    let commentId = e.currentTarget.getAttribute('data-comment-id');
 
     $('.js-report-comment-form').first().each((form) => {
         form.removeAttribute('hidden');
         bean.one(form, 'submit', (e) => {
             e.preventDefault();
-            let category = form.elements.category,
-                comment = form.elements.comment.value;
+            let category = form.elements.category;
+            let comment = form.elements.comment.value;
 
             if (category.value !== '0') {
                 DiscussionApi
@@ -427,11 +431,11 @@ Comments.prototype.reportComment = function (e) {
     );
 };
 
-Comments.prototype.reportCommentSuccess = function (form) {
+Comments.prototype.reportCommentSuccess = form => {
     form.setAttribute('hidden', '');
 };
 
-Comments.prototype.reportCommentFailure = function () {
+Comments.prototype.reportCommentFailure = () => {
     document.querySelector('.js-discussion__report-comment-error').removeAttribute('hidden');
     document.querySelector('.d-report-comment__close').classList.add('d-report-comment__close--error');
 };
@@ -455,7 +459,7 @@ Comments.prototype.addUser = function (user) {
     }
 };
 
-Comments.prototype.relativeDates = function () {
+Comments.prototype.relativeDates = () => {
     if (shouldMakeTimestampsRelative()) {
         relativedates.init();
     }

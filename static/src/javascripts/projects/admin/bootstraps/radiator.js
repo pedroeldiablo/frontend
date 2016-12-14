@@ -11,7 +11,7 @@ function initialise() {
     // riff raff - requires you to be on the guardian network
     const apiKey = document.getElementById('riffraff-api-key').value;
     const callback = `stupidJSONP${Math.floor(Math.random() * 1000)}`;
-    window[callback] = function (deployments) {
+    window[callback] = (deployments) => {
         // a hash of the last deployment each project
         const latestDeployments = {
             CODE: {},
@@ -114,12 +114,12 @@ function initialise() {
             ];
 
             Object.keys(todayData).reduce((graphData, timestamp) => {
-                let epoch = parseInt(timestamp, 10),
-                    time = new Date(epoch),
-                    hours = (`0${time.getHours()}`).slice(-2),
-                    mins = (`0${time.getMinutes()}`).slice(-2),
-                    formattedTime = `${hours}: ${mins}`,
-                    totalViews = todayData[timestamp].reduce((memo, entry) => entry.count + memo, 0);
+                const epoch = parseInt(timestamp, 10);
+                const time = new Date(epoch);
+                const hours = (`0${time.getHours()}`).slice(-2);
+                const mins = (`0${time.getMinutes()}`).slice(-2);
+                const formattedTime = `${hours}: ${mins}`;
+                const totalViews = todayData[timestamp].reduce((memo, entry) => entry.count + memo, 0);
 
                 graphData.push([formattedTime, totalViews]);
                 return graphData;

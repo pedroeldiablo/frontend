@@ -59,9 +59,9 @@ const easingFunctions = { // https://gist.github.com/gre/1650294
 };
 
 function createEasingFn(type, duration) {
-    let startTime = new Date(),
-        ease = easingFunctions[type];
-    return function () {
+    let startTime = new Date();
+    let ease = easingFunctions[type];
+    return () => {
         const elapsed = (new Date()) - startTime;
         return ease(Math.min(1, elapsed / duration));
     };

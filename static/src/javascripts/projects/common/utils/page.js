@@ -13,8 +13,8 @@ function isit(isTrue, yes, no, arg) {
 }
 
 function isMatch(yes, no) {
-    let teams = config.referencesOfType('pa-football-team'),
-        match = config.page.footballMatch || {};
+    let teams = config.referencesOfType('pa-football-team');
+    let match = config.page.footballMatch || {};
 
     // the order of this is important as, on occasion,
     // "minbymin" is tagged with "match reports" but should be considered "minbymin".
@@ -35,8 +35,8 @@ function isMatch(yes, no) {
 }
 
 function isCompetition(yes, no) {
-    let notMobile = detect.getBreakpoint() !== 'mobile',
-        competition = notMobile ? ($('.js-football-competition').attr('data-link-name') || '').replace('keyword: football/', '') : '';
+    let notMobile = detect.getBreakpoint() !== 'mobile';
+    let competition = notMobile ? ($('.js-football-competition').attr('data-link-name') || '').replace('keyword: football/', '') : '';
     return isit(competition, yes, no);
 }
 
@@ -53,8 +53,8 @@ function isFootballStatsPage(yes, no) {
 }
 
 function belowArticleVisible(yes, no) {
-    let el = $('.js-after-article')[0],
-        vis = el ? window.getComputedStyle(el).getPropertyValue('display') !== 'none' : false;
+    let el = $('.js-after-article')[0];
+    let vis = el ? window.getComputedStyle(el).getPropertyValue('display') !== 'none' : false;
 
     return isit(vis, yes, no, el);
 }

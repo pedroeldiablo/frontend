@@ -23,8 +23,8 @@ ParticipationItem.prototype.classes = {};
 ParticipationItem.prototype.useBem = true;
 
 ParticipationItem.prototype.prerender = function () {
-    let origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin,
-        href = `${this.config.examplePath}=${this.config.variant}`;
+    const origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin;
+    const href = `${this.config.examplePath}=${this.config.variant}`;
     this.elem.textContent = this.config.variant;
     this.elem.href = origin + href;
 };

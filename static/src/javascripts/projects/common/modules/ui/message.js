@@ -131,8 +131,8 @@ Message.prototype.acknowledge = function () {
 };
 
 Message.prototype.updateMessageOnWidth = function () {
-    let narrowDataAttr = 'site-message-narrow',
-        wideDataAttr = 'site-message-wide';
+    let narrowDataAttr = 'site-message-narrow';
+    let wideDataAttr = 'site-message-wide';
 
     if (this.widthBasedMessage && this.$siteMessage.length) {
         this.updateMessageFromData((detect.isBreakpoint({

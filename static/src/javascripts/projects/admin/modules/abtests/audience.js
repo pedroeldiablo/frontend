@@ -33,7 +33,7 @@ Audience.prototype.prerender = function () {
     });
 };
 
-Audience.prototype.ready = function () {
+Audience.prototype.ready = () => {
 
 };
 

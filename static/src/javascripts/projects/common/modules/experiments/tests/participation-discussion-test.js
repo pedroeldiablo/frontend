@@ -50,7 +50,7 @@ export default function () {
     this.dataLinkNames = '';
     this.idealOutcome = 'DO we want to turn comments up or down';
 
-    this.canRun = function () {
+    this.canRun = () => {
         const testAuthor = config.page.author || '';
         const canRunOnBlog = doesNotContain(blogIds, config.page.blogIds || '');
         const canRunOnSeries = doesNotContain(seriesIds, config.page.seriesId || '');
@@ -61,8 +61,8 @@ export default function () {
     this.variants = [{
         id: 'variant-1',
         test() {
-            let shortUrlSlug = (config.page.shortUrl || '').replace('http://gu.com/p/', ''),
-                hide = CommentBlocker.hideComments(shortUrlSlug);
+            let shortUrlSlug = (config.page.shortUrl || '').replace('http://gu.com/p/', '');
+            let hide = CommentBlocker.hideComments(shortUrlSlug);
 
             if (config.page.isContent && hide) {
                 qwery('.js-comments').forEach((c) => {

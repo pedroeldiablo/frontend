@@ -6,8 +6,8 @@
 const assign = 'assign' in Object ? assignNative : assignPolyfill;
 export default assign;
 
-function assignNative() {
-    return Object.assign.apply(undefined, arguments);
+function assignNative(...args) {
+    return Object.assign.apply(undefined, args);
 }
 
 function assignPolyfill(target) {

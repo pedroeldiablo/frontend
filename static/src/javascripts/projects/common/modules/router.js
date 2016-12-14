@@ -1,47 +1,48 @@
 // Client-side routing module
 // Heavily inspired by https://github.com/PaulKinlan/leviroutes/blob/master/routes.js
 function Router() {
-    let routes = [],
-        matchRoute = function (url) {
-            let i,
-                routeExec,
-                routeMatch,
-                params,
-                g,
-                group,
-                route = null;
-            /* eslint-disable no-cond-assign*/
-            for (i = 0; route = routes[i]; i++) {
-                /* eslint-enable no-cond-assign*/
+    let routes = [];
 
-                routeExec = route.regex.regexp.exec(url);
-                routeMatch = (routeExec) ? true : false;
+    let matchRoute = url => {
+        let i;
+        let routeExec;
+        let routeMatch;
+        let params;
+        let g;
+        let group;
+        let route = null;
+        /* eslint-disable no-cond-assign*/
+        for (i = 0; route = routes[i]; i++) {
+            /* eslint-enable no-cond-assign*/
 
-                if (routeMatch) {
-                    params = {};
-                    for (g in route.regex.groups) {
-                        group = route.regex.groups[g];
-                        params[g] = routeExec[group + 1];
-                    }
+            routeExec = route.regex.regexp.exec(url);
+            routeMatch = (routeExec) ? true : false;
 
-                    route.callback({
-                        url,
-                        params,
-                    });
-                    return true;
+            if (routeMatch) {
+                params = {};
+                for (g in route.regex.groups) {
+                    group = route.regex.groups[g];
+                    params[g] = routeExec[group + 1];
                 }
-            }
 
-            return false;
-        };
+                route.callback({
+                    url,
+                    params,
+                });
+                return true;
+            }
+        }
+
+        return false;
+    };
 
     this.parseRoute = function (path) {
-        this.parseGroups = function (loc) {
-            let nameRegexp = new RegExp(':([^/.\\\\]+)', 'g'),
-                newRegexp = `${loc}`,
-                groups = {},
-                matches = null,
-                i = 0;
+        this.parseGroups = loc => {
+            let nameRegexp = new RegExp(':([^/.\\\\]+)', 'g');
+            let newRegexp = `${loc}`;
+            let groups = {};
+            let matches = null;
+            let i = 0;
 
             // Find the places to edit.
             /* eslint-disable no-cond-assign*/
@@ -69,11 +70,9 @@ function Router() {
         });
     };
 
-    this.getRoutes = function () {
-        return routes;
-    };
+    this.getRoutes = () => routes;
 
-    this.init = function () {
+    this.init = () => {
         matchRoute(window.location.pathname);
     };
 }

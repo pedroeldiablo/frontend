@@ -71,9 +71,9 @@ function initPlayButtons(root) {
         $('.js-video-play-button', root).each((el) => {
             const $el = bonzo(el);
             bean.on(el, 'click', () => {
-                let placeholder,
-                    player,
-                    container;
+                let placeholder;
+                let player;
+                let container;
                 container = bonzo(el).parent().parent();
                 placeholder = $('.js-video-placeholder', container);
                 player = $('.js-video-player', container);
@@ -103,9 +103,9 @@ function initPlayer(withPreroll) {
 }
 
 function initExploreVideo() {
-    let player = $('.vjs-tech'),
-        headline = $('.explore-series-headline')[0],
-        controls = $('.vjs-control-bar');
+    let player = $('.vjs-tech');
+    let headline = $('.explore-series-headline')[0];
+    let controls = $('.vjs-control-bar');
     if (player && headline && controls) {
         bean.on(player[0], 'playing', () => {
             bonzo(headline).addClass('playing');
@@ -119,20 +119,23 @@ function initExploreVideo() {
 }
 
 function enhanceVideo(el, autoplay, shouldPreroll) {
-    let mediaType = el.tagName.toLowerCase(),
-        $el = bonzo(el).addClass('vjs'),
-        mediaId = $el.attr('data-media-id'),
-        endSlateUri = $el.attr('data-end-slate'),
-        embedPath = $el.attr('data-embed-path'),
-        // we need to look up the embedPath for main media videos
-        canonicalUrl = $el.attr('data-canonical-url') || (embedPath ? embedPath : null),
-        // the fallback to window.location.pathname should only happen for main media on fronts
-        gaEventLabel = canonicalUrl || window.location.pathname,
-        player,
-        mouseMoveIdle,
-        playerSetupComplete,
-        withPreroll,
-        blockVideoAds;
+    let mediaType = el.tagName.toLowerCase();
+    let $el = bonzo(el).addClass('vjs');
+    let mediaId = $el.attr('data-media-id');
+    let endSlateUri = $el.attr('data-end-slate');
+    let embedPath = $el.attr('data-embed-path');
+
+    let // we need to look up the embedPath for main media videos
+    canonicalUrl = $el.attr('data-canonical-url') || (embedPath ? embedPath : null);
+
+    let // the fallback to window.location.pathname should only happen for main media on fronts
+    gaEventLabel = canonicalUrl || window.location.pathname;
+
+    let player;
+    let mouseMoveIdle;
+    let playerSetupComplete;
+    let withPreroll;
+    let blockVideoAds;
 
     // end-slate url follows the patten /video/end-slate/section/<section>.json?shortUrl=
     // only show end-slate if page has a section i.e. not on the `/global` path
@@ -293,8 +296,8 @@ function enhanceVideo(el, autoplay, shouldPreroll) {
 }
 
 function initEndSlate(player, endSlatePath) {
-    let endSlate = new Component(),
-        endStateClass = 'vjs-has-ended';
+    let endSlate = new Component();
+    let endStateClass = 'vjs-has-ended';
 
     endSlate.endpoint = endSlatePath;
 

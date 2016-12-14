@@ -30,13 +30,11 @@ const urlBuilders = {
 };
 
 function defaultUrlBuilder(url) {
-    return function (params) {
-        return buildComponentUrl(url, params);
-    };
+    return params => buildComponentUrl(url, params);
 }
 
 function bookUrlBuilder(url) {
-    return function (params) {
+    return (params) => {
         const isbn = config.page.isbn || params.isbn;
         if (isbn) {
             return buildComponentUrl(url, merge(params, {
@@ -49,24 +47,20 @@ function bookUrlBuilder(url) {
 }
 
 function soulmatesGroupUrlBuilder(url) {
-    return function (params) {
-        return buildComponentUrl(url + params.soulmatesFeedName, params);
-    };
+    return params => buildComponentUrl(url + params.soulmatesFeedName, params);
 }
 
 function complexUrlBuilder(url, withSpecificId, withKeywords, withSection) {
-    return function (params) {
-        return buildComponentUrl(url, merge(
-            params,
-            withSpecificId && params[withSpecificId] ? {
-                t: params[withSpecificId].split(','),
-            } : {},
-            withKeywords ? getKeywords() : {},
-            withSection ? {
-                s: config.page.section,
-            } : {}
-        ));
-    };
+    return params => buildComponentUrl(url, merge(
+        params,
+        withSpecificId && params[withSpecificId] ? {
+            t: params[withSpecificId].split(','),
+        } : {},
+        withKeywords ? getKeywords() : {},
+        withSection ? {
+            s: config.page.section,
+        } : {}
+    ));
 }
 
 function createToggle(el) {
@@ -103,9 +97,7 @@ function setFluid(el) {
 
 function constructQuery(params) {
     return reduce(params, (result, value, key) => {
-        const buildParam = function (value) {
-            return `${key}=${encodeURIComponent(value)}`;
-        };
+        const buildParam = value => `${key}=${encodeURIComponent(value)}`;
 
         if (result !== '?') {
             result += '&';

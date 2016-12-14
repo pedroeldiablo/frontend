@@ -676,7 +676,7 @@ const Crossword = React.createClass({
 export default function () {
     $('.js-crossword').each((element) => {
         if (element.hasAttribute('data-crossword-data')) {
-            (function () {
+            ((() => {
                 const crosswordData = JSON.parse(element.getAttribute('data-crossword-data'));
                 const crosswordComponent = React.render(React.createElement(Crossword, {
                     data: crosswordData,
@@ -709,7 +709,7 @@ export default function () {
 
                     e.preventDefault();
                 });
-            }());
+            })());
         } else {
             throw 'JavaScript crossword without associated data in data-crossword-data';
         }

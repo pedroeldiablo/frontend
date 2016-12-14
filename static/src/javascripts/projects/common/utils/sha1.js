@@ -23,7 +23,7 @@ const Sha1 = {};
  * @param   {string} msg - (Unicode) string to be hashed.
  * @returns {string} Hash of msg as hex character string.
  */
-Sha1.hash = function (msg) {
+Sha1.hash = msg => {
     // convert string to UTF-8, as SHA only deals with byte-streams
     msg = decodeURIComponent(encodeURIComponent(msg));
 
@@ -63,11 +63,11 @@ Sha1.hash = function (msg) {
     // HASH COMPUTATION [§6.1.2]
 
     const W = new Array(80);
-    let a,
-        b,
-        c,
-        d,
-        e;
+    let a;
+    let b;
+    let c;
+    let d;
+    let e;
     for (var i = 0; i < N; i++) {
         // 1 - prepare message schedule 'W'
         for (var t = 0; t < 16; t++) {
@@ -112,7 +112,7 @@ Sha1.hash = function (msg) {
  * Function 'f' [§4.1.1].
  * @private
  */
-Sha1.f = function (s, x, y, z) {
+Sha1.f = (s, x, y, z) => {
     switch (s) {
         case 0:
             return (x & y) ^ (~x & z); // Ch()
@@ -129,20 +129,19 @@ Sha1.f = function (s, x, y, z) {
  * Rotates left (circular left shift) value x by n positions [§3.2.5].
  * @private
  */
-Sha1.ROTL = function (x, n) {
-    return (x << n) | (x >>> (32 - n));
-};
+Sha1.ROTL = (x, n) => (x << n) | (x >>> (32 - n));
 
 
 /**
  * Hexadecimal representation of a number.
  * @private
  */
-Sha1.toHexStr = function (n) {
+Sha1.toHexStr = n => {
     // note can't use toString(16) as it is implementation-dependant,
     // and in IE returns signed numbers when used on full words
-    let s = '',
-        v;
+    let s = '';
+
+    let v;
     for (let i = 7; i >= 0; i--) {
         v = (n >>> (i * 4)) & 0xf;
         s += v.toString(16);

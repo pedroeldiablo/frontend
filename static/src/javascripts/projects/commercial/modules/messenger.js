@@ -201,13 +201,13 @@ function getIframe(data) {
 // formatError({ message: "%%, you are so %%" }, "Regis", "lovely")
 //
 // returns `{ message: "Regis, you are so lovely" }`. Oh, thank you!
-function formatError() {
-    if (arguments.length < 2) {
-        return arguments[0] || '';
+function formatError(...args) {
+    if (args.length < 2) {
+        return args[0] || '';
     }
 
-    const error = arguments[0];
-    Array.prototype.slice.call(arguments, 1).forEach((arg) => {
+    const error = args[0];
+    Array.prototype.slice.call(args, 1).forEach((arg) => {
         // Keep in mind that when the first argument is a string,
         // String.replace only replaces the first occurence
         error.message = error.message.replace('%%', arg);

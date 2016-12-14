@@ -12,10 +12,10 @@ function AutoSignin() {
     const self = this;
     self.header = document.body;
 
-    this.init = function () {
+    this.init = () => {
         if (id.shouldAutoSigninInUser()) {
-            let appId = config.page.fbAppId,
-                authorizer = new FacebookAuthorizer(appId);
+            let appId = config.page.fbAppId;
+            let authorizer = new FacebookAuthorizer(appId);
 
             authorizer.getLoginStatus();
 
@@ -39,7 +39,7 @@ function AutoSignin() {
         }
     };
 
-    this.signin = function (authResponse, name) {
+    this.signin = (authResponse, name) => {
         ajax({
             url: `${config.page.idWebAppUrl}/jsapi/facebook/autosignup`,
             cache: false,
@@ -62,7 +62,7 @@ function AutoSignin() {
         });
     };
 
-    this.welcome = function (name) {
+    this.welcome = name => {
         const msg = `${'<p class="site-message__message" data-test-id="facebook-auto-sign-in-banner">' +
             'Welcome '}${name}, you’re signed in to the Guardian using Facebook. ` +
             `<a data-link-name="fb auto : sign out" href="${config.page.idUrl}/signout"/>Sign out</a>.` +

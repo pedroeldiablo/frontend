@@ -105,7 +105,7 @@ export default function () {
     //
     // Set adtest query if url param declares it.
     //
-    const setAdTestCookie = function () {
+    const setAdTestCookie = () => {
         const queryParams = url.getUrlVars();
         if (queryParams.adtest === 'clear') {
             cookies.remove('adtest');
@@ -177,12 +177,12 @@ export default function () {
      */
     // Authenticating requires CORS and withCredentials. If we don't cut the mustard then pass through.
     if (config.page.requiresMembershipAccess) {
-        let membershipUrl = config.page.membershipUrl,
-            membershipAccess = config.page.membershipAccess,
-            requiresPaidTier = (membershipAccess.indexOf('paid-members-only') !== -1),
-            membershipAuthUrl = `${membershipUrl}/membership-content?referringContent=${config.page.contentId}&membershipAccess=${membershipAccess}`;
+        const membershipUrl = config.page.membershipUrl;
+        const membershipAccess = config.page.membershipAccess;
+        const requiresPaidTier = (membershipAccess.indexOf('paid-members-only') !== -1);
+        const membershipAuthUrl = `${membershipUrl}/membership-content?referringContent=${config.page.contentId}&membershipAccess=${membershipAccess}`;
 
-        const redirect = function () {
+        const redirect = () => {
             window.location.href = membershipAuthUrl;
         };
 

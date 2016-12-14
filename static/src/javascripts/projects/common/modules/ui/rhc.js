@@ -9,8 +9,8 @@ const $rhc = $('.js-components-container');
  */
 function addComponent(c, importance) {
     importance = importance || 1;
-    let classname = 'component--rhc',
-        $cs;
+    let classname = 'component--rhc';
+    let $cs;
 
     return $.create(`<div class="${classname}" data-importance="${importance}"></div>`)
         .append(c)

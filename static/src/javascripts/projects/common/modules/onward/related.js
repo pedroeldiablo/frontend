@@ -16,11 +16,12 @@ function Related(options) {
     opts = options || {};
 }
 
-Related.prototype.popularInTagOverride = function () {
+Related.prototype.popularInTagOverride = () => {
     // whitelist of tags to override related story component with a popular-in-tag component
     if (!config.page.keywordIds) {
         return false;
     }
+
     let whitelistedTags = [ // order matters here (first match wins)
             // sport tags
             'sport/cricket', 'sport/rugby-union', 'sport/rugbyleague', 'sport/formulaone',
@@ -32,10 +33,12 @@ Related.prototype.popularInTagOverride = function () {
             // football team tags
             'football/manchester-united', 'football/chelsea', 'football/arsenal',
             'football/manchestercity', 'football/tottenham-hotspur', 'football/liverpool',
-        ],
-        pageTags = config.page.keywordIds.split(','),
-        // if this is an advertisement feature, use the page's keyword (there'll only be one)
-        popularInTags = config.page.isAdvertisementFeature ? pageTags : intersection(whitelistedTags, pageTags);
+        ];
+
+    let pageTags = config.page.keywordIds.split(',');
+
+    let // if this is an advertisement feature, use the page's keyword (there'll only be one)
+    popularInTags = config.page.isAdvertisementFeature ? pageTags : intersection(whitelistedTags, pageTags);
 
     if (popularInTags.length) {
         return `/popular-in-tag/${popularInTags[0]}.json`;
@@ -43,11 +46,11 @@ Related.prototype.popularInTagOverride = function () {
 };
 
 Related.prototype.renderRelatedComponent = function () {
-    let relatedUrl,
-        popularInTag,
-        componentName,
-        container,
-        fetchRelated = config.switches.relatedContent && config.page.showRelatedContent;
+    let relatedUrl;
+    let popularInTag;
+    let componentName;
+    let container;
+    let fetchRelated = config.switches.relatedContent && config.page.showRelatedContent;
     if (config.page && config.page.hasStoryPackage) {
         new Expandable({
             dom: document.body.querySelector('.related-trails'),

@@ -87,8 +87,8 @@ FabricExpandingV1.prototype.updateBgPosition = function () {
 FabricExpandingV1.prototype.listener = function () {
     const that = this;
     if (!this.initialExpandCounter && (window.pageYOffset + bonzo.viewport().height) > that.$adSlot.offset().top + this.openedHeight) {
-        let itemId = $('.ad-slot__content', that.$adSlot).attr('id'),
-            itemIdArray = itemId.split('/');
+        const itemId = $('.ad-slot__content', that.$adSlot).attr('id');
+        const itemIdArray = itemId.split('/');
 
         if (!storage.local.get(`gu.commercial.expandable.${itemIdArray[1]}`)) {
             // expires in 1 week

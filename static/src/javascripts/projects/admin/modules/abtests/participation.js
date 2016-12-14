@@ -21,9 +21,9 @@ Participation.prototype.componentClass = 'participation';
 Participation.prototype.useBem = true;
 
 Participation.prototype.prerender = function () {
-    let test = this.config.test,
-        origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin,
-        examplePath = `${test.examplePath || '/uk'}#ab-${test.id}`;
+    const test = this.config.test;
+    const origin = /gutools.co.uk$/.test(document.location.origin) ? 'http://www.theguardian.com' : document.location.origin;
+    const examplePath = `${test.examplePath || '/uk'}#ab-${test.id}`;
 
     this.getElem('opt-out').href = `${origin + examplePath}=notintest`;
 

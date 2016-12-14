@@ -3,11 +3,13 @@
 * Copyright (c) 2015 https://github.com/scottjehl/picturefill/blob/master/Authors.txt; Licensed MIT */
 /*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas, David Knight. Dual MIT/BSD license */
 
-window.matchMedia || (window.matchMedia = (function () {
-    
-
+window.matchMedia || (window.matchMedia = ((() => {
     // For browsers that support matchMedium api such as IE 9 and webkit
-    var styleMedia = (window.styleMedia || window.media), style, script, info;
+    var styleMedia = (window.styleMedia || window.media);
+
+    var style;
+    var script;
+    var info;
 
     // For those that don't support matchMedium
     if (!styleMedia) {
@@ -24,7 +26,7 @@ window.matchMedia || (window.matchMedia = (function () {
         info = ('getComputedStyle' in window) && window.getComputedStyle(style, null) || style.currentStyle;
 
         styleMedia = {
-            matchMedium: function (media) {
+            matchMedium(media) {
                 var text = '@media ' + media + '{ #matchmediajs-test { width: 1px; } }';
 
                 // 'style.styleSheet' is used by IE <= 8 and 'style.textContent' for all other browsers
@@ -40,13 +42,11 @@ window.matchMedia || (window.matchMedia = (function () {
         };
     }
 
-    return function (media) {
-        return {
-            matches: styleMedia.matchMedium(media || 'all'),
-            media: media || 'all'
-        };
-    };
-}()));
+    return media => ({
+        matches: styleMedia.matchMedium(media || 'all'),
+        media: media || 'all'
+    });
+})()));
 import fastdom from 'fastdom';
 
 /*! Picturefill - Responsive Images that work today.
@@ -54,50 +54,49 @@ import fastdom from 'fastdom';
  *  License: MIT/GPLv2
  *  Spec: http://picture.responsiveimages.org/
  */
-export default (function(w, doc, image) {
+export default (((w, doc, image) => {
     // Enable strict mode
 
 
     // If picture is supported, well, that's awesome. Let's get outta here...
     if (w.HTMLPictureElement) {
         // return expose(function () {});
-        return function() {};
+        return () => {};
     }
 
     // HTML shim|v it for old IE (IE9 will still need the HTML video tag workaround)
     doc.createElement('picture');
 
     // local object for method references and testing exposure
-    var pf = w.picturefill || {},
-        regWDesc = /\s+\+?\d+(e\d+)?w/;
+    var pf = w.picturefill || {};
+
+    var regWDesc = /\s+\+?\d+(e\d+)?w/;
 
     // namespace
     pf.ns = 'picturefill';
 
     // srcset support test
-    (function() {
+    ((() => {
         pf.srcsetSupported = 'srcset' in image;
         pf.sizesSupported = 'sizes' in image;
         pf.curSrcSupported = 'currentSrc' in image;
-    })();
+    }))();
 
     // just a string trim workaround
-    pf.trim = function(str) {
-        return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
-    };
+    pf.trim = str => str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '');
 
     /**
      * Gets a string and returns the absolute URL
      * @param src
      * @returns {String} absolute URL
      */
-    pf.makeUrl = (function() {
+    pf.makeUrl = ((() => {
         var anchor = doc.createElement('a');
-        return function(src) {
+        return src => {
             anchor.href = src;
             return anchor.href;
         };
-    })();
+    }))();
 
     /**
      * Shortcut method for matchMedia (for easy overriding in tests)
@@ -105,7 +104,7 @@ export default (function(w, doc, image) {
     // IE8 and below can't be polyfilled
     pf.canMatchMedia = w.matchMedia && w.matchMedia('(min-width: 0px)').matches;
 
-    pf.matchesMedia = function(media) {
+    pf.matchesMedia = media => {
         if (!pf.canMatchMedia) {
             return true;
         }
@@ -113,15 +112,13 @@ export default (function(w, doc, image) {
     };
 
     // Shortcut method for `devicePixelRatio` (for easy overriding in tests)
-    pf.getDpr = function() {
-        return (w.devicePixelRatio || 1);
-    };
+    pf.getDpr = () => w.devicePixelRatio || 1;
 
     /**
      * Get width in css pixel value from a 'length' value
      * http://dev.w3.org/csswg/css-values-3/#length-value
      */
-    pf.getWidthFromLength = function(length) {
+    pf.getWidthFromLength = length => {
         length = length.replace('vw', '%');
         if (length.indexOf('%') > -1) {
             length = pf.viewportWidth * parseInt(length, 10) * 0.01;
@@ -133,7 +130,7 @@ export default (function(w, doc, image) {
     };
 
     // Parses an individual `size` and returns the length, and optional media query
-    pf.parseSize = function(sourceSizeStr) {
+    pf.parseSize = sourceSizeStr => {
         var match = /(\([^)]+\))?\s*(.+)/g.exec(sourceSizeStr);
         return {
             media: match && match[1],
@@ -142,16 +139,18 @@ export default (function(w, doc, image) {
     };
 
     // Takes a string of sizes and returns the width in pixels as a number
-    pf.findWidthFromSourceSize = function(sourceSizeListStr) {
+    pf.findWidthFromSourceSize = sourceSizeListStr => {
         // Split up source size list, ie (max-width: 30em) 100%, (max-width: 50em) 50%, 33%
         //                            or (min-width:30em) calc(30% - 15px)
-        var sourceSizeList = pf.trim(sourceSizeListStr).split(/\s*,\s*/),
-            winningLength,
-            i, len,
-            sourceSize,
-            parsedSize,
-            length,
-            media;
+        var sourceSizeList = pf.trim(sourceSizeListStr).split(/\s*,\s*/);
+
+        var winningLength;
+        var i;
+        var len;
+        var sourceSize;
+        var parsedSize;
+        var length;
+        var media;
 
         for (i = 0, len = sourceSizeList.length; i < len; i++) {
             // Match <media-condition>? length, ie (min-width: 50em) 100%
@@ -177,7 +176,7 @@ export default (function(w, doc, image) {
         return winningLength || pf.viewportWidth;
     };
 
-    pf.parseSrcset = function(srcset) {
+    pf.parseSrcset = srcset => {
         /**
          * A lot of this was pulled from Boris Smus’ parser for the now-defunct WHATWG `srcset`
          * https://github.com/borismus/srcset-polyfill/blob/master/js/srcset-info.js
@@ -188,8 +187,13 @@ export default (function(w, doc, image) {
          *    unparsed descriptors. The order of entries in the list is the order in which entries
          *    are added to the list.
          */
-        var candidates = [],
-            pos, url, descriptor, last, descpos;
+        var candidates = [];
+
+        var pos;
+        var url;
+        var descriptor;
+        var last;
+        var descpos;
 
         while (srcset !== '') {
             srcset = srcset.replace(/^\s+/g, '');
@@ -233,26 +237,27 @@ export default (function(w, doc, image) {
             // 7. Add url to raw candidates, associated with descriptors.
             if (url || descriptor) {
                 candidates.push({
-                    url: url,
-                    descriptor: descriptor
+                    url,
+                    descriptor
                 });
             }
         }
         return candidates;
     };
 
-    pf.parseDescriptor = function(descriptor, sizesattr) {
+    pf.parseDescriptor = (descriptor, sizesattr) => {
         // 11. Descriptor parser: Let candidates be an initially empty source set. The order of entries in the list
         // is the order in which entries are added to the list.
-        var sizes = sizesattr || '100vw',
-            sizeDescriptor = descriptor && descriptor.replace(/(^\s+|\s+$)/g, ''),
-            widthInCssPixels = pf.findWidthFromSourceSize(sizes),
-            resCandidate,
-            splitDescriptor,
-            i,
-            curr,
-            res,
-            lastchar;
+        var sizes = sizesattr || '100vw';
+
+        var sizeDescriptor = descriptor && descriptor.replace(/(^\s+|\s+$)/g, '');
+        var widthInCssPixels = pf.findWidthFromSourceSize(sizes);
+        var resCandidate;
+        var splitDescriptor;
+        var i;
+        var curr;
+        var res;
+        var lastchar;
 
         if (sizeDescriptor) {
             splitDescriptor = sizeDescriptor.split(' ');
@@ -282,11 +287,12 @@ export default (function(w, doc, image) {
      * where resolution is http://dev.w3.org/csswg/css-values-3/#resolution-value
      * If sizes is specified, resolution is calculated
      */
-    pf.getCandidatesFromSourceSet = function(srcset, sizes) {
-        var candidates = pf.parseSrcset(srcset),
-            formattedCandidates = [],
-            candidate,
-            i, len;
+    pf.getCandidatesFromSourceSet = (srcset, sizes) => {
+        var candidates = pf.parseSrcset(srcset);
+        var formattedCandidates = [];
+        var candidate;
+        var i;
+        var len;
 
         for (i = 0, len = candidates.length; i < len; i++) {
             candidate = candidates[i];
@@ -305,7 +311,7 @@ export default (function(w, doc, image) {
      * (the property's existence infers native srcset support, and a srcset-supporting browser will prioritize srcset's value over our winning picture candidate)
      * this moves srcset's value to memory for later use and removes the attr
      */
-    pf.dodgeSrcset = function(img) {
+    pf.dodgeSrcset = img => {
         if (img.srcset) {
             img[pf.ns].srcset = img.srcset;
             img.srcset = '';
@@ -314,10 +320,10 @@ export default (function(w, doc, image) {
     };
 
     // Accept a source or img element and process its srcset and sizes attrs
-    pf.processSourceSet = function(el) {
-        var srcset = el.getAttribute('srcset'),
-            sizes = el.getAttribute('sizes'),
-            candidates = [];
+    pf.processSourceSet = el => {
+        var srcset = el.getAttribute('srcset');
+        var sizes = el.getAttribute('sizes');
+        var candidates = [];
 
         // if it's an img element, use the cached srcset property (defined or not)
         if (el.nodeName.toUpperCase() === 'IMG' && el[pf.ns] && el[pf.ns].srcset) {
@@ -330,11 +336,11 @@ export default (function(w, doc, image) {
         return candidates;
     };
 
-    pf.applyBestCandidate = function(candidates, picImg) {
-        var candidate,
-            length,
-            bestCandidate,
-            i;
+    pf.applyBestCandidate = (candidates, picImg) => {
+        var candidate;
+        var length;
+        var bestCandidate;
+        var i;
 
         candidates.sort(pf.ascendingSort);
 
@@ -354,7 +360,7 @@ export default (function(w, doc, image) {
             bestCandidate.url = pf.makeUrl(bestCandidate.url);
 
             if (picImg.src !== bestCandidate.url) {
-                fastdom.write(function() {
+                fastdom.write(() => {
                     picImg.src = bestCandidate.url;
                     // currentSrc attribute and property to match
                     // http://picture.responsiveimages.org/#the-img-element
@@ -366,9 +372,7 @@ export default (function(w, doc, image) {
         }
     };
 
-    pf.ascendingSort = function(a, b) {
-        return a.resolution - b.resolution;
-    };
+    pf.ascendingSort = (a, b) => a.resolution - b.resolution;
 
     /**
      * In IE9, <source> elements get removed if they aren't children of
@@ -377,11 +381,11 @@ export default (function(w, doc, image) {
      * and must account for that here by moving those source elements
      * back into the picture element.
      */
-    pf.removeVideoShim = function(picture) {
+    pf.removeVideoShim = picture => {
         var videos = picture.getElementsByTagName('video');
         if (videos.length) {
-            var video = videos[0],
-                vsources = video.getElementsByTagName('source');
+            var video = videos[0];
+            var vsources = video.getElementsByTagName('source');
             while (vsources.length) {
                 picture.insertBefore(vsources[0], video);
             }
@@ -395,11 +399,12 @@ export default (function(w, doc, image) {
      * a `picture` parent, a `sizes` attribute in basic `srcset` supporting browsers,
      * a `srcset` attribute at all, and they haven’t been evaluated already.
      */
-    pf.getAllElements = function() {
-        var elems = [],
-            imgs = doc.getElementsByTagName('img'),
-            currImg,
-            h, len;
+    pf.getAllElements = () => {
+        var elems = [];
+        var imgs = doc.getElementsByTagName('img');
+        var currImg;
+        var h;
+        var len;
 
         for (h = 0, len = imgs.length; h < len; h++) {
             currImg = imgs[h];
@@ -412,9 +417,9 @@ export default (function(w, doc, image) {
         return elems;
     };
 
-    pf.getMatch = function(img, picture) {
-        var sources = picture.childNodes,
-            match;
+    pf.getMatch = (img, picture) => {
+        var sources = picture.childNodes;
+        var match;
 
         // Go through each child, and if they have media queries, evaluate them
         for (var j = 0, slen = sources.length; j < slen; j++) {
@@ -458,18 +463,18 @@ export default (function(w, doc, image) {
     };
 
     function picturefill(opt) {
-        var elements,
-            element,
-            parent,
-            firstMatch,
-            candidates,
-            options = opt || {};
+        var elements;
+        var element;
+        var parent;
+        var firstMatch;
+        var candidates;
+        var options = opt || {};
 
         elements = options.elements || pf.getAllElements;
 
         // w._browserWidth = pf.getBrowserWidth();
 
-        fastdom.read(function() {
+        fastdom.read(() => {
             pf.viewportWidth = Math.max(w.innerWidth || 0, doc.documentElement.clientWidth);
             // Loop through all elements
             for (var i = 0, plen = elements.length; i < plen; i++) {
@@ -546,5 +551,4 @@ export default (function(w, doc, image) {
 
     // expose(picturefill);
     return picturefill;
-
-})(window, window.document, new window.Image());
+}))(window, window.document, new window.Image());

@@ -16,9 +16,9 @@ const componentsContainerSelector = '.js-components-container';
 
 function init() {
     const $col = $(rhColumnSelector);
-    let $mainCol,
-        $componentsContainer,
-        $adSlotContainer;
+    let $mainCol;
+    let $componentsContainer;
+    let $adSlotContainer;
 
     // are article aside ads disabled, or secondary column hidden?
     if (!(commercialFeatures.articleAsideAdverts && $col.length && $css($col, 'display') !== 'none')) {
@@ -30,8 +30,8 @@ function init() {
     $adSlotContainer = $(adSlotContainerSelector);
 
     return fastdom.read(() => $mainCol.dim().height).then((mainColHeight) => {
-        let $adSlot,
-            adType;
+        let $adSlot;
+        let adType;
 
 
         if (config.page.isImmersive) {

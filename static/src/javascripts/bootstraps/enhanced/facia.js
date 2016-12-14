@@ -35,7 +35,7 @@ let modules = {
         },
 
         showContainerToggle() {
-            const containerToggleAdd = function (context) {
+            const containerToggleAdd = context => {
                 $('.js-container--toggle', $(context || document)[0]).each((container) => {
                     new ContainerToggle(container).addToggle();
                 });
@@ -74,25 +74,25 @@ let modules = {
             mediator.emit('page:front:ready');
         },
 
-    },
-
-    ready = function () {
-        forEach(robust.makeBlocks([
-            ['f-accessibility', accessibility.shouldHideFlashingElements],
-            ['f-snaps', modules.showSnaps],
-            ['f-show-more', modules.showContainerShowMore],
-            ['f-container-toggle', modules.showContainerToggle],
-            ['f-geo-most-popular', modules.upgradeMostPopularToGeo],
-            ['f-lazy-load-containers', lazyLoadContainers],
-            ['f-stocks', stocks],
-            ['f-sponsorship', sponsorship],
-            ['f-weather', modules.showWeather],
-            ['f-live-blog-updates', modules.showLiveblogUpdates],
-            ['f-finished', modules.finished],
-        ]), (fn) => {
-            fn();
-        });
     };
+
+let ready = () => {
+    forEach(robust.makeBlocks([
+        ['f-accessibility', accessibility.shouldHideFlashingElements],
+        ['f-snaps', modules.showSnaps],
+        ['f-show-more', modules.showContainerShowMore],
+        ['f-container-toggle', modules.showContainerToggle],
+        ['f-geo-most-popular', modules.upgradeMostPopularToGeo],
+        ['f-lazy-load-containers', lazyLoadContainers],
+        ['f-stocks', stocks],
+        ['f-sponsorship', sponsorship],
+        ['f-weather', modules.showWeather],
+        ['f-live-blog-updates', modules.showLiveblogUpdates],
+        ['f-finished', modules.finished],
+    ]), (fn) => {
+        fn();
+    });
+};
 
 export default {
     init: ready,

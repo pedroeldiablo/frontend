@@ -7,11 +7,11 @@ import mediator from 'common/utils/mediator';
 import throttle from 'lodash/functions/throttle';
 
 const Search = function () {
-    let searchLoader,
-        gcsUrl,
-        resultSetSize,
-        container,
-        self = this;
+    let searchLoader;
+    let gcsUrl;
+    let resultSetSize;
+    let container;
+    let self = this;
 
     if (config.switches.googleSearch && config.page.googleSearchUrl && config.page.googleSearchId) {
         gcsUrl = `${config.page.googleSearchUrl}?cx=${config.page.googleSearchId}`;
@@ -33,9 +33,9 @@ const Search = function () {
 
         bean.on(document, 'keydown', '.gsc-input', () => {
             fastdom.read(() => {
-                let $autoCompleteObject = $('.gssb_c'),
-                    searchFromTop = $autoCompleteObject.css('top'),
-                    windowOffset = $(window).scrollTop();
+                let $autoCompleteObject = $('.gssb_c');
+                let searchFromTop = $autoCompleteObject.css('top');
+                let windowOffset = $(window).scrollTop();
 
                 fastdom.write(() => {
                     $autoCompleteObject.css({
@@ -54,16 +54,16 @@ const Search = function () {
         });
     }
 
-    this.focusSearchField = function () {
+    this.focusSearchField = () => {
         const $input = $('input.gsc-input');
         if ($input.length > 0) {
             $input.focus();
         }
     };
 
-    this.load = function () {
-        let s,
-            x;
+    this.load = () => {
+        let s;
+        let x;
 
         container = document.body.querySelector('.js-search-placeholder');
 
@@ -104,7 +104,7 @@ const Search = function () {
         }
     };
 
-    this.init = function () {};
+    this.init = () => {};
 };
 
 export default Search;

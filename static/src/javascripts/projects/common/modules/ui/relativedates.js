@@ -30,8 +30,8 @@ function isWithinSeconds(date, seconds) {
 }
 
 function isYesterday(relative) {
-    let today = new Date(),
-        yesterday = new Date();
+    let today = new Date();
+    let yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
     return (relative.toDateString() === yesterday.toDateString());
 }
@@ -49,29 +49,31 @@ function isValidDate(date) {
 }
 
 function getSuffix(type, format, value) {
-    let strs,
-        units = {
-            s: {
-                short: ['s'],
-                med: ['s ago'],
-                long: [' second ago', ' seconds ago'],
-            },
-            m: {
-                short: ['m'],
-                med: ['m ago'],
-                long: [' minute ago', ' minutes ago'],
-            },
-            h: {
-                short: ['h'],
-                med: ['h ago'],
-                long: [' hour ago', ' hours ago'],
-            },
-            d: {
-                short: ['d'],
-                med: ['d ago'],
-                long: [' day ago', ' days ago'],
-            },
-        };
+    let strs;
+
+    let units = {
+        s: {
+            short: ['s'],
+            med: ['s ago'],
+            long: [' second ago', ' seconds ago'],
+        },
+        m: {
+            short: ['m'],
+            med: ['m ago'],
+            long: [' minute ago', ' minutes ago'],
+        },
+        h: {
+            short: ['h'],
+            med: ['h ago'],
+            long: [' hour ago', ' hours ago'],
+        },
+        d: {
+            short: ['d'],
+            med: ['d ago'],
+            long: [' day ago', ' days ago'],
+        },
+    };
+
     if (units[type]) {
         strs = units[type][format];
         if (value === 1) {
@@ -87,14 +89,14 @@ function getSuffix(type, format, value) {
 function makeRelativeDate(epoch, opts) {
     opts = opts || {};
 
-    let minutes,
-        hours,
-        days,
-        delta,
-        then = new Date(Number(epoch)),
-        now = new Date(),
-        format = opts.format || 'short',
-        extendedFormatting = (opts.format === 'short' || opts.format === 'med');
+    let minutes;
+    let hours;
+    let days;
+    let delta;
+    let then = new Date(Number(epoch));
+    let now = new Date();
+    let format = opts.format || 'short';
+    let extendedFormatting = (opts.format === 'short' || opts.format === 'med');
 
     if (!isValidDate(then)) {
         return false;
@@ -140,9 +142,9 @@ function findValidTimestamps() {
 function replaceLocaleTimestamps() {
     const cls = 'js-locale-timestamp';
     $(`.${cls}`).each((el) => {
-        let datetime,
-            $el = bonzo(el),
-            timestamp = parseInt($el.attr('data-timestamp'), 10);
+        let datetime;
+        let $el = bonzo(el);
+        let timestamp = parseInt($el.attr('data-timestamp'), 10);
 
         if (timestamp) {
             datetime = new Date(timestamp);
@@ -156,17 +158,20 @@ function replaceValidTimestamps(opts) {
     opts = opts || {};
 
     findValidTimestamps().each((el) => {
-        let targetEl,
-            $el = bonzo(el),
-            // Epoch dates are more reliable, fallback to datetime for liveblog blocks
-            timestamp = parseInt($el.attr('data-timestamp'), 10) || $el.attr('datetime'),
-            datetime = new Date(timestamp),
-            relativeDate = makeRelativeDate(datetime.getTime(), {
-                // NOTE: if this is in a block (blog), assume we want added time on > 1 day old dates
-                showTime: bonzo($el.parent()).hasClass('block-time'),
-                format: $el.attr('data-relativeformat'),
-                notAfter: opts.notAfter,
-            });
+        let targetEl;
+        let $el = bonzo(el);
+
+        let // Epoch dates are more reliable, fallback to datetime for liveblog blocks
+        timestamp = parseInt($el.attr('data-timestamp'), 10) || $el.attr('datetime');
+
+        let datetime = new Date(timestamp);
+
+        let relativeDate = makeRelativeDate(datetime.getTime(), {
+            // NOTE: if this is in a block (blog), assume we want added time on > 1 day old dates
+            showTime: bonzo($el.parent()).hasClass('block-time'),
+            format: $el.attr('data-relativeformat'),
+            notAfter: opts.notAfter,
+        });
 
         if (relativeDate) {
             // If we find .timestamp__text (facia), use that instead

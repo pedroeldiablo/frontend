@@ -53,11 +53,11 @@ function SaveForLater() {
     );
 }
 
-let bookmarkSvg = svgs('bookmark', ['rounded-icon']),
-    shortUrl = config.page.shortUrlId || '',
-    savedPlatformAnalytics = `web:${detect.getUserAgent.browser}:${detect.getBreakpoint()}`;
+let bookmarkSvg = svgs('bookmark', ['rounded-icon']);
+let shortUrl = config.page.shortUrlId || '';
+let savedPlatformAnalytics = `web:${detect.getUserAgent.browser}:${detect.getBreakpoint()}`;
 
-const getCustomEventProperties = function (contentId) {
+const getCustomEventProperties = contentId => {
     const prefix = config.page.contentType.match(/^Network Front|Section$/) ? 'Front' : 'Content';
     return {
         prop74: `${prefix}ContainerSave:${contentId}`,
@@ -205,11 +205,11 @@ SaveForLater.prototype.renderFaciaItemLinks = function (signedIn, context) {
     const elements = this.getElementsIndexedById(context);
 
     forEach(elements, (item) => {
-        let $item = $(item),
-            $itemSaveLink = $(this.classes.itemSaveLink, item),
-            shortUrl = item.getAttribute(this.attributes.containerItemShortUrl),
-            id = item.getAttribute(this.attributes.containerItemDataId),
-            isSaved = signedIn ? this.getSavedArticle(shortUrl) : false;
+        let $item = $(item);
+        let $itemSaveLink = $(this.classes.itemSaveLink, item);
+        let shortUrl = item.getAttribute(this.attributes.containerItemShortUrl);
+        let id = item.getAttribute(this.attributes.containerItemDataId);
+        let isSaved = signedIn ? this.getSavedArticle(shortUrl) : false;
 
         if ($itemSaveLink.length === 0) {
             return;
@@ -218,9 +218,9 @@ SaveForLater.prototype.renderFaciaItemLinks = function (signedIn, context) {
         if (signedIn) {
             this[isSaved ? 'createDeleteFaciaItemHandler' : 'createSaveFaciaItemHandler']($itemSaveLink[0], id, shortUrl);
         } else {
-            bean.one($itemSaveLink[0], 'click', function (id, shortUrl) {
+            bean.one($itemSaveLink[0], 'click', (id, shortUrl) => {
                 this.signUserInToSaveArticle(id, shortUrl);
-            }.bind(this, id, shortUrl));
+            });
         }
 
 
@@ -242,14 +242,15 @@ SaveForLater.prototype.renderFaciaItemLinks = function (signedIn, context) {
 
 // generic functions to save/delete an article, from anywhere
 SaveForLater.prototype.save = function (pageId, shortUrl, onSave) {
-    let date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00'),
-        newArticle = {
-            id: pageId,
-            shortUrl,
-            date,
-            read: false,
-            platform: savedPlatformAnalytics,
-        };
+    let date = new Date().toISOString().replace(/\.[0-9]+Z/, '+00:00');
+
+    let newArticle = {
+        id: pageId,
+        shortUrl,
+        date,
+        read: false,
+        platform: savedPlatformAnalytics,
+    };
 
     this.userData.articles.push(newArticle);
 
@@ -363,7 +364,7 @@ SaveForLater.prototype.createSaveFaciaItemHandler = function (link, id, shortUrl
     }
 };
 
-SaveForLater.prototype.signUserInToSaveArticle = function (id, shortUrl) {
+SaveForLater.prototype.signUserInToSaveArticle = (id, shortUrl) => {
     const url = template('<%= idUrl%>/save-content?returnUrl=<%= returnUrl%>&shortUrl=<%= shortUrl%>&platform=<%= platform%>&articleId=<%= articleId %>&INTCMP=SFL-SO', {
         idUrl: config.page.idUrl,
         returnUrl: encodeURIComponent(document.location.href),
@@ -389,9 +390,9 @@ SaveForLater.prototype.getSavedArticle = function (shortUrl) {
 };
 
 SaveForLater.prototype.updateSavedCount = function () {
-    let $saveForLaterEl = $(this.classes.profileDropdownLink),
-        $profileDropdownItem = $(this.classes.identityProfileItem),
-        count = (this.userData.articles) ? this.userData.articles.length : 0;
+    let $saveForLaterEl = $(this.classes.profileDropdownLink);
+    let $profileDropdownItem = $(this.classes.identityProfileItem);
+    let count = (this.userData.articles) ? this.userData.articles.length : 0;
 
     if (count > 0) {
         $saveForLaterEl.attr('data-saved-content-count', count);

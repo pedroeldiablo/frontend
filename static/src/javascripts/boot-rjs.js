@@ -23,9 +23,7 @@ import domReady from 'domReady';
 import raven from 'common/utils/raven';
 // curl’s promise API is broken, so we must cast it to a real Promise
 // https://github.com/cujojs/curl/issues/293
-const promiseRequire = function (moduleIds) {
-    return Promise.resolve(require(moduleIds));
-};
+const promiseRequire = moduleIds => Promise.resolve(require(moduleIds));
 
 const guardian = window.guardian;
 const config = guardian.config;
@@ -34,7 +32,7 @@ const domReadyPromise = new Promise((resolve) => {
     domReady(resolve);
 });
 
-const bootCommercial = function () {
+const bootCommercial = () => {
     if (!config.switches.commercial) {
         return;
     }
@@ -61,7 +59,7 @@ const bootCommercial = function () {
         ));
 };
 
-const bootEnhanced = function () {
+const bootEnhanced = () => {
     if (guardian.isEnhanced) {
         return promiseRequire(['bootstraps/enhanced/main'])
             .then((boot) => {

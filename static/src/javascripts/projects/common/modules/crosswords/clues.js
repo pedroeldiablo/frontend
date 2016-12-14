@@ -91,23 +91,21 @@ const Clues = React.createClass({
 
     render() {
         const headerClass = 'crossword__clues-header';
-        const cluesByDirection = function (direction) {
-            return chain(this.props.clues).and(filter, clue => clue.entry.direction === direction).and(map, function (clue) {
-                return React.createElement(Clue, {
-                    ref: clue.entry.id,
-                    id: clue.entry.id,
-                    key: clue.entry.id,
-                    number: clue.entry.number,
-                    humanNumber: clue.entry.humanNumber,
-                    clue: clue.entry.clue,
-                    hasAnswered: clue.hasAnswered,
-                    isSelected: clue.isSelected,
-                    setReturnPosition: function () {
-                        this.props.setReturnPosition(window.scrollY);
-                    }.bind(this),
-                });
-            }, this);
-        }.bind(this);
+        const cluesByDirection = direction => chain(this.props.clues).and(filter, clue => clue.entry.direction === direction).and(map, function (clue) {
+            return React.createElement(Clue, {
+                ref: clue.entry.id,
+                id: clue.entry.id,
+                key: clue.entry.id,
+                number: clue.entry.number,
+                humanNumber: clue.entry.humanNumber,
+                clue: clue.entry.clue,
+                hasAnswered: clue.hasAnswered,
+                isSelected: clue.isSelected,
+                setReturnPosition: () => {
+                    this.props.setReturnPosition(window.scrollY);
+                },
+            });
+        }, this);
 
         return React.createElement(
             'div', {

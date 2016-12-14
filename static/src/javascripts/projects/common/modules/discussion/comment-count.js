@@ -16,13 +16,15 @@ import sortBy from 'lodash/collections/sortBy';
 import uniq from 'lodash/arrays/uniq';
 import keys from 'lodash/objects/keys';
 import chain from 'common/utils/chain';
-let attributeName = 'data-discussion-id',
-    countUrl = '/discussion/comment-counts.json?shortUrls=',
-    templates = {
-        content: commentCountContentTemplate,
-        contentImmersive: commentCountContentImmersiveTemplate,
-    },
-    defaultTemplate = commentCountTemplate;
+let attributeName = 'data-discussion-id';
+let countUrl = '/discussion/comment-counts.json?shortUrls=';
+
+let templates = {
+    content: commentCountContentTemplate,
+    contentImmersive: commentCountContentImmersiveTemplate,
+};
+
+let defaultTemplate = commentCountTemplate;
 
 function getElementsIndexedById(context) {
     const elements = qwery(`[${attributeName}]`, context);
@@ -42,12 +44,12 @@ function getContentUrl(node) {
 function renderCounts(counts, indexedElements) {
     counts.forEach((c) => {
         forEach(indexedElements[c.id], (node) => {
-            let format,
-                $node = bonzo(node),
-                url = $node.attr('data-discussion-url') || getContentUrl(node),
-                $container,
-                meta,
-                html;
+            let format;
+            let $node = bonzo(node);
+            let url = $node.attr('data-discussion-url') || getContentUrl(node);
+            let $container;
+            let meta;
+            let html;
 
             if ($node.attr('data-discussion-closed') === 'true' && c.count === 0) {
                 return; // Discussion is closed and had no comments, we don't want to show a comment count
@@ -80,8 +82,8 @@ function renderCounts(counts, indexedElements) {
 
 function getCommentCounts(context) {
     fastdom.read(() => {
-        let indexedElements = getElementsIndexedById(context || document.body),
-            ids = getContentIds(indexedElements);
+        let indexedElements = getElementsIndexedById(context || document.body);
+        let ids = getContentIds(indexedElements);
         ajax({
             url: countUrl + ids,
             type: 'json',

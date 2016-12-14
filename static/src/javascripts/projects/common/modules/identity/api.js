@@ -13,8 +13,9 @@ import Promise from 'Promise';
  * We'll need to change this once there is some state change
  * TODO(jamesgorrie): Allow this to show policies too (not needed yet)
  */
-let Id = {},
-    userFromCookieCache = null;
+let Id = {};
+
+let userFromCookieCache = null;
 
 Id.cookieName = 'GU_U';
 Id.signOutCookieName = 'GU_SO';
@@ -23,7 +24,7 @@ Id.lastRefreshKey = 'identity.lastRefresh';
 Id.idApiRoot = null;
 Id.idUrl = null;
 
-Id.init = function () {
+Id.init = () => {
     Id.idApiRoot = config.page.idApiUrl;
     Id.idUrl = config.page.idUrl;
     mediator.emit('module:identity:api:loaded');
@@ -32,7 +33,7 @@ Id.init = function () {
 /**
  * Clears the caches and state, primarily for testing.
  */
-Id.reset = function () {
+Id.reset = () => {
     Id.getUserFromApi.reset();
     userFromCookieCache = null;
 };
@@ -51,10 +52,10 @@ Id.reset = function () {
  *
  * @return {?Object} the user information
  */
-Id.getUserFromCookie = function () {
+Id.getUserFromCookie = () => {
     if (userFromCookieCache === null) {
-        let cookieData = cookies.get(Id.cookieName),
-            userData = cookieData ? JSON.parse(Id.decodeBase64(cookieData.split('.')[0])) : null;
+        let cookieData = cookies.get(Id.cookieName);
+        let userData = cookieData ? JSON.parse(Id.decodeBase64(cookieData.split('.')[0])) : null;
         if (userData) {
             const displayName = decodeURIComponent(userData[2]);
             userFromCookieCache = {
@@ -74,23 +75,17 @@ Id.getUserFromCookie = function () {
 /**
  * @return {string}
  */
-Id.getCookie = function () {
-    return cookies.get(Id.cookieName);
-};
+Id.getCookie = () => cookies.get(Id.cookieName);
 
 /**
  * @return {boolean}
  */
-Id.isUserLoggedIn = function () {
-    return Id.getUserFromCookie() !== null;
-};
+Id.isUserLoggedIn = () => Id.getUserFromCookie() !== null;
 
 /**
  * @return {string}
  */
-Id.getUrl = function () {
-    return Id.idUrl;
-};
+Id.getUrl = () => Id.idUrl;
 
 /**
  * Gets the currently logged in user data from the identity api
@@ -122,15 +117,16 @@ Id.getUserFromApi = asyncCallMerger.mergeCalls(
  * Gets the currently logged in user data from the identity api and
  * refreshes the users cookie at the same time.
  */
-Id.getUserFromApiWithRefreshedCookie = function () {
-    let endpoint = '/user/me',
-        request = ajax({
-            url: Id.idApiRoot + endpoint,
-            type: 'jsonp',
-            data: {
-                refreshCookie: true,
-            },
-        });
+Id.getUserFromApiWithRefreshedCookie = () => {
+    let endpoint = '/user/me';
+
+    let request = ajax({
+        url: Id.idApiRoot + endpoint,
+        type: 'jsonp',
+        data: {
+            refreshCookie: true,
+        },
+    });
 
     return request;
 };
@@ -138,7 +134,7 @@ Id.getUserFromApiWithRefreshedCookie = function () {
 /**
  * Returns user object when signed in, otherwise redirects to sign in with configurable absolute returnUrl
  */
-Id.getUserOrSignIn = function (returnUrl) {
+Id.getUserOrSignIn = returnUrl => {
     if (Id.isUserLoggedIn()) {
         return Id.getUserFromCookie();
     } else {
@@ -151,7 +147,7 @@ Id.getUserOrSignIn = function (returnUrl) {
 /**
  * Wrap window.location.href so it can be spied in unit tests
  */
-Id.redirectTo = function (url) {
+Id.redirectTo = url => {
     window.location.href = url;
 };
 
@@ -160,14 +156,12 @@ Id.redirectTo = function (url) {
  * @param {string} str
  * @return {string}
  */
-Id.decodeBase64 = function (str) {
-    return decodeURIComponent(escape(utilAtob(str.replace(/-/g, '+').replace(/_/g, '/').replace(/,/g, '='))));
-};
+Id.decodeBase64 = str => decodeURIComponent(escape(utilAtob(str.replace(/-/g, '+').replace(/_/g, '/').replace(/,/g, '='))));
 
 /**
  * @return {Boolean}
  */
-Id.hasUserSignedOutInTheLast24Hours = function () {
+Id.hasUserSignedOutInTheLast24Hours = () => {
     const cookieData = cookies.get(Id.signOutCookieName);
 
     if (cookieData) {
@@ -180,43 +174,46 @@ Id.hasUserSignedOutInTheLast24Hours = function () {
  * Returns true if a there is no signed in user and the user has not signed in the last 24 hours
  */
 Id.shouldAutoSigninInUser = function () {
-    let signedInUser = !!cookies.get(Id.cookieName),
-        checkFacebook = !!storage.local.get(Id.fbCheckKey);
+    let signedInUser = !!cookies.get(Id.cookieName);
+    let checkFacebook = !!storage.local.get(Id.fbCheckKey);
     return !signedInUser && !checkFacebook && !this.hasUserSignedOutInTheLast24Hours();
 };
 
-Id.setNextFbCheckTime = function (nextFbCheckDue) {
+Id.setNextFbCheckTime = nextFbCheckDue => {
     storage.local.set(Id.fbCheckKey, {}, {
         expires: nextFbCheckDue,
     });
 };
 
-Id.emailSignup = function (listId) {
-    let endpoint = `/useremails/${Id.getUserFromCookie().id}/subscriptions`,
-        data = {
-            listId,
+Id.emailSignup = listId => {
+    let endpoint = `/useremails/${Id.getUserFromCookie().id}/subscriptions`;
+
+    let data = {
+        listId,
+    };
+
+    let request = ajax({
+        url: Id.idApiRoot + endpoint,
+        type: 'jsonp',
+        crossOrigin: true,
+        data: {
+            body: JSON.stringify(data),
+            method: 'post',
         },
-        request = ajax({
-            url: Id.idApiRoot + endpoint,
-            type: 'jsonp',
-            crossOrigin: true,
-            data: {
-                body: JSON.stringify(data),
-                method: 'post',
-            },
-        });
+    });
 
     return request;
 };
 
-Id.getUserEmailSignUps = function () {
+Id.getUserEmailSignUps = () => {
     if (Id.getUserFromCookie()) {
-        let endpoint = `/useremails/${Id.getUserFromCookie().id}`,
-            request = ajax({
-                url: Id.idApiRoot + endpoint,
-                type: 'jsonp',
-                crossOrigin: true,
-            });
+        let endpoint = `/useremails/${Id.getUserFromCookie().id}`;
+
+        let request = ajax({
+            url: Id.idApiRoot + endpoint,
+            type: 'jsonp',
+            crossOrigin: true,
+        });
 
         return request;
     }
@@ -224,45 +221,48 @@ Id.getUserEmailSignUps = function () {
     return Promise.resolve(null);
 };
 
-Id.sendValidationEmail = function () {
-    let endpoint = '/user/send-validation-email',
-        request = ajax({
-            url: Id.idApiRoot + endpoint,
-            type: 'jsonp',
-            crossOrigin: true,
-            data: {
-                method: 'post',
-            },
-        });
+Id.sendValidationEmail = () => {
+    let endpoint = '/user/send-validation-email';
+
+    let request = ajax({
+        url: Id.idApiRoot + endpoint,
+        type: 'jsonp',
+        crossOrigin: true,
+        data: {
+            method: 'post',
+        },
+    });
 
     return request;
 };
 
-Id.getSavedArticles = function () {
-    let endpoint = '/syncedPrefs/me/savedArticles',
-        request = ajax({
-            url: Id.idApiRoot + endpoint,
-            type: 'jsonp',
-            crossOrigin: true,
-        });
+Id.getSavedArticles = () => {
+    let endpoint = '/syncedPrefs/me/savedArticles';
+
+    let request = ajax({
+        url: Id.idApiRoot + endpoint,
+        type: 'jsonp',
+        crossOrigin: true,
+    });
 
     return request;
 };
 
-Id.saveToArticles = function (data) {
-    let endpoint = '/syncedPrefs/cors/me/savedArticles',
-        request = ajax({
-            url: Id.idApiRoot + endpoint,
-            type: 'json',
-            crossOrigin: true,
-            method: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(data),
-            withCredentials: true,
-            headers: {
-                'X-GU-ID-Client-Access-Token': `Bearer ${config.page.idApiJsClientToken}`,
-            },
-        });
+Id.saveToArticles = data => {
+    let endpoint = '/syncedPrefs/cors/me/savedArticles';
+
+    let request = ajax({
+        url: Id.idApiRoot + endpoint,
+        type: 'json',
+        crossOrigin: true,
+        method: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        withCredentials: true,
+        headers: {
+            'X-GU-ID-Client-Access-Token': `Bearer ${config.page.idApiJsClientToken}`,
+        },
+    });
 
     return request;
 };

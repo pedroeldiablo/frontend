@@ -46,7 +46,7 @@ sizeCallbacks[adSizes.fluid] = addFluid(['ad-slot']);
 /**
  * Trigger sticky scrolling for MPUs in the right-hand article column
  */
-sizeCallbacks[adSizes.mpu] = function (_, advert) {
+sizeCallbacks[adSizes.mpu] = (_, advert) => {
     const $node = bonzo(advert.node);
     if ($node.hasClass('ad-slot--right')) {
         stickyMpu($node);
@@ -58,11 +58,11 @@ sizeCallbacks[adSizes.mpu] = function (_, advert) {
 /**
  * Resolve the stickyMpu.whenRendered promise
  */
-sizeCallbacks[adSizes.halfPage] = function () {
+sizeCallbacks[adSizes.halfPage] = () => {
     mediator.emit('page:commercial:sticky-mpu');
 };
 
-sizeCallbacks[adSizes.video] = function (_, advert) {
+sizeCallbacks[adSizes.video] = (_, advert) => {
     fastdom.write(() => {
         advert.node.classList.add('u-h');
     });
@@ -73,7 +73,7 @@ sizeCallbacks[adSizes.video] = function (_, advert) {
  * and their containers closed up.
  */
 sizeCallbacks[adSizes.outOfPage] =
-    sizeCallbacks[adSizes.empty] = function (event, advert) {
+    sizeCallbacks[adSizes.empty] = (event, advert) => {
         if (!event.slot.getOutOfPage()) {
             const $parent = bonzo(advert.node.parentNode);
             return fastdom.write(() => {
@@ -89,7 +89,7 @@ sizeCallbacks[adSizes.outOfPage] =
 /**
  * Portrait adverts exclude the locally-most-popular widget
  */
-sizeCallbacks[adSizes.portrait] = function () {
+sizeCallbacks[adSizes.portrait] = () => {
     // remove geo most popular
     geoMostPopular.whenRendered.then(geoMostPopular => fastdom.write(() => {
         bonzo(geoMostPopular.elem).remove();

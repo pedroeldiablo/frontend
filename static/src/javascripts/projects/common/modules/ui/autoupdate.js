@@ -45,7 +45,7 @@ export default function (opts) {
     let updateTimeoutId;
 
 
-    const updateDelay = function (delay) {
+    const updateDelay = delay => {
         let newDelay;
         if (detect.pageVisible()) {
             newDelay = options.minUpdateDelay;
@@ -55,19 +55,17 @@ export default function (opts) {
         currentUpdateDelay = newDelay;
     };
 
-    const scrolledPastTopBlock = function () {
-        return $liveblogBody.offset().top < window.pageYOffset;
-    };
+    const scrolledPastTopBlock = () => $liveblogBody.offset().top < window.pageYOffset;
     const isLivePage = window.location.search.indexOf('?page=') === -1;
 
-    const revealInjectedElements = function () {
+    const revealInjectedElements = () => {
         fastdom.write(() => {
             $('.autoupdate--hidden', $liveblogBody).addClass('autoupdate--highlight').removeClass('autoupdate--hidden');
             mediator.emit('modules:autoupdate:unread', 0);
         });
     };
 
-    const toastButtonRefresh = function () {
+    const toastButtonRefresh = () => {
         fastdom.write(() => {
             if (unreadBlocksNo > 0) {
                 const updateText = (unreadBlocksNo > 1) ? ' new updates' : ' new update';
@@ -81,7 +79,7 @@ export default function (opts) {
         });
     };
 
-    const injectNewBlocks = function (newBlocks) {
+    const injectNewBlocks = newBlocks => {
         // Clean up blocks before insertion
         const resultHtml = $.create(`<div>${newBlocks}</div>`)[0];
         let elementsToAdd;
@@ -101,7 +99,7 @@ export default function (opts) {
         });
     };
 
-    const displayNewBlocks = function () {
+    const displayNewBlocks = () => {
         if (detect.pageVisible()) {
             revealInjectedElements();
         }
@@ -110,7 +108,7 @@ export default function (opts) {
         toastButtonRefresh();
     };
 
-    const checkForUpdates = function () {
+    const checkForUpdates = () => {
         if (updateTimeoutId != undefined) {
             clearTimeout(updateTimeoutId);
         }
@@ -157,7 +155,7 @@ export default function (opts) {
         });
     };
 
-    const setUpListeners = function () {
+    const setUpListeners = () => {
         bean.on(document.body, 'click', '.toast__button', () => {
             if (isLivePage) {
                 fastdom.read(() => {

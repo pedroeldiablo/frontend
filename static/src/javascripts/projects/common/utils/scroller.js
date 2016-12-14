@@ -9,17 +9,19 @@ import fastdom from 'fastdom';
 // scroller.scrollTo(100, 250, 'linear', document.querySelector('.container')); // 250ms scroll to 100px of scrollable container
 //   if you pass in an element, you must also specify an easing function.
 function scrollTo(offset, duration, easeFn, container) {
-    let $container = bonzo(container || document.body),
-        scrollEnd = offset,
-        scrollFrom = $container.scrollTop(),
-        scrollDist = scrollEnd - scrollFrom,
-        ease = easing.create(easeFn || 'easeOutQuad', duration),
-        scrollFn = function () {
-            fastdom.write(() => {
-                $container.scrollTop(scrollFrom + (ease() * scrollDist));
-            });
-        },
-        interval = window.setInterval(scrollFn, 15);
+    let $container = bonzo(container || document.body);
+    let scrollEnd = offset;
+    let scrollFrom = $container.scrollTop();
+    let scrollDist = scrollEnd - scrollFrom;
+    let ease = easing.create(easeFn || 'easeOutQuad', duration);
+
+    let scrollFn = () => {
+        fastdom.write(() => {
+            $container.scrollTop(scrollFrom + (ease() * scrollDist));
+        });
+    };
+
+    let interval = window.setInterval(scrollFn, 15);
     window.setTimeout(() => {
         window.clearInterval(interval);
         fastdom.write(() => {

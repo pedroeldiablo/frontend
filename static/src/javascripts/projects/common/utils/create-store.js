@@ -1,24 +1,22 @@
 // Mini Redux
-const createStore = function (reducer, initialState) {
+const createStore = (reducer, initialState) => {
     // We re-assign this over time
     let state = initialState;
     const subscribers = [];
 
-    const notify = function () {
+    const notify = () => {
         subscribers.forEach((fn) => {
             fn();
         });
     };
-    const dispatch = function (action) {
+    const dispatch = action => {
         state = reducer(state, action);
         notify();
     };
-    const subscribe = function (fn) {
+    const subscribe = fn => {
         subscribers.push(fn);
     };
-    const getState = function () {
-        return state;
-    };
+    const getState = () => state;
 
     dispatch({
         type: 'INIT',

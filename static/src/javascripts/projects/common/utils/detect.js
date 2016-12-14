@@ -12,47 +12,50 @@ import memoize from 'lodash/functions/memoize';
 import compose from 'lodash/functions/compose';
 import Promise from 'Promise';
 
-let supportsPushState,
-    getUserAgent,
-    pageVisibility = document.visibilityState ||
-    document.webkitVisibilityState ||
-    document.mozVisibilityState ||
-    document.msVisibilityState ||
-    'visible',
-    // Ordered lists of breakpoints
-    // These should match those defined in:
-    //   stylesheets/_vars.scss
-    //   common/app/layout/Breakpoint.scala
-    breakpoints = [{
-        name: 'mobile',
-        isTweakpoint: false,
-        width: 0,
-    }, {
-        name: 'mobileLandscape',
-        isTweakpoint: true,
-        width: 480,
-    }, {
-        name: 'phablet',
-        isTweakpoint: true,
-        width: 660,
-    }, {
-        name: 'tablet',
-        isTweakpoint: false,
-        width: 740,
-    }, {
-        name: 'desktop',
-        isTweakpoint: false,
-        width: 980,
-    }, {
-        name: 'leftCol',
-        isTweakpoint: true,
-        width: 1140,
-    }, {
-        name: 'wide',
-        isTweakpoint: false,
-        width: 1300,
-    }],
-    detect;
+let supportsPushState;
+let getUserAgent;
+
+let pageVisibility = document.visibilityState ||
+document.webkitVisibilityState ||
+document.mozVisibilityState ||
+document.msVisibilityState ||
+'visible';
+
+let // Ordered lists of breakpoints
+// These should match those defined in:
+//   stylesheets/_vars.scss
+//   common/app/layout/Breakpoint.scala
+breakpoints = [{
+    name: 'mobile',
+    isTweakpoint: false,
+    width: 0,
+}, {
+    name: 'mobileLandscape',
+    isTweakpoint: true,
+    width: 480,
+}, {
+    name: 'phablet',
+    isTweakpoint: true,
+    width: 660,
+}, {
+    name: 'tablet',
+    isTweakpoint: false,
+    width: 740,
+}, {
+    name: 'desktop',
+    isTweakpoint: false,
+    width: 980,
+}, {
+    name: 'leftCol',
+    isTweakpoint: true,
+    width: 1140,
+}, {
+    name: 'wide',
+    isTweakpoint: false,
+    width: 1300,
+}];
+
+let detect;
 
 /**
  *     Util: returns a function that:
@@ -65,7 +68,7 @@ let supportsPushState,
  */
 function hasCrossedBreakpoint(includeTweakpoint) {
     let was = getBreakpoint(includeTweakpoint);
-    return function (callback) {
+    return callback => {
         const is = getBreakpoint(includeTweakpoint);
         if (is !== was) {
             callback(is, was);
@@ -132,10 +135,10 @@ function socialContext() {
     }
 }
 
-getUserAgent = (function () {
-    let ua = navigator.userAgent,
-        tem,
-        M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+getUserAgent = ((() => {
+    let ua = navigator.userAgent;
+    let tem;
+    let M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if (/trident/i.test(M[1])) {
         tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
         return `IE ${tem[1] || ''}`;
@@ -155,7 +158,7 @@ getUserAgent = (function () {
         browser: M[0],
         version: M[1],
     };
-}());
+})());
 
 function hasTouchScreen() {
     return ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
@@ -177,8 +180,9 @@ function hasPushStateSupport() {
 
 function getVideoFormatSupport() {
     // https://github.com/Modernizr/Modernizr/blob/master/feature-detects/video.js
-    let elem = document.createElement('video'),
-        types = {};
+    let elem = document.createElement('video');
+
+    let types = {};
 
     try {
         if (elem.canPlayType) {
@@ -196,10 +200,10 @@ function getOrientation() {
 }
 
 function getViewport() {
-    let w = window,
-        d = document,
-        e = d.documentElement,
-        g = d.getElementsByTagName('body')[0];
+    let w = window;
+    let d = document;
+    let e = d.documentElement;
+    let g = d.getElementsByTagName('body')[0];
 
     return {
         width: w.innerWidth || e.clientWidth || g.clientWidth,
@@ -278,16 +282,17 @@ function initPageVisibility() {
     const hidden = 'hidden';
 
     function onchange(evt) {
-        let v = 'visible',
-            h = 'hidden',
-            evtMap = {
-                focus: v,
-                focusin: v,
-                pageshow: v,
-                blur: h,
-                focusout: h,
-                pagehide: h,
-            };
+        let v = 'visible';
+        let h = 'hidden';
+
+        let evtMap = {
+            focus: v,
+            focusin: v,
+            pageshow: v,
+            blur: h,
+            focusout: h,
+            pagehide: h,
+        };
 
         evt = evt || window.event;
         if (evt.type in evtMap) {

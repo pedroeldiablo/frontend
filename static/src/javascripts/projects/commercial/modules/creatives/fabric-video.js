@@ -15,10 +15,10 @@ function FabricVideo(adSlot, params) {
     const isSmallScreen = detect.isBreakpoint({
         max: 'phablet',
     });
-    let hasVideo,
-        video,
-        layer2,
-        inView;
+    let hasVideo;
+    let video;
+    let layer2;
+    let inView;
 
     adSlot = adSlot instanceof HTMLElement ? adSlot : adSlot[0];
     fabricVideoTpl || (fabricVideoTpl = template(fabricVideoStr));

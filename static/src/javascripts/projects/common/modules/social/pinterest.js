@@ -1,8 +1,8 @@
 import fastdom from 'fastdom';
 import bean from 'bean';
 import $ from 'common/utils/$';
-let buttonsSelector = '.social__item--pinterest',
-    buttons;
+let buttonsSelector = '.social__item--pinterest';
+let buttons;
 
 function launchOverlay(event) {
     event.preventDefault();

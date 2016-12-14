@@ -4,9 +4,9 @@ import idApi from 'common/modules/identity/api';
 import assign from 'lodash/objects/assign';
 
 function Formstack(el, formstackId, config) {
-    let self = this,
-        dom = {},
-        formId = formstackId.split('-')[0];
+    let self = this;
+    let dom = {};
+    let formId = formstackId.split('-')[0];
 
     config = assign({
         idClasses: {
@@ -53,7 +53,7 @@ function Formstack(el, formstackId, config) {
         },
     }, config);
 
-    self.init = function () {
+    self.init = () => {
         // User object required to populate fields
         const user = idApi.getUserOrSignIn();
 
@@ -65,11 +65,11 @@ function Formstack(el, formstackId, config) {
         self.postMessage('ready');
     };
 
-    self.dom = function (user) {
-        let selector,
-            $userId,
-            $email,
-            html;
+    self.dom = user => {
+        let selector;
+        let $userId;
+        let $email;
+        let html;
 
         // Formstack generates some awful HTML, so we'll remove the CSS links,
         // loop their selectors and add our own classes instead
@@ -94,7 +94,7 @@ function Formstack(el, formstackId, config) {
         bean.on(dom.$form[0], 'submit', self.submit);
     };
 
-    self.submit = function () {
+    self.submit = () => {
         // TODO: FML
         setTimeout(() => {
             // Remove any existing errors
@@ -114,12 +114,12 @@ function Formstack(el, formstackId, config) {
         }, 100);
     };
 
-    self.unload = function () {
+    self.unload = () => {
         // Listen for navigation to success page
         self.postMessage('unload');
     };
 
-    self.postMessage = function (message) {
+    self.postMessage = message => {
         const domain = config.page.idUrl;
         window.top.postMessage(message, domain);
     };

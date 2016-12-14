@@ -13,11 +13,9 @@ function $(selector, context) {
     return bonzo(qwery(selector, context));
 }
 
-$.create = function (s) {
-    return bonzo(bonzo.create(s));
-};
+$.create = s => bonzo(bonzo.create(s));
 
-$.ancestor = function (el, c) {
+$.ancestor = (el, c) => {
     if (el.nodeName.toLowerCase() === 'html') {
         return false;
     }
@@ -28,7 +26,7 @@ $.ancestor = function (el, c) {
     }
 };
 
-$.forEachElement = function (selector, fn) {
+$.forEachElement = (selector, fn) => {
     const els = qwery(selector);
     forEach(els, fn);
     return els;

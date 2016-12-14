@@ -22,15 +22,15 @@ ActivityStream.prototype.ready = function () {
     this.on('click', '.js-disc-recommend-comment', this.recommendComment);
     $('.js-disc-recommend-comment').addClass('disc-comment__recommend--open');
 
-    window.onpopstate = function (event) {
+    window.onpopstate = event => {
         if (url.hasHistorySupport) {
             this.applyState(event.state.resp.html, event.state.streamType);
         }
-    }.bind(this);
+    };
 
     pagination(this);
 };
-ActivityStream.prototype.recommendComment = function (e) {
+ActivityStream.prototype.recommendComment = e => {
     const el = e.currentTarget;
     discussionApi.recommendComment(el.getAttribute('data-comment-id'));
     bonzo(el).addClass('disc-comment__recommend--active');

@@ -22,7 +22,7 @@ function SpaceFiller() {
  *
  * @returns {Promise} - when insertion attempt completed, resolves 'true' if inserted, or 'false' if no space found
  */
-SpaceFiller.prototype.fillSpace = function (rules, writer, options) {
+SpaceFiller.prototype.fillSpace = (rules, writer, options) => {
     const write = (options && options.domWriter) || fastdom.write;
     return queue.add(insertNextContent);
 

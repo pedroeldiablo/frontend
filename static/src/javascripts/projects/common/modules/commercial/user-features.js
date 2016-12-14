@@ -76,9 +76,7 @@ function deleteOldData() {
  * This data may be stale; we do not wait for userFeatures.refresh()
  * @returns {boolean}
  */
-UserFeatures.prototype.isPayingMember = function () {
-    // If the user is logged in, but has no cookie yet, play it safe and assume they're a paying user
-    return identity.isUserLoggedIn() && (cookies.get(PERSISTENCE_KEYS.PAYING_MEMBER_COOKIE) !== 'false');
-};
+UserFeatures.prototype.isPayingMember = () => // If the user is logged in, but has no cookie yet, play it safe and assume they're a paying user
+identity.isUserLoggedIn() && cookies.get(PERSISTENCE_KEYS.PAYING_MEMBER_COOKIE) !== 'false';
 
 export default new UserFeatures();

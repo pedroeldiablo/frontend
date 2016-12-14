@@ -95,9 +95,7 @@ CommentBox.prototype.defaultOptions = {
  */
 CommentBox.prototype.errors = [];
 
-CommentBox.prototype.getUserData = function () {
-    return IdentityApi.getUserFromCookie();
-};
+CommentBox.prototype.getUserData = () => IdentityApi.getUserFromCookie();
 
 /** @override */
 CommentBox.prototype.prerender = function () {
@@ -202,10 +200,10 @@ CommentBox.prototype.ready = function () {
     }
 };
 
-CommentBox.prototype.urlify = function (str) {
-    let reOutsideTags = '(?![^<]*>|[^<>]*</)',
-        reUrl = '\\b((https?://|www.)\\S+)\\b',
-        regexp = new RegExp(reUrl + reOutsideTags, 'g');
+CommentBox.prototype.urlify = str => {
+    let reOutsideTags = '(?![^<]*>|[^<>]*</)';
+    let reUrl = '\\b((https?://|www.)\\S+)\\b';
+    let regexp = new RegExp(reUrl + reOutsideTags, 'g');
     return str.replace(regexp, (match, url, protocol) => {
         const fullUrl = protocol === 'www.' ? `http://${url}` : url;
         return `<a href="${fullUrl}">${url}</a>`;
@@ -226,14 +224,15 @@ CommentBox.prototype.invalidEmailError = function () {
 };
 
 CommentBox.prototype.postComment = function () {
-    let self = this,
-        comment = {
-            body: this.elem.body.value,
-        };
+    let self = this;
+
+    let comment = {
+        body: this.elem.body.value,
+    };
 
     self.clearErrors();
 
-    const validEmailCommentSubmission = function () {
+    const validEmailCommentSubmission = () => {
         if (comment.body === '') {
             self.error('EMPTY_COMMENT_BODY');
         }
@@ -369,8 +368,8 @@ CommentBox.prototype.getDiscussionId = function () {
 CommentBox.prototype.setFormState = function (disabled) {
     disabled = typeof disabled === 'boolean' ? disabled : false;
 
-    let commentBody = this.getElem('body'),
-        submitButton = this.getElem('submit');
+    let commentBody = this.getElem('body');
+    let submitButton = this.getElem('submit');
 
     if (disabled || commentBody.value.length === 0) {
         submitButton.setAttribute('disabled', 'disabled');
@@ -412,10 +411,11 @@ CommentBox.prototype.verificationEmailFail = function () {
  * @param {Event=} e (optional)
  */
 CommentBox.prototype.previewComment = function (callback) {
-    let self = this,
-        comment = {
-            body: this.getElem('body').value,
-        };
+    let self = this;
+
+    let comment = {
+        body: this.getElem('body').value,
+    };
 
     self.clearErrors();
 
@@ -465,11 +465,11 @@ CommentBox.prototype.formatComment = function (formatStyle) {
     const cursorPositionStart = commentBody.selectionStart;
     let selectedText = commentBody.value.substring(commentBody.selectionStart, commentBody.selectionEnd);
 
-    const selectNewText = function (newText) {
+    const selectNewText = newText => {
         commentBody.setSelectionRange(cursorPositionStart, cursorPositionStart + newText.length);
     };
 
-    const formatSelection = function (startTag, endTag) {
+    const formatSelection = (startTag, endTag) => {
         const newText = startTag + selectedText + endTag;
 
         commentBody.value = commentBody.value.substring(0, commentBody.selectionStart) +
@@ -478,7 +478,7 @@ CommentBox.prototype.formatComment = function (formatStyle) {
         selectNewText(newText);
     };
 
-    const formatSelectionLink = function () {
+    const formatSelectionLink = () => {
         let href;
         let linkURL;
         if (/^https?:\/\//i.test(selectedText)) {

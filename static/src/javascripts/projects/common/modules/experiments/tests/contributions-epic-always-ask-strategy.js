@@ -31,13 +31,9 @@ export default function () {
     this.audienceCriteria = 'All';
     this.dataLinkNames = '';
     this.idealOutcome = 'There are no negative effects and this is the optimum strategy!';
-    this.canRun = function () {
-        return true;
-    };
+    this.canRun = () => true;
 
-    const makeEvent = (function (name) {
-        return `${this.id}:${name}`;
-    }).bind(this);
+    const makeEvent = name => `${this.id}:${name}`;
 
     function makeUrl(urlPrefix, intcmp) {
         return `${urlPrefix}INTCMP=${intcmp}`;
@@ -70,7 +66,7 @@ export default function () {
         },
     };
 
-    const componentWriter = function (component) {
+    const componentWriter = component => {
         fastdom.write(() => {
             const submetaElement = $('.submeta');
             if (submetaElement.length > 0) {
@@ -88,11 +84,11 @@ export default function () {
         });
     };
 
-    const registerViewListener = function (complete) {
+    const registerViewListener = complete => {
         mediator.on(epicViewedEvent, complete);
     };
 
-    const canBeDisplayed = function () {
+    const canBeDisplayed = () => {
         const userHasNeverContributed = !cookies.get('gu.contributions.contrib-timestamp');
         const worksWellWithPageTemplate = (config.page.contentType === 'Article') && !config.page.isMinuteArticle; // may render badly on other types
         const isSensitive = config.page.isSensitive === true;

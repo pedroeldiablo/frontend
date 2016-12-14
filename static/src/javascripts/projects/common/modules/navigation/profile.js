@@ -47,11 +47,11 @@ Profile.prototype.init = function () {
 };
 
 Profile.prototype.setFragmentFromCookie = function () {
-    let user = id.getUserFromCookie(),
-        $container = bonzo(this.dom.container),
-        $content = bonzo(this.dom.content),
-        $register = bonzo(this.dom.register),
-        $commentActivity = bonzo(this.dom.commentActivity);
+    let user = id.getUserFromCookie();
+    let $container = bonzo(this.dom.container);
+    let $content = bonzo(this.dom.content);
+    let $register = bonzo(this.dom.register);
+    let $commentActivity = bonzo(this.dom.commentActivity);
 
     if (user) {
         // Run this code only if we haven't already inserted
@@ -74,14 +74,14 @@ Profile.prototype.setFragmentFromCookie = function () {
 /**
  * @param {Object} resp response from the server
  */
-Profile.prototype.emitLoadedEvent = function (user) {
+Profile.prototype.emitLoadedEvent = user => {
     mediator.emit(`${Profile.CONFIG.eventName}:loaded`, user);
 };
 
 /**
  * @param {Object} resp response from the server
  */
-Profile.prototype.emitErrorEvent = function () {
+Profile.prototype.emitErrorEvent = () => {
     mediator.emit(`${Profile.CONFIG.eventName}:error`);
 };
 

@@ -8,11 +8,13 @@ import ActivityStream from 'common/modules/discussion/activity-stream';
 import mapValues from 'lodash/objects/mapValues';
 
 function getActivityStream(cb) {
-    let activityStream,
-        dataOpts = {
-            userId: 'data-user-id',
-            streamType: 'data-stream-type',
-        };
+    let activityStream;
+
+    let dataOpts = {
+        userId: 'data-user-id',
+        streamType: 'data-stream-type',
+    };
+
     $('.js-activity-stream').each((el) => {
         const opts = mapValues(dataOpts, key => el.getAttribute(key));
 
@@ -33,8 +35,8 @@ function selectTab(el) {
 
 function setupActivityStreamChanger(activityStream) {
     bean.on(document.body, 'click', '.js-activity-stream-change', (e) => {
-        let el = e.currentTarget,
-            streamType = el.getAttribute('data-stream-type');
+        let el = e.currentTarget;
+        let streamType = el.getAttribute('data-stream-type');
         e.preventDefault();
         selectTab(el);
 

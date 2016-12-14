@@ -3,7 +3,7 @@
     For example "comments throwing an exception should not stop auto refresh"
  */
 import reportError from 'common/utils/report-error';
-const catchErrors = function (fn) {
+const catchErrors = fn => {
     let error;
     try {
         fn();
@@ -13,7 +13,7 @@ const catchErrors = function (fn) {
     return error;
 };
 
-const log = function (name, error, reporter) {
+const log = (name, error, reporter) => {
     if (window.console && window.console.warn) {
         window.console.warn('Caught error.', error.stack);
     }
@@ -25,14 +25,14 @@ const log = function (name, error, reporter) {
     }, false);
 };
 
-const catchErrorsAndLog = function (name, fn, reporter) {
+const catchErrorsAndLog = (name, fn, reporter) => {
     const error = catchErrors(fn);
     if (error) {
         log(name, error, reporter);
     }
 };
 
-const catchErrorsAndLogAll = function (modules) {
+const catchErrorsAndLogAll = modules => {
     modules.forEach((pair) => {
         const name = pair[0];
         const fn = pair[1];

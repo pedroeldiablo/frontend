@@ -8,42 +8,48 @@ import template from 'common/utils/template';
 import svgs from 'common/views/svgs';
 import btnTmpl from 'text!facia/views/button-toggle.html';
 export default function (container) {
-    let _$container = bonzo(container),
-        _$button = bonzo(bonzo.create(
-            template(btnTmpl, {
-                text: 'Hide',
-                dataLink: 'Show',
-                icon: svgs('arrowicon'),
-            })
-        )),
-        buttonText = $('.fc-container__toggle__text', _$button[0]),
-        _prefName = 'container-states',
-        _toggleText = {
-            hidden: 'Show',
-            displayed: 'Hide',
-        },
-        _state = 'displayed',
-        _updatePref = function (id, state) {
-            // update user prefs
-            let prefs = userPrefs.get(_prefName),
-                prefValue = id;
-            if (state === 'displayed') {
-                delete prefs[prefValue];
-            } else {
-                if (!prefs) {
-                    prefs = {};
-                }
-                prefs[prefValue] = 'closed';
+    let _$container = bonzo(container);
+
+    let _$button = bonzo(bonzo.create(
+        template(btnTmpl, {
+            text: 'Hide',
+            dataLink: 'Show',
+            icon: svgs('arrowicon'),
+        })
+    ));
+
+    let buttonText = $('.fc-container__toggle__text', _$button[0]);
+    let _prefName = 'container-states';
+
+    let _toggleText = {
+        hidden: 'Show',
+        displayed: 'Hide',
+    };
+
+    let _state = 'displayed';
+
+    let _updatePref = (id, state) => {
+        // update user prefs
+        let prefs = userPrefs.get(_prefName),
+            prefValue = id;
+        if (state === 'displayed') {
+            delete prefs[prefValue];
+        } else {
+            if (!prefs) {
+                prefs = {};
             }
-            userPrefs.set(_prefName, prefs);
-        },
-        _readPrefs = function (id) {
-            // update user prefs
-            const prefs = userPrefs.get(_prefName);
-            if (prefs && prefs[id]) {
-                setState('hidden');
-            }
-        };
+            prefs[prefValue] = 'closed';
+        }
+        userPrefs.set(_prefName, prefs);
+    };
+
+    let _readPrefs = id => {
+        // update user prefs
+        const prefs = userPrefs.get(_prefName);
+        if (prefs && prefs[id]) {
+            setState('hidden');
+        }
+    };
 
     // delete old key
     userPrefs.remove('front-trailblocks');
@@ -60,10 +66,11 @@ export default function (container) {
         });
     }
 
-    this.addToggle = function () {
+    this.addToggle = () => {
         // append toggle button
-        let id = _$container.attr('data-id'),
-            $containerHeader = $('.js-container__header', _$container[0]);
+        let id = _$container.attr('data-id');
+
+        let $containerHeader = $('.js-container__header', _$container[0]);
 
         fastdom.write(() => {
             $containerHeader.append(_$button);

@@ -116,8 +116,8 @@ accountProfile.prototype.avatarUploadByApi = function (avatarForm) {
  *   TO DO: Use html5 file api to validate file size prior to upload @chrisfinch
  */
 accountProfile.prototype.bindAvatarUpload = function () {
-    let self = this,
-        avatarForm = self.accountProfileForms.querySelector(self.classes.avatarUploadForm);
+    let self = this;
+    let avatarForm = self.accountProfileForms.querySelector(self.classes.avatarUploadForm);
 
     if (avatarForm) {
         bean.on(avatarForm, 'submit', (event) => {
@@ -128,7 +128,7 @@ accountProfile.prototype.bindAvatarUpload = function () {
     }
 };
 
-accountProfile.prototype.prependMessage = function (message, location, clazz) {
+accountProfile.prototype.prependMessage = (message, location, clazz) => {
     const errorHtml = document.createElement('div');
     errorHtml.innerHTML = message;
     errorHtml.className = clazz;
@@ -150,13 +150,13 @@ accountProfile.prototype.prependSuccessMessage = function (message, location) {
  *   a form with unsaved changes.
  */
 accountProfile.prototype.genUnsavedError = function () {
-    let i,
-        labelId,
-        text,
-        errorDivStart = '<div class="form__error">',
-        errorDivEnd = '</div>',
-        errorSaveLink = '<a href="#" class="js-save-unsaved">Save changes</a>',
-        errorMessageStart = 'Your form has unsaved changes in ';
+    let i;
+    let labelId;
+    let text;
+    let errorDivStart = '<div class="form__error">';
+    let errorDivEnd = '</div>';
+    let errorSaveLink = '<a href="#" class="js-save-unsaved">Save changes</a>';
+    let errorMessageStart = 'Your form has unsaved changes in ';
 
     for (i = 0; i < this.unsavedFields.length; i++) {
         labelId = this.unsavedFields[i].id;
@@ -189,9 +189,9 @@ accountProfile.prototype.onInputChange = function (event) {
  *   Bind keyup events on input fields and register parent form on element
  */
 accountProfile.prototype.bindInputs = function (form) {
-    let i,
-        input,
-        inputs = Array.prototype.slice.call(form.querySelectorAll(this.classes.textInput));
+    let i;
+    let input;
+    let inputs = Array.prototype.slice.call(form.querySelectorAll(this.classes.textInput));
     inputs = inputs.concat(Array.prototype.slice.call(form.querySelectorAll('select')));
     for (i = inputs.length - 1; i >= 0; i--) {
         input = inputs[i];

@@ -20,11 +20,9 @@ export default function () {
     this.idealOutcome = 'More readers engage with the banner and then complete membership sign-up';
     this.hypothesis = 'Showing the banner to users who have visited us less frequently gives us a larger pool of potential supporters';
 
-    this.canRun = function () {
-        return config.page.edition.toLowerCase() === 'int' &&
-            commercialFeatures.canReasonablyAskForMoney &&
-            config.page.contentType.toLowerCase() !== 'signup';
-    };
+    this.canRun = () => config.page.edition.toLowerCase() === 'int' &&
+        commercialFeatures.canReasonablyAskForMoney &&
+        config.page.contentType.toLowerCase() !== 'signup';
 
     const success = function (complete) {
         if (this.canRun()) {

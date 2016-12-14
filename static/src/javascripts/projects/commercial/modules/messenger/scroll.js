@@ -10,8 +10,8 @@ let useIO = 'IntersectionObserver' in w;
 let taskQueued = false;
 let iframes = {};
 let iframeCounter = 0;
-let observer,
-    visibleIframeIds;
+let observer;
+let visibleIframeIds;
 
 messenger.register('scroll', onMessage, {
     persist: true,

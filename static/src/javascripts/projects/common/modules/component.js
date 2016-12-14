@@ -12,7 +12,7 @@ import clone from 'lodash/objects/clone';
  *   Perhaps in the create method somewhere.
  * @constructor
  */
-const Component = function () {};
+const Component = () => {};
 
 /** @type {boolean} */
 Component.prototype.useBem = false;
@@ -92,8 +92,8 @@ Component.prototype.attachTo = function (elem) {
  */
 Component.prototype.render = function (parent) {
     this.checkAttached();
-    let template = bonzo.create((this.template) ? this.template : document.getElementById(`tmpl-${this.templateName}`).innerHTML)[0],
-        container = parent || document.body;
+    let template = bonzo.create((this.template) ? this.template : document.getElementById(`tmpl-${this.templateName}`).innerHTML)[0];
+    let container = parent || document.body;
 
     this.elem = template;
     this._prerender();
@@ -139,9 +139,9 @@ Component.prototype.fetch = function (parent, key) {
  * @return Reqwest
  */
 Component.prototype._fetch = function () {
-    let endpoint = (typeof this.endpoint === 'function') ? this.endpoint() : this.endpoint,
-        self = this,
-        opt;
+    let endpoint = (typeof this.endpoint === 'function') ? this.endpoint() : this.endpoint;
+    let self = this;
+    let opt;
 
     for (opt in this.options) {
         endpoint = endpoint.replace(`:${opt}`, this.options[opt]);
@@ -205,27 +205,27 @@ Component.prototype._autoupdate = function () {
  * This will help with the rendering performance that
  * we would lose if rendered then manipulated
  */
-Component.prototype.prerender = function () {};
+Component.prototype.prerender = () => {};
 
 /**
  * Once the render / decorate methods have been called
  * This is where you could do your event binding
  * This function is made to be overridden
  */
-Component.prototype.ready = function () {};
+Component.prototype.ready = () => {};
 
 /**
  * Once the render / decorate methods have been called
  * This is where you could do your error event binding
  * This function is made to be overridden
  */
-Component.prototype.error = function () {};
+Component.prototype.error = () => {};
 
 /**
  * This is called whenever a fetch occurs. This includes
  * explicit fetch calls and autoupdate.
  */
-Component.prototype.fetched = function () {};
+Component.prototype.fetched = () => {};
 
 /**
  * @param {Element} elem new element
@@ -241,7 +241,7 @@ Component.prototype.autoupdate = function (elem) {
 /**
  * Once we're done with it, remove event bindings etc
  */
-Component.prototype.dispose = function () {};
+Component.prototype.dispose = () => {};
 
 /**
  * @param {string} eventName
@@ -366,7 +366,7 @@ Component.prototype.destroy = function () {
 /**
  * @param {Function} child
  */
-Component.define = function (child) {
+Component.define = child => {
     function Tmp() {}
     Tmp.prototype = Component.prototype;
     child.prototype = new Tmp();

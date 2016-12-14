@@ -16,7 +16,7 @@ const GustyleComcontent = function ($adSlot, params) {
     this.params = params;
 };
 
-const isDark = function (hex) {
+const isDark = (hex) => {
     const colour = (hex.charAt(0) == '#') ? hex.substring(1, 7) : hex;
     const R = parseInt(colour.substring(0, 2), 16);
     const G = parseInt(colour.substring(2, 4), 16);
@@ -30,17 +30,19 @@ const isDark = function (hex) {
 
 GustyleComcontent.prototype.create = function () {
     const brandColor = this.params.brandColor;
-    let externalLinkIcon = svgs('externalLink', ['gu-external-icon']),
-        templateOptions = {
-            articleContentColor: `gu-display__content-color--${this.params.articleContentColor}`,
-            articleContentPosition: `gu-display__content-position--${this.params.articleContentPosition}`,
-            articleHeaderFontSize: `gu-display__content-size--${this.params.articleHeaderFontSize}`,
-            articleTextFontSize: `gu-display__content-size--${this.params.articleTextFontSize}`,
-            brandLogoPosition: `gu-display__logo-pos--${this.params.brandLogoPosition}`,
-            externalLinkIcon,
-            contrastFontColour: brandColor && isDark(brandColor) ? 'gu-display__hosted-bright' : '',
-            isHostedBottom: this.params.adType === 'gu-style-hosted-bottom',
-        };
+    const externalLinkIcon = svgs('externalLink', ['gu-external-icon']);
+
+    const templateOptions = {
+        articleContentColor: `gu-display__content-color--${this.params.articleContentColor}`,
+        articleContentPosition: `gu-display__content-position--${this.params.articleContentPosition}`,
+        articleHeaderFontSize: `gu-display__content-size--${this.params.articleHeaderFontSize}`,
+        articleTextFontSize: `gu-display__content-size--${this.params.articleTextFontSize}`,
+        brandLogoPosition: `gu-display__logo-pos--${this.params.brandLogoPosition}`,
+        externalLinkIcon,
+        contrastFontColour: brandColor && isDark(brandColor) ? 'gu-display__hosted-bright' : '',
+        isHostedBottom: this.params.adType === 'gu-style-hosted-bottom',
+    };
+
     const templateToLoad = this.params.adType === 'gu-style' ? gustyleComcontentTpl : gustyleHostedTpl;
 
     const title = this.params.articleHeaderText || 'unknown';

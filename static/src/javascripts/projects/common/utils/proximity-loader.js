@@ -4,26 +4,29 @@ import fastdom from 'fastdom';
 import filter from 'lodash/collections/filter';
 import debounce from 'lodash/functions/debounce';
 
-let items = [],
-    scroll = {
-        top: 0,
-        bottom: 0,
-    },
-    doProximityLoadingDebounced,
-    doProximityLoading = function () {
-        scroll.top = window.pageYOffset;
-        scroll.bottom = scroll.top + bonzo.viewport().height;
-        items = filter(items, (item) => {
-            if (item.conditionFn()) {
-                item.loadFn();
-            } else {
-                return true;
-            }
-        });
-        if (items.length === 0) {
-            mediator.off('window:throttledScroll', doProximityLoading);
+let items = [];
+
+let scroll = {
+    top: 0,
+    bottom: 0,
+};
+
+let doProximityLoadingDebounced;
+
+let doProximityLoading = () => {
+    scroll.top = window.pageYOffset;
+    scroll.bottom = scroll.top + bonzo.viewport().height;
+    items = filter(items, (item) => {
+        if (item.conditionFn()) {
+            item.loadFn();
+        } else {
+            return true;
         }
-    };
+    });
+    if (items.length === 0) {
+        mediator.off('window:throttledScroll', doProximityLoading);
+    }
+};
 
 doProximityLoadingDebounced = debounce(doProximityLoading, 2000); // used on load for edge-case where user doesn't scroll
 
@@ -43,13 +46,15 @@ function addItem(conditionFn, loadFn) {
 function addProximityLoader(el, distanceThreshold, loadFn) {
     // calls `loadFn` when screen is within `distanceThreshold` of `el`
     fastdom.read(() => {
-        let $el = bonzo(el),
-            conditionFn = function () {
-                let elOffset = $el.offset(),
-                    loadAfter = elOffset.top - distanceThreshold,
-                    loadBefore = elOffset.top + elOffset.height + distanceThreshold;
-                return scroll.top > loadAfter && scroll.bottom < loadBefore;
-            };
+        let $el = bonzo(el);
+
+        let conditionFn = () => {
+            let elOffset = $el.offset(),
+                loadAfter = elOffset.top - distanceThreshold,
+                loadBefore = elOffset.top + elOffset.height + distanceThreshold;
+            return scroll.top > loadAfter && scroll.bottom < loadBefore;
+        };
+
         addItem(conditionFn, loadFn);
     });
 }

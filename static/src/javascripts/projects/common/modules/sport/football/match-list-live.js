@@ -21,10 +21,10 @@ MatchList.prototype.prerender = function () {
 };
 
 MatchList.prototype.autoupdate = function (elem) {
-    let updated = $('.football-match', elem),
-        self = this,
-        $match,
-        $updated;
+    let updated = $('.football-match', elem);
+    let self = this;
+    let $match;
+    let $updated;
 
     $('.football-match', this.elem).each((match, i) => {
         $match = bonzo(match).removeClass('football-match--updated');

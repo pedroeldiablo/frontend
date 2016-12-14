@@ -30,11 +30,11 @@ function display(parent, card) {
     /*  show/hide
      *   once we've sent the token, we don't want to change the state of the dots until we redisplay
      * */
-    const loading = (function () {
+    const loading = ((() => {
         const HIDDEN = 'is-hidden';
         const $elems = [$button, $number, $type, $last4];
         let sent = false;
-        const showDots = function () {
+        const showDots = () => {
             if (sent) {
                 return;
             }
@@ -43,7 +43,7 @@ function display(parent, card) {
             });
             $updating.removeClass(HIDDEN);
         };
-        const hideDots = function () {
+        const hideDots = () => {
             if (sent) {
                 return;
             }
@@ -52,7 +52,7 @@ function display(parent, card) {
             });
             $updating.addClass(HIDDEN);
         };
-        const send = function () {
+        const send = () => {
             sent = true;
         };
         return {
@@ -60,7 +60,7 @@ function display(parent, card) {
             showDots,
             hideDots,
         };
-    }());
+    })());
 
     // Decode and display card
     const oldCardType = $type.data('type');
@@ -89,7 +89,7 @@ function display(parent, card) {
         const product = $parent.data('product');
         const endpoint = `${config.page.userAttributesApiUrl}/me/${product}-update-card`;
         const email = $button.data('email');
-        return function (e) {
+        return e => {
             e.preventDefault();
             fastdom.write(loading.showDots);
 
@@ -122,7 +122,7 @@ function display(parent, card) {
      *   -id: string of the stripe token id
      */
     function update(endpoint) {
-        return function (token) {
+        return token => {
             loading.send();
             ajax({
                 url: endpoint,

@@ -5,7 +5,7 @@ import mediator from 'common/utils/mediator';
 function FormstackIframe(el, config) {
     const self = this;
 
-    self.init = function () {
+    self.init = () => {
         // Setup postMessage listener for events from "modules/identity/formstack"
         bean.on(window, 'message', (event) => {
             if (event.origin === config.page.idUrl) {
@@ -25,7 +25,7 @@ function FormstackIframe(el, config) {
         });
     };
 
-    self.onMessage = function (event) {
+    self.onMessage = event => {
         switch (event.data) {
             case 'ready':
                 self.show();
@@ -42,7 +42,7 @@ function FormstackIframe(el, config) {
         }
     };
 
-    self.refreshHeight = function (reset) {
+    self.refreshHeight = reset => {
         if (reset) {
             // If a height is set on the iframe, the following calculation
             // will be at least that height, optionally reset first
@@ -51,18 +51,19 @@ function FormstackIframe(el, config) {
             });
         }
 
-        let iframe = el.contentWindow.document,
-            body = iframe.body,
-            html = iframe.documentElement,
-            height = Math.max(body.scrollHeight, body.offsetHeight,
-                html.clientHeight, html.scrollHeight, html.offsetHeight);
+        let iframe = el.contentWindow.document;
+        let body = iframe.body;
+        let html = iframe.documentElement;
+
+        let height = Math.max(body.scrollHeight, body.offsetHeight,
+            html.clientHeight, html.scrollHeight, html.offsetHeight);
 
         $(el).css({
             height,
         });
     };
 
-    self.show = function () {
+    self.show = () => {
         $(el).removeClass('is-hidden');
     };
 }

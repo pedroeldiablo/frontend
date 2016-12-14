@@ -7,12 +7,12 @@ function position(a) {
 }
 
 function highlights(focusX, focusY) {
-    let focusSquareX = Math.floor(focusX / 3),
-        focusSquareY = Math.floor(focusY / 3);
+    let focusSquareX = Math.floor(focusX / 3);
+    let focusSquareY = Math.floor(focusY / 3);
 
-    return function (x, y) {
-        let squareX = Math.floor(x / 3),
-            squareY = Math.floor(y / 3);
+    return (x, y) => {
+        let squareX = Math.floor(x / 3);
+        let squareY = Math.floor(y / 3);
 
         return x === focusX ||
             y === focusY ||

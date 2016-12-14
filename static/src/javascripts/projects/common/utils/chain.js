@@ -2,17 +2,17 @@ import partialRight from 'lodash/functions/partialRight';
 // We make a new chainable with each operation to prevent mutations and
 // thus allow multiple usages of a given chainable.
 
-const createObject = function (prototype) {
+const createObject = prototype => {
     if (Object.create) {
         return Object.create(prototype);
     } else {
-        const F = function () {};
+        const F = () => {};
         F.prototype = prototype;
         return new F();
     }
 };
 
-const makeChainable = function (value, object) {
+const makeChainable = (value, object) => {
     const chainable = createObject(object);
     chainable.setValue(value);
     return chainable;
@@ -23,9 +23,9 @@ const Chainable = {
     setValue(value) {
         this.__value = value;
     },
-    and() {
+    and(...args) {
         // Spread
-        const fn = partialRight(...arguments);
+        const fn = partialRight(...args);
         const newValue = fn(this.value());
         return makeChainable(newValue, this);
     },

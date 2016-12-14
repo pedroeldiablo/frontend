@@ -28,29 +28,28 @@ const Button = React.createClass({
 
 export default React.createClass({
     render() {
-        let self = this,
-            x = this.props.x,
-            y = this.props.y,
-            buttonsPerRow = 7,
-            buttonOffset = function (n) {
-                return n * (constants.buttonSize + constants.buttonMargin);
-            },
-            numberButtons = map(range(9), (n) => {
-                let col = n % buttonsPerRow,
-                    row = Math.floor(n / buttonsPerRow),
-                    buttonX = x + buttonOffset(col),
-                    buttonY = y + buttonOffset(row);
+        let self = this;
+        let x = this.props.x;
+        let y = this.props.y;
+        let buttonsPerRow = 7;
+        let buttonOffset = n => n * (constants.buttonSize + constants.buttonMargin);
 
-                return Button({
-                    key: `button_${n}`,
-                    x: buttonX,
-                    y: buttonY,
-                    text: `${n + 1}`,
-                    onClick() {
-                        self.props.onClickNumber(n + 1);
-                    },
-                });
+        let numberButtons = map(range(9), (n) => {
+            let col = n % buttonsPerRow;
+            let row = Math.floor(n / buttonsPerRow);
+            let buttonX = x + buttonOffset(col);
+            let buttonY = y + buttonOffset(row);
+
+            return Button({
+                key: `button_${n}`,
+                x: buttonX,
+                y: buttonY,
+                text: `${n + 1}`,
+                onClick() {
+                    self.props.onClickNumber(n + 1);
+                },
             });
+        });
 
         return React.DOM.g({
             className: 'sudoku__controls',

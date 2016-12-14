@@ -34,8 +34,8 @@ Cta.prototype.defaultOptions = {
 
 /** @override */
 Cta.prototype.prerender = function () {
-    let comments = $('.comment', this.elem),
-        comment = comments[Math.floor(Math.random() * comments.length) + 0];
+    let comments = $('.comment', this.elem);
+    let comment = comments[Math.floor(Math.random() * comments.length) + 0];
 
     if (comments.length === 0) {
         this.destroy();

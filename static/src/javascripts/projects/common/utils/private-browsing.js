@@ -1,13 +1,13 @@
 import Promise from 'Promise';
 const browserCheck = new Promise((resolve) => {
     let db;
-    const on = function () {
+    const on = () => {
         resolve(true);
     };
-    const off = function () {
+    const off = () => {
         resolve(false);
     };
-    const tryLocalStorage = function () {
+    const tryLocalStorage = () => {
         try {
             localStorage.length ? off() : (localStorage.x = 1, localStorage.removeItem('x'), off());
         } catch (e) {

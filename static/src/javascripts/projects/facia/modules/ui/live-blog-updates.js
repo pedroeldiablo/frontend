@@ -16,21 +16,19 @@ import debounce from 'lodash/functions/debounce';
 import filter from 'lodash/collections/filter';
 import isEmpty from 'lodash/objects/isEmpty';
 import map from 'lodash/collections/map';
-let animateDelayMs = 2000,
-    animateAfterScrollDelayMs = 500,
-    refreshSecs = 30,
-    refreshDecay = 1,
-    refreshMaxTimes = 5,
-
-    selector = '.js-liveblog-blocks',
-    articleIdAttribute = 'data-article-id',
-    sessionStorageKey = 'gu.liveblog.block-dates',
-
-    veiwportHeightPx = detect.getViewport().height;
+let animateDelayMs = 2000;
+let animateAfterScrollDelayMs = 500;
+let refreshSecs = 30;
+let refreshDecay = 1;
+let refreshMaxTimes = 5;
+let selector = '.js-liveblog-blocks';
+let articleIdAttribute = 'data-article-id';
+let sessionStorageKey = 'gu.liveblog.block-dates';
+let veiwportHeightPx = detect.getViewport().height;
 
 function blockRelativeTime(block) {
-    let pubDate = (block || {}).publishedDateTime,
-        relDate = pubDate ? relativeDates.makeRelativeDate(new Date(pubDate)) : false;
+    let pubDate = (block || {}).publishedDateTime;
+    let relDate = pubDate ? relativeDates.makeRelativeDate(new Date(pubDate)) : false;
 
     return relDate || '';
 }
@@ -59,24 +57,27 @@ function showBlocks(articleId, targets, blocks, oldBlockDate) {
     const fakeUpdate = isUndefined(oldBlockDate);
 
     forEach(targets, (element) => {
-        let hasNewBlock = false,
-            wrapperClasses = [
-                'fc-item__liveblog-blocks__inner',
-                'u-faux-block-link__promote',
-            ],
-            blocksHtml = chain(blocks).slice(0, 2).and(map, (block, index) => {
-                if (!hasNewBlock && (block.publishedDateTime > oldBlockDate || fakeUpdate)) {
-                    block.isNew = true;
-                    hasNewBlock = true;
-                    wrapperClasses.push('fc-item__liveblog-blocks__inner--offset');
-                }
-                return renderBlock(articleId, block, index);
-            }).slice(0, hasNewBlock ? 2 : 1).value(),
+        let hasNewBlock = false;
 
-            el = bonzo.create(
-                `<div class="${wrapperClasses.join(' ')}">${blocksHtml.join('')}</div>`
-            ),
-            $element = bonzo(element);
+        let wrapperClasses = [
+            'fc-item__liveblog-blocks__inner',
+            'u-faux-block-link__promote',
+        ];
+
+        let blocksHtml = chain(blocks).slice(0, 2).and(map, (block, index) => {
+            if (!hasNewBlock && (block.publishedDateTime > oldBlockDate || fakeUpdate)) {
+                block.isNew = true;
+                hasNewBlock = true;
+                wrapperClasses.push('fc-item__liveblog-blocks__inner--offset');
+            }
+            return renderBlock(articleId, block, index);
+        }).slice(0, hasNewBlock ? 2 : 1).value();
+
+        let el = bonzo.create(
+            `<div class="${wrapperClasses.join(' ')}">${blocksHtml.join('')}</div>`
+        );
+
+        let $element = bonzo(element);
 
         fastdomPromise.write(() => {
             $element.append(el);

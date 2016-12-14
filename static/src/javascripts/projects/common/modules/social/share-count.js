@@ -9,21 +9,22 @@ import template from 'common/utils/template';
 import svgs from 'common/views/svgs';
 import shareCountTemplate from 'text!common/views/content/share-count.html';
 import shareCountImmersiveTemplate from 'text!common/views/content/share-count-immersive.html';
-let shareCount = 0,
-    $shareCountEls = $('.js-sharecount'),
-    $fullValueEls,
-    $shortValueEls,
-    tooltip = 'Facebook: <%=facebook%>',
-    counts = {
-        facebook: 'n/a',
-    };
+let shareCount = 0;
+let $shareCountEls = $('.js-sharecount');
+let $fullValueEls;
+let $shortValueEls;
+let tooltip = 'Facebook: <%=facebook%>';
+
+let counts = {
+    facebook: 'n/a',
+};
 
 function incrementShareCount(amount) {
     if (amount !== 0) {
         shareCount += amount;
-        let displayCount = shareCount.toFixed(0),
-            formattedDisplayCount = formatters.integerCommas(displayCount),
-            shortDisplayCount = displayCount > 10000 ? `${Math.round(displayCount / 1000)}k` : displayCount;
+        let displayCount = shareCount.toFixed(0);
+        let formattedDisplayCount = formatters.integerCommas(displayCount);
+        let shortDisplayCount = displayCount > 10000 ? `${Math.round(displayCount / 1000)}k` : displayCount;
         fastdom.write(() => {
             $fullValueEls.text(formattedDisplayCount);
             $shortValueEls.text(shortDisplayCount);

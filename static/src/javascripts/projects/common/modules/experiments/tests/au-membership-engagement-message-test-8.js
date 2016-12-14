@@ -20,11 +20,9 @@ export default function () {
     this.idealOutcome = 'We will see a 50 percent uplift in conversions through the engagement banner';
     this.hypothesis = 'More persuasive copy will improve membership conversions from impressions';
 
-    this.canRun = function () {
-        return config.page.edition.toLowerCase() === 'au' &&
-            commercialFeatures.canReasonablyAskForMoney &&
-            config.page.contentType.toLowerCase() !== 'signup';
-    };
+    this.canRun = () => config.page.edition.toLowerCase() === 'au' &&
+        commercialFeatures.canReasonablyAskForMoney &&
+        config.page.contentType.toLowerCase() !== 'signup';
 
     const success = function (complete) {
         if (this.canRun()) {

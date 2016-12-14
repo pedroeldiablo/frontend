@@ -6,12 +6,13 @@ import config from 'common/utils/config';
  * Singleton to deal with Discussion API requests
  * @type {Object}
  */
-let root = config.page.discussionApiUrl,
-    Api = {
-        root,
-        clientHeader: config.page.discussionApiClientHeader,
-        d2Uid: config.page.discussionD2Uid,
-    };
+let root = config.page.discussionApiUrl;
+
+let Api = {
+    root,
+    clientHeader: config.page.discussionApiClientHeader,
+    d2Uid: config.page.discussionD2Uid,
+};
 
 /**
  * @param {string} endpoint
@@ -19,7 +20,7 @@ let root = config.page.discussionApiUrl,
  * @param {Object.<string.*>} data
  * @return {Reqwest} a promise
  */
-Api.send = function (endpoint, method, data) {
+Api.send = (endpoint, method, data) => {
     data = data || {};
 
     const request = ajax({
@@ -43,7 +44,7 @@ Api.send = function (endpoint, method, data) {
  * @param {Object.<string.*>} comment
  * @return {Reqwest} a promise
  */
-Api.postComment = function (discussionId, comment) {
+Api.postComment = (discussionId, comment) => {
     const endpoint = `/discussion/${discussionId}/comment${
         comment.replyTo ? `/${comment.replyTo.commentId}/reply` : ''}`;
 
@@ -54,7 +55,7 @@ Api.postComment = function (discussionId, comment) {
  * @param {string} comment
  * @return {Reqwest} a promise
  */
-Api.previewComment = function (comment) {
+Api.previewComment = comment => {
     const endpoint = '/comment/preview';
     return Api.send(endpoint, 'post', comment);
 };
@@ -63,7 +64,7 @@ Api.previewComment = function (comment) {
  * @param {number} id the comment ID
  * @return {Reqwest} a promise
  */
-Api.recommendComment = function (id) {
+Api.recommendComment = id => {
     const endpoint = `/comment/${id}/recommend`;
     return Api.send(endpoint, 'post');
 };
@@ -72,7 +73,7 @@ Api.recommendComment = function (id) {
  * @param {number} id the comment ID
  * @return {Reqwest} a promise
  */
-Api.pickComment = function (id) {
+Api.pickComment = id => {
     const endpoint = `/comment/${id}/highlight`;
     return Api.send(endpoint, 'post');
 };
@@ -81,7 +82,7 @@ Api.pickComment = function (id) {
  * @param {number} id the comment ID
  * @return {Reqwest} a promise
  */
-Api.unPickComment = function (id) {
+Api.unPickComment = id => {
     const endpoint = `/comment/${id}/unhighlight`;
     return Api.send(endpoint, 'post');
 };
@@ -92,7 +93,7 @@ Api.unPickComment = function (id) {
           { reason: string, emailAddress: string, categoryId: number }
  * @return {Reqwest} a promise
  */
-Api.reportComment = function (id, report) {
+Api.reportComment = (id, report) => {
     const endpoint = `/comment/${id}/reportAbuse`;
     return Api.send(endpoint, 'post', report);
 };
@@ -102,7 +103,7 @@ Api.reportComment = function (id, report) {
  * If it isn't we use profile/me, which isn't as cachable
  * @param {number=} id (optional)
  */
-Api.getUser = function (id) {
+Api.getUser = id => {
     const endpoint = `/profile/${!id ? 'me' : id}`;
     return Api.send(endpoint, 'get');
 };

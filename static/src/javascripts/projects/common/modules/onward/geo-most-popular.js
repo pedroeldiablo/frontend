@@ -31,7 +31,7 @@ GeoMostPopular.prototype.ready = function () {
     mediator.emit('modules:onward:geo-most-popular:ready', this);
 };
 
-GeoMostPopular.prototype.error = function (error) {
+GeoMostPopular.prototype.error = error => {
     mediator.emit('modules:onward:geo-most-popular:error', error);
 };
 

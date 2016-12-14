@@ -119,8 +119,9 @@ function loaded(elem) {
 
 function init() {
     // We're doing this as to have one redraw
-    let extras = [],
-        dropdownTemplate;
+    let extras = [];
+
+    let dropdownTemplate;
 
     page.isMatch((match) => {
         extras[0] = {
@@ -129,13 +130,14 @@ function init() {
         if (match.pageType === 'stats') {
             renderNav(match);
         } else {
-            let $h = $('.js-score'),
-                scoreBoard = new ScoreBoard({
-                    pageType: match.pageType,
-                    parent: $h,
-                    responseDataKey: 'matchSummary',
-                    autoupdated: match.isLive,
-                });
+            let $h = $('.js-score');
+
+            let scoreBoard = new ScoreBoard({
+                pageType: match.pageType,
+                parent: $h,
+                responseDataKey: 'matchSummary',
+                autoupdated: match.isLive,
+            });
 
             renderNav(match, (resp, $nav, endpoint) => {
                 dropdownTemplate = resp.dropdown;
@@ -209,12 +211,13 @@ function init() {
     });
 
     page.isLiveClockwatch(() => {
-        let ml = new MatchListLive('match-day', page.isCompetition() || 'premierleague', config.dateFromSlug()),
-            $img = $('.media-primary'),
-            $matchListContainer = $.create('<div class="football-matches__container" data-link-name="football-matches-clockwatch"></div>')
-            .css({
-                minHeight: $img[0] ? $img[0].offsetHeight : 0,
-            });
+        let ml = new MatchListLive('match-day', page.isCompetition() || 'premierleague', config.dateFromSlug());
+        let $img = $('.media-primary');
+
+        let $matchListContainer = $.create('<div class="football-matches__container" data-link-name="football-matches-clockwatch"></div>')
+        .css({
+            minHeight: $img[0] ? $img[0].offsetHeight : 0,
+        });
 
         $img.addClass('u-h');
         loading($matchListContainer[0], 'Fetching today’s matches…', {

@@ -81,10 +81,10 @@ function createAdSlotElement(name, attrs, classes) {
 }
 
 export default function (name, slotTypes, series, keywords, slotTarget) {
-    let slotName = slotTarget ? slotTarget : name,
-        attributes = {},
-        definition,
-        classes = [];
+    let slotName = slotTarget ? slotTarget : name;
+    let attributes = {};
+    let definition;
+    let classes = [];
 
     definition = adSlotDefinitions[slotName] || adSlotDefinitions.inline;
     name = definition.name || name;

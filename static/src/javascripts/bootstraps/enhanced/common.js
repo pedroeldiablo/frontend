@@ -55,9 +55,9 @@ import identity from 'bootstraps/enhanced/identity-common';
 import forEach from 'lodash/collections/forEach';
 const modules = {
     initialiseTopNavItems() {
-        let profile,
-            search = new Search(),
-            header = document.getElementById('header');
+        let profile;
+        let search = new Search();
+        let header = document.getElementById('header');
 
         if (header) {
             if (config.switches.idProfileNavigation) {

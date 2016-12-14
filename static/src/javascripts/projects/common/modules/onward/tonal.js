@@ -3,7 +3,7 @@ import mediator from 'common/utils/mediator';
 import register from 'common/modules/analytics/register';
 import Component from 'common/modules/component';
 
-const noop = function () {};
+const noop = () => {};
 
 function TonalComponent() {
     register.begin('tonal-content');
@@ -47,11 +47,9 @@ TonalComponent.prototype.isSupported = function () {
     return this.getTone() in this.tones[this.edition];
 };
 
-TonalComponent.prototype.getTone = function () {
-    return config.page.tones.split(',')[0].toLowerCase();
-};
+TonalComponent.prototype.getTone = () => config.page.tones.split(',')[0].toLowerCase();
 
-TonalComponent.prototype.ready = function () {
+TonalComponent.prototype.ready = () => {
     const container = document.body.querySelector('.tone-feature');
     mediator.emit('page:new-content', container);
     mediator.emit('ui:images:upgradePictures');
@@ -59,7 +57,7 @@ TonalComponent.prototype.ready = function () {
     register.end('tonal-content');
 };
 
-TonalComponent.prototype.error = function () {
+TonalComponent.prototype.error = () => {
     register.error('tonal-content');
 };
 

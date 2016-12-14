@@ -11,23 +11,27 @@ import indexOf from 'lodash/arrays/indexOf';
 import throttle from 'lodash/functions/throttle';
 import forOwn from 'lodash/objects/forOwn';
 import gaHelper from 'common/modules/video/ga-helper';
+
 let isDesktop = detect.isBreakpoint({
         min: 'desktop',
-    }),
-    isEmbed = !!guardian.isEmbed,
-    QUARTILES = [25, 50, 75],
-    // Advert and content events used by analytics. The expected order of bean events is:
-    EVENTS = [
-        'preroll:request',
-        'preroll:ready',
-        'preroll:play',
-        'preroll:end',
-        'content:ready',
-        'content:play',
-        'content:end',
-    ],
-    ga = window.ga,
-    gaTracker = config.googleAnalytics.trackers.editorial;
+    });
+
+let isEmbed = !!guardian.isEmbed;
+let QUARTILES = [25, 50, 75];
+
+let // Advert and content events used by analytics. The expected order of bean events is:
+EVENTS = [
+    'preroll:request',
+    'preroll:ready',
+    'preroll:play',
+    'preroll:end',
+    'content:ready',
+    'content:play',
+    'content:end',
+];
+
+let ga = window.ga;
+let gaTracker = config.googleAnalytics.trackers.editorial;
 
 
 /**
@@ -174,16 +178,17 @@ function bindPrerollEvents(player) {
                     player.play();
                 }
             },
-        },
-        adFailed = function () {
-            bindContentEvents(player);
-            if (shouldAutoPlay(player)) {
-                player.play();
-            }
-            // Remove both handlers, because this adFailed handler should only happen once.
-            player.off('adtimeout', adFailed);
-            player.off('adserror', adFailed);
         };
+
+    let adFailed = () => {
+        bindContentEvents(player);
+        if (shouldAutoPlay(player)) {
+            player.play();
+        }
+        // Remove both handlers, because this adFailed handler should only happen once.
+        player.off('adtimeout', adFailed);
+        player.off('adserror', adFailed);
+    };
 
     player.one('adsready', events.ready);
 

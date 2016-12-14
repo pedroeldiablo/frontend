@@ -7,8 +7,8 @@
  */
 import mediator from 'common/utils/mediator';
 import where from 'lodash/collections/where';
-let register = [],
-    startTime = Date.now();
+let register = [];
+let startTime = Date.now();
 
 function begin(name) {
     register.push({

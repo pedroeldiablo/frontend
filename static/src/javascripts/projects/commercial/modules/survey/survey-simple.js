@@ -54,7 +54,7 @@ surveySimple.prototype.closePermanently = function () {
     userPrefs.set(this.prefs, uniq(messageStates));
 };
 
-surveySimple.prototype.show = function () {
+surveySimple.prototype.show = () => {
     fastdom.write(() => {
         $('.js-survey-overlay').removeClass('u-h');
     });

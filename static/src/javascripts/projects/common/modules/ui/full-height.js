@@ -7,19 +7,17 @@ import detect from 'common/utils/detect';
 // changes as the url bar slides in and out
 // http://code.google.com/p/chromium/issues/detail?id=428132
 
-const renderBlock = function (state) {
-    return fastdomPromise.write(() => {
-        state.$el.css('height', '');
-    }).then(() => {
-        if (state.isMobile) {
-            return fastdomPromise.read(() => state.$el.height()).then(height => fastdomPromise.write(() => {
-                state.$el.css('height', height);
-            }));
-        }
-    });
-};
+const renderBlock = state => fastdomPromise.write(() => {
+    state.$el.css('height', '');
+}).then(() => {
+    if (state.isMobile) {
+        return fastdomPromise.read(() => state.$el.height()).then(height => fastdomPromise.write(() => {
+            state.$el.css('height', height);
+        }));
+    }
+});
 
-const render = function (state) {
+const render = state => {
     state.elements.each((element) => {
         renderBlock({
             $el: $(element),
@@ -28,21 +26,19 @@ const render = function (state) {
     });
 };
 
-const getState = function () {
-    return fastdomPromise.read(() => {
-        const elements = $('.js-is-fixed-height');
-        return {
-            elements,
-            isMobile: detect.getBreakpoint() === 'mobile',
-        };
-    });
-};
+const getState = () => fastdomPromise.read(() => {
+    const elements = $('.js-is-fixed-height');
+    return {
+        elements,
+        isMobile: detect.getBreakpoint() === 'mobile',
+    };
+});
 
-const onViewportChange = function () {
+const onViewportChange = () => {
     getState().then(render);
 };
 
-const init = function () {
+const init = () => {
     mediator.on('window:resize', debounce(onViewportChange, 200));
     mediator.on('window:orientationchange', onViewportChange);
     onViewportChange();

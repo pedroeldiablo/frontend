@@ -42,7 +42,7 @@ const secondaryModules = [
     ['cm-fill-advert-slots', fillAdvertSlots.init],
     ['cm-paidforBand', paidforBand.init],
     ['cm-paidContainers', paidContainers.init],
-    ['cm-ready', function () {
+    ['cm-ready', () => {
         mediator.emit('page:commercial:ready');
         userTiming.mark('commercial end');
         robust.catchErrorsAndLog('ga-user-timing-commercial-end', () => {

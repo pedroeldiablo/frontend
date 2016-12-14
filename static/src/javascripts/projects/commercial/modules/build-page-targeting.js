@@ -16,154 +16,160 @@ import uniq from 'lodash/arrays/uniq';
 import pick from 'lodash/objects/pick';
 import isArray from 'lodash/objects/isArray';
 
-let format = function (keyword) {
-        return keyword.replace(/[+\s]+/g, '-').toLowerCase();
-    },
-    formatTarget = function (target) {
-        return target ? format(target).replace(/&/g, 'and').replace(/'/g, '') : null;
-    },
-    parseId = function (id) {
-        if (!id) {
-            return null;
-        }
-        if (id === 'uk/uk') {
-            return id;
-        } else {
-            return format(id.split('/').pop());
-        }
-    },
-    getSeries = function (page) {
-        if (page.seriesId) {
-            return parseId(page.seriesId);
-        }
-        const seriesIdFromUrl = /\/series\/(.+)$/.exec(page.pageId);
-        if (seriesIdFromUrl) {
-            return seriesIdFromUrl[1];
-        }
+const format = keyword => keyword.replace(/[+\s]+/g, '-').toLowerCase();
+const formatTarget = target => target ? format(target).replace(/&/g, 'and').replace(/'/g, '') : null;
 
-        if (page.keywordIds) {
-            const seriesIdFromKeywords = page.keywordIds.split(',').filter(keyword => keyword.indexOf('series/') === 0).slice(0, 1);
-            if (seriesIdFromKeywords.length) {
-                return seriesIdFromKeywords[0].split('/')[1];
-            }
-        }
-
+const parseId = (id) => {
+    if (!id) {
         return null;
-    },
-    parseIds = function (ids) {
-        if (!ids) {
-            return null;
+    }
+    if (id === 'uk/uk') {
+        return id;
+    } else {
+        return format(id.split('/').pop());
+    }
+};
+
+const getSeries = (page) => {
+    if (page.seriesId) {
+        return parseId(page.seriesId);
+    }
+    const seriesIdFromUrl = /\/series\/(.+)$/.exec(page.pageId);
+    if (seriesIdFromUrl) {
+        return seriesIdFromUrl[1];
+    }
+
+    if (page.keywordIds) {
+        const seriesIdFromKeywords = page.keywordIds.split(',').filter(keyword => keyword.indexOf('series/') === 0).slice(0, 1);
+        if (seriesIdFromKeywords.length) {
+            return seriesIdFromKeywords[0].split('/')[1];
         }
-        return compact(map(
-            ids.split(','),
-            id => parseId(id)
-        ));
-    },
-    abParam = function () {
-        let abParams = [],
-            abParticipations = ab.getParticipations();
+    }
 
-        forIn(abParticipations, (n, testKey) => {
-            if (n.variant && n.variant !== 'notintest') {
-                const testData = `${testKey}-${n.variant}`;
-                // DFP key-value pairs accept value strings up to 40 characters long
-                abParams.push(testData.substring(0, 40));
-            }
-        });
+    return null;
+};
 
-        forIn(keys(config.tests), (n) => {
-            if (n.toLowerCase().match(/^cm/) ||
-                n.toLowerCase().match(/^commercial/)) {
-                abParams.push(n);
-            }
-        });
+const parseIds = (ids) => {
+    if (!ids) {
+        return null;
+    }
+    return compact(map(
+        ids.split(','),
+        id => parseId(id)
+    ));
+};
 
-        return abParams;
-    },
-    adtestParams = function () {
-        if (cookies.get('adtest')) {
-            let cookieAdtest = cookies.get('adtest'),
-                first4Char = cookieAdtest.substring(0, 4);
-            if (first4Char === 'demo') {
-                cookies.remove('adtest');
-            }
-            return cookieAdtest;
+const abParam = () => {
+    let abParams = [];
+    let abParticipations = ab.getParticipations();
+
+    forIn(abParticipations, (n, testKey) => {
+        if (n.variant && n.variant !== 'notintest') {
+            const testData = `${testKey}-${n.variant}`;
+            // DFP key-value pairs accept value strings up to 40 characters long
+            abParams.push(testData.substring(0, 40));
         }
-    },
-    getVisitedValue = function () {
-        const visitCount = storage.local.get('gu.alreadyVisited') || 0;
+    });
 
-        if (visitCount <= 5) {
-            return visitCount.toString();
-        } else if (visitCount >= 6 && visitCount <= 9) {
-            return '6-9';
-        } else if (visitCount >= 10 && visitCount <= 15) {
-            return '10-15';
-        } else if (visitCount >= 16 && visitCount <= 19) {
-            return '16-19';
-        } else if (visitCount >= 20 && visitCount <= 29) {
-            return '20-29';
-        } else if (visitCount >= 30) {
-            return '30plus';
+    forIn(keys(config.tests), (n) => {
+        if (n.toLowerCase().match(/^cm/) ||
+            n.toLowerCase().match(/^commercial/)) {
+            abParams.push(n);
         }
-    },
-    getReferrer = function () {
-        let referrerTypes = [{
-                id: 'facebook',
-                match: 'facebook.com',
-            }, {
-                id: 'twitter',
-                match: 't.co/',
-            }, // added (/) because without slash it is picking up reddit.com too
-            {
-                id: 'googleplus',
-                match: 'plus.url.google',
-            }, {
-                id: 'reddit',
-                match: 'reddit.com',
-            }, {
-                id: 'google',
-                match: 'www.google',
-            },
-            ],
-            matchedRef = referrerTypes.filter(referrerType => detect.getReferrer().indexOf(referrerType.match) > -1)[0] || {};
+    });
 
-        return matchedRef.id;
-    },
-    getWhitelistedQueryParams = function () {
-        const whiteList = ['0p19G'];
-        return pick(url.getUrlVars(), whiteList);
-    };
+    return abParams;
+};
+
+const adtestParams = () => {
+    if (cookies.get('adtest')) {
+        let cookieAdtest = cookies.get('adtest');
+        let first4Char = cookieAdtest.substring(0, 4);
+        if (first4Char === 'demo') {
+            cookies.remove('adtest');
+        }
+        return cookieAdtest;
+    }
+};
+
+const getVisitedValue = () => {
+    const visitCount = storage.local.get('gu.alreadyVisited') || 0;
+
+    if (visitCount <= 5) {
+        return visitCount.toString();
+    } else if (visitCount >= 6 && visitCount <= 9) {
+        return '6-9';
+    } else if (visitCount >= 10 && visitCount <= 15) {
+        return '10-15';
+    } else if (visitCount >= 16 && visitCount <= 19) {
+        return '16-19';
+    } else if (visitCount >= 20 && visitCount <= 29) {
+        return '20-29';
+    } else if (visitCount >= 30) {
+        return '30plus';
+    }
+};
+
+const getReferrer = () => {
+    let referrerTypes = [{
+            id: 'facebook',
+            match: 'facebook.com',
+        }, {
+            id: 'twitter',
+            match: 't.co/',
+        }, // added (/) because without slash it is picking up reddit.com too
+        {
+            id: 'googleplus',
+            match: 'plus.url.google',
+        }, {
+            id: 'reddit',
+            match: 'reddit.com',
+        }, {
+            id: 'google',
+            match: 'www.google',
+        },
+        ];
+
+    let matchedRef = referrerTypes.filter(referrerType => detect.getReferrer().indexOf(referrerType.match) > -1)[0] || {};
+
+    return matchedRef.id;
+};
+
+const getWhitelistedQueryParams = () => {
+    const whiteList = ['0p19G'];
+    return pick(url.getUrlVars(), whiteList);
+};
 
 export default function (opts) {
-    let win = (opts || {}).window || window,
-        page = config.page,
-        contentType = formatTarget(page.contentType),
-        pageTargets = merge({
-            url: win.location.pathname,
-            edition: page.edition && page.edition.toLowerCase(),
-            se: getSeries(page),
-            ct: contentType,
-            p: 'ng',
-            k: page.keywordIds ? parseIds(page.keywordIds) : parseId(page.pageId),
-            x: krux.getSegments(),
-            su: page.isSurging,
-            pv: config.ophan.pageViewId,
-            bp: detect.getBreakpoint(),
-            at: adtestParams(),
-            si: identity.isUserLoggedIn() ? 't' : 'f',
-            gdncrm: userAdTargeting.getUserSegments(),
-            ab: abParam(),
-            ref: getReferrer(),
-            co: parseIds(page.authorIds),
-            bl: parseIds(page.blogIds),
-            ob: config.page.publication === 'The Observer' ? 't' : '',
-            ms: formatTarget(page.source),
-            fr: getVisitedValue(),
-            tn: uniq(compact([page.sponsorshipType].concat(parseIds(page.tones)))),
-            // round video duration up to nearest 30 multiple
-            vl: page.videoDuration ? (Math.ceil(page.videoDuration / 30.0) * 30).toString() : undefined,
-        }, getWhitelistedQueryParams());
+    const win = (opts || {}).window || window;
+    const page = config.page;
+    const contentType = formatTarget(page.contentType);
+
+    const pageTargets = merge({
+        url: win.location.pathname,
+        edition: page.edition && page.edition.toLowerCase(),
+        se: getSeries(page),
+        ct: contentType,
+        p: 'ng',
+        k: page.keywordIds ? parseIds(page.keywordIds) : parseId(page.pageId),
+        x: krux.getSegments(),
+        su: page.isSurging,
+        pv: config.ophan.pageViewId,
+        bp: detect.getBreakpoint(),
+        at: adtestParams(),
+        si: identity.isUserLoggedIn() ? 't' : 'f',
+        gdncrm: userAdTargeting.getUserSegments(),
+        ab: abParam(),
+        ref: getReferrer(),
+        co: parseIds(page.authorIds),
+        bl: parseIds(page.blogIds),
+        ob: config.page.publication === 'The Observer' ? 't' : '',
+        ms: formatTarget(page.source),
+        fr: getVisitedValue(),
+        tn: uniq(compact([page.sponsorshipType].concat(parseIds(page.tones)))),
+        // round video duration up to nearest 30 multiple
+        vl: page.videoDuration ? (Math.ceil(page.videoDuration / 30.0) * 30).toString() : undefined,
+    }, getWhitelistedQueryParams());
 
     // filter out empty values
     return pick(pageTargets, (target) => {

@@ -7,13 +7,19 @@ import mediator from 'common/utils/mediator';
 import Component from 'common/modules/component';
 import trail from 'bootstraps/enhanced/trail';
 import debounce from 'lodash/functions/debounce';
-let verticallyResponsiveImages = function () {
-        const setHeight = function () {
+
+let verticallyResponsiveImages = () => {
+        const setHeight = () => {
             if (!bonzo(document.body).hasClass('has-overlay')) {
-                let $imgs = $('.js-gallery-img'),
-                    min = 300, // stops images getting too small
-                    max = $imgs.parent().dim().width, // portrait images shouldn't be taller than landscapes are wide
-                    height = Math.max(min, Math.min(max, window.innerHeight * 0.9));
+                let $imgs = $('.js-gallery-img');
+
+                let // stops images getting too small
+                min = 300;
+
+                let // portrait images shouldn't be taller than landscapes are wide
+                max = $imgs.parent().dim().width;
+
+                let height = Math.max(min, Math.min(max, window.innerHeight * 0.9));
                 $imgs.css('max-height', height);
 
                 // Portrait containers use padding-bottom to set the height of the container prior to upgrading.
@@ -28,29 +34,31 @@ let verticallyResponsiveImages = function () {
             'window:orientationchange': debounce(setHeight, 200),
             'ui:images:vh': setHeight,
         });
-    },
-    transcludeMostPopular = function () {
-        let mostViewed = new Component(),
-            container = qwery('.js-gallery-most-popular')[0];
-
-        mostViewed.manipulationType = 'html';
-        mostViewed.endpoint = '/gallery/most-viewed.json';
-        mostViewed.ready = function () {
-            mediator.emit('page:new-content', container);
-        };
-        mostViewed.fetch(container, 'html');
-    },
-    ready = function () {
-        trail();
-        verticallyResponsiveImages();
-
-        mediator.emit('ui:images:upgradePictures');
-
-        mediator.emit('page:gallery:ready');
-        if (config.page.showRelatedContent) {
-            transcludeMostPopular();
-        }
     };
+
+let transcludeMostPopular = () => {
+    let mostViewed = new Component();
+    let container = qwery('.js-gallery-most-popular')[0];
+
+    mostViewed.manipulationType = 'html';
+    mostViewed.endpoint = '/gallery/most-viewed.json';
+    mostViewed.ready = () => {
+        mediator.emit('page:new-content', container);
+    };
+    mostViewed.fetch(container, 'html');
+};
+
+let ready = () => {
+    trail();
+    verticallyResponsiveImages();
+
+    mediator.emit('ui:images:upgradePictures');
+
+    mediator.emit('page:gallery:ready');
+    if (config.page.showRelatedContent) {
+        transcludeMostPopular();
+    }
+};
 
 export default {
     init: ready,

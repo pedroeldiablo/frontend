@@ -14,11 +14,9 @@ export default function () {
     this.hypothesis = 'The current spacefinder rules are too restrictive and a lot of articles don\'t have a single inline MPU';
     this.showForSensitive = true;
 
-    this.canRun = function () {
-        return commercialFeatures.articleBodyAdverts;
-    };
+    this.canRun = () => commercialFeatures.articleBodyAdverts;
 
-    const success = function (complete) {
+    const success = complete => {
         complete();
     };
 

@@ -44,8 +44,9 @@ function buildUserSubscriptions(response) {
 
 function userReferredFromNetworkFront() {
     // Check whether the referring url ends in the edition
-    let networkFront = ['uk', 'us', 'au', 'international'],
-        originPathName = document.referrer.split(/\?|#/)[0];
+    let networkFront = ['uk', 'us', 'au', 'international'];
+
+    let originPathName = document.referrer.split(/\?|#/)[0];
 
     if (originPathName) {
         return some(networkFront, frontName => originPathName.substr(originPathName.lastIndexOf('/') + 1) === frontName);
@@ -125,8 +126,8 @@ function getEmailShown() {
 }
 
 function allEmailCanRun() {
-    let browser = detect.getUserAgent.browser,
-        version = detect.getUserAgent.version;
+    let browser = detect.getUserAgent.browser;
+    let version = detect.getUserAgent.version;
 
     return !config.page.shouldHideAdverts &&
         !config.page.isSensitive &&

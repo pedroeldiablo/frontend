@@ -5,27 +5,28 @@ import Promise from 'Promise';
 import qwery from 'qwery';
 import map from 'lodash/collections/map';
 import isEqual from 'lodash/objects/isEqual';
-let keyPressHistory = [],
-    cheatCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65],
-    tones = map([
-        'special-report',
-        'live',
-        'dead',
-        'feature',
-        'editorial',
-        'comment',
-        'podcast',
-        'media',
-        'analysis',
-        'review',
-        'letters',
-        'external',
-        'news',
-    ], tone => `tone-${tone}--item`);
+let keyPressHistory = [];
+let cheatCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+
+let tones = map([
+    'special-report',
+    'live',
+    'dead',
+    'feature',
+    'editorial',
+    'comment',
+    'podcast',
+    'media',
+    'analysis',
+    'review',
+    'letters',
+    'external',
+    'news',
+], tone => `tone-${tone}--item`);
 
 function listenForCheatCode() {
     return new Promise((resolve) => {
-        const onKeyDown = function (event) {
+        const onKeyDown = event => {
             keyPressHistory.push(event.keyCode);
 
             if (isEqual(cheatCode.slice(0, keyPressHistory.length), keyPressHistory)) {

@@ -5,19 +5,16 @@ import mediator from 'common/utils/mediator';
 import ab from 'common/modules/experiments/ab';
 import memoize from 'lodash/functions/memoize';
 
-let selectorTopEl = '.social--top',
-    selectorBottomEl = '.social--bottom',
-    stickyClassName = 'meta__social--sticky',
-    stickyRevealClassName = 'meta__social--sticky--reveal',
-    stickyRevealableClassName = 'meta__social--sticky--revealable',
-
-    deadzone = 100,
-
-    topEl = memoize(() => $(selectorTopEl)[0]),
-    bottomEl = memoize(() => $(selectorBottomEl)[0]),
-
-    inited = false,
-    revealed = false;
+let selectorTopEl = '.social--top';
+let selectorBottomEl = '.social--bottom';
+let stickyClassName = 'meta__social--sticky';
+let stickyRevealClassName = 'meta__social--sticky--reveal';
+let stickyRevealableClassName = 'meta__social--sticky--revealable';
+let deadzone = 100;
+let topEl = memoize(() => $(selectorTopEl)[0]);
+let bottomEl = memoize(() => $(selectorBottomEl)[0]);
+let inited = false;
+let revealed = false;
 
 function setStickiness() {
     fastdom.read(() => {
@@ -72,8 +69,8 @@ function moveToFirstPosition($el) {
 }
 
 function init() {
-    let testVariant = ab.getTestVariantId('ShareButtons2'),
-        socialContext;
+    let testVariant = ab.getTestVariantId('ShareButtons2');
+    let socialContext;
 
     if (testVariant.indexOf('referrer') > -1) {
         socialContext = detect.socialContext();

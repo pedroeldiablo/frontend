@@ -95,8 +95,8 @@ function getExpiredTests() {
 }
 
 function testCanBeRun(test) {
-    let expired = (new Date() - new Date(test.expiry)) > 0,
-        isSensitive = config.page.isSensitive;
+    let expired = (new Date() - new Date(test.expiry)) > 0;
+    let isSensitive = config.page.isSensitive;
 
     return ((isSensitive ? test.showForSensitive : true) && isTestSwitchedOn(test)) && !expired && test.canRun();
 }
@@ -111,8 +111,8 @@ function getTest(id) {
 }
 
 function makeOmnitureTag() {
-    let participations = getParticipations(),
-        tag = [];
+    let participations = getParticipations();
+    let tag = [];
 
     Object.keys(participations)
         .map(getTest)
@@ -193,7 +193,7 @@ function recordTestComplete(test, variantId, complete) {
     const data = {};
     data[test.id] = abData(variantId, String(complete));
 
-    return function () {
+    return () => {
         recordOphanAbEvent(data);
     };
 }
@@ -201,8 +201,8 @@ function recordTestComplete(test, variantId, complete) {
 // Finds variant in specific tests and runs it
 function run(test) {
     if (isParticipating(test) && testCanBeRun(test)) {
-        let participations = getParticipations(),
-            variantId = participations[test.id].variant;
+        let participations = getParticipations();
+        let variantId = participations[test.id].variant;
         const variant = getVariant(test, variantId);
         if (variant) {
             variant.test();
@@ -315,8 +315,8 @@ function getServerSideTests() {
 }
 
 function not(f) {
-    return function () {
-        return !f.apply(this, arguments);
+    return function(...args) {
+        return !f.apply(this, args);
     };
 }
 
@@ -355,14 +355,14 @@ const ab = {
     },
 
     segmentUser() {
-        let tokens,
-            forceUserIntoTest = /^#ab/.test(window.location.hash);
+        let tokens;
+        let forceUserIntoTest = /^#ab/.test(window.location.hash);
         if (forceUserIntoTest) {
             tokens = window.location.hash.replace('#ab-', '').split(',');
             tokens.forEach((token) => {
-                let abParam,
-                    test,
-                    variant;
+                let abParam;
+                let test;
+                let variant;
                 abParam = token.split('=');
                 test = abParam[0];
                 variant = abParam[1];

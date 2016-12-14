@@ -4,7 +4,7 @@ import register from 'common/modules/analytics/register';
 import Component from 'common/modules/component';
 import union from 'lodash/arrays/union';
 
-const getTag = function () {
+const getTag = () => {
     const seriesAndBlogTags = config.page.blogIds.split(',').concat([config.page.seriesId]);
     return union(config.page.nonKeywordTagIds.split(','), seriesAndBlogTags).shift();
 };
@@ -18,14 +18,14 @@ function OnwardContent(context) {
 
 Component.define(OnwardContent);
 
-OnwardContent.prototype.ready = function () {
+OnwardContent.prototype.ready = () => {
     register.end('series-content');
     mediator.emit('modules:onward:loaded');
     mediator.emit('page:new-content');
     mediator.emit('ui:images:upgradePictures');
 };
 
-OnwardContent.prototype.error = function () {
+OnwardContent.prototype.error = () => {
     register.error('series-content');
 };
 

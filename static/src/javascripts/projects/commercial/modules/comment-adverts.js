@@ -11,16 +11,18 @@ import commercialFeatures from 'common/modules/commercial/commercial-features';
 import createSlot from 'common/modules/commercial/dfp/create-slot';
 import defaults from 'lodash/objects/defaults';
 export default function (options) {
-    let adType,
-        opts = defaults(
-            options || {}, {
-                adSlotContainerSelector: '.js-discussion__ad-slot',
-                commentMainColumn: '.content__main-column',
-            }
-        ),
-        $adSlotContainer,
-        $commentMainColumn,
-        $adSlot;
+    let adType;
+
+    const opts = defaults(
+        options || {}, {
+            adSlotContainerSelector: '.js-discussion__ad-slot',
+            commentMainColumn: '.content__main-column',
+        }
+    );
+
+    let $adSlotContainer;
+    let $commentMainColumn;
+    let $adSlot;
 
     $adSlotContainer = $(opts.adSlotContainerSelector);
     $commentMainColumn = $(opts.commentMainColumn, '.js-comments');

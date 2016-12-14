@@ -1,17 +1,16 @@
-export default window.atob ? function(str) {
-    return window.atob(str);
-} : (function() {
-    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
-        INVALID_CHARACTER_ERR = (function() {
-            // fabricate a suitable error object
-            try {
-                document.createElement('$');
-            } catch (error) {
-                return error;
-            }
-        }());
+export default window.atob ? str => window.atob(str) : ((() => {
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-    return function(input) {
+    var INVALID_CHARACTER_ERR = ((() => {
+        // fabricate a suitable error object
+        try {
+            document.createElement('$');
+        } catch (error) {
+            return error;
+        }
+    })());
+
+    return input => {
         input = input.replace(/[=]+$/, '');
         if (input.length % 4 === 1) {
             throw INVALID_CHARACTER_ERR;
@@ -33,4 +32,4 @@ export default window.atob ? function(str) {
         }
         return output;
     };
-})(); // define
+}))(); // define

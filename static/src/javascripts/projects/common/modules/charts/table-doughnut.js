@@ -2,22 +2,23 @@ import bonzo from 'bonzo';
 import $ from 'common/utils/$';
 import Doughnut from 'common/modules/charts/doughnut';
 
-const TableDoughnut = function () {};
+const TableDoughnut = () => {};
 
 /**
  * @param {Element} el
  * @return {Bonzo} the SVG Element
  */
-TableDoughnut.prototype.render = function (el) {
-    let $doughnut,
-        currentClasses,
-        width = el.scrollWidth || el.getAttribute('data-chart-width'),
-        headings = $('th', el),
-        data = $('td', el).map((el, i) => ({
-            label: headings[i].innerHTML,
-            value: parseInt(el.getAttribute('data-chart-value'), 10),
-            color: el.getAttribute('data-chart-color'),
-        }));
+TableDoughnut.prototype.render = el => {
+    let $doughnut;
+    let currentClasses;
+    let width = el.scrollWidth || el.getAttribute('data-chart-width');
+    let headings = $('th', el);
+
+    let data = $('td', el).map((el, i) => ({
+        label: headings[i].innerHTML,
+        value: parseInt(el.getAttribute('data-chart-value'), 10),
+        color: el.getAttribute('data-chart-color'),
+    }));
 
     bonzo(el).addClass('u-h');
     $doughnut = new Doughnut(data, {

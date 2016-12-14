@@ -20,38 +20,34 @@ function objToHash(obj) {
 }
 
 function addEmailValuesToHash(storedValues) {
-    return function (link) {
-        return function () {
-            const oldHref = link.attr('href');
-            const props = {
-                page: window.location,
-                width: window.innerWidth,
-                ads: getCreativeIDs().join(' '),
-            };
-            const body = objToHash(assign(props, storedValues));
-            link.attr('href', `${oldHref}#${body.substring(1)}`);
+    return link => () => {
+        const oldHref = link.attr('href');
+        const props = {
+            page: window.location,
+            width: window.innerWidth,
+            ads: getCreativeIDs().join(' '),
         };
+        const body = objToHash(assign(props, storedValues));
+        link.attr('href', `${oldHref}#${body.substring(1)}`);
     };
 }
 
 function addEmailHeaders(storedValues) {
-    return function (link) {
-        return function () {
-            const oldHref = link.attr('href');
-            const props = {
-                browser: window.navigator.userAgent,
-                page: window.location,
-                width: window.innerWidth,
-                adBlock: detect.adblockInUseSync(),
-                devicePixelRatio: window.devicePixelRatio,
-                ophanId: config.ophan.pageViewId,
-                gu_u: cookies.get('GU_U'),
-                payingMember: cookies.get('gu_paying_member'),
-                abTests: summariseAbTests(ab.getParticipations()),
-            };
-            const body = `\r\n\r\n\r\n\r\n------------------------------\r\nAdditional technical data about your request - please do not edit:\r\n\r\n${objToString(assign(props, storedValues))}\r\n\r\n`;
-            link.attr('href', `${oldHref}?body=${encodeURIComponent(body)}`);
+    return link => () => {
+        const oldHref = link.attr('href');
+        const props = {
+            browser: window.navigator.userAgent,
+            page: window.location,
+            width: window.innerWidth,
+            adBlock: detect.adblockInUseSync(),
+            devicePixelRatio: window.devicePixelRatio,
+            ophanId: config.ophan.pageViewId,
+            gu_u: cookies.get('GU_U'),
+            payingMember: cookies.get('gu_paying_member'),
+            abTests: summariseAbTests(ab.getParticipations()),
         };
+        const body = `\r\n\r\n\r\n\r\n------------------------------\r\nAdditional technical data about your request - please do not edit:\r\n\r\n${objToString(assign(props, storedValues))}\r\n\r\n`;
+        link.attr('href', `${oldHref}?body=${encodeURIComponent(body)}`);
     };
 }
 
@@ -68,8 +64,8 @@ function registerHandler(selector, addEmailHeaders) {
 function getValuesFromHash(hash) {
     const pairs = hash.substring(1).split('&');
     return reduce(pairs, (accu, pairJoined) => {
-        let pair = pairJoined.split('='),
-            object = {};
+        let pair = pairJoined.split('=');
+        let object = {};
         if (!!pair[0] && !!pair[1]) {
             object[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
             return assign(accu, object);

@@ -14,12 +14,12 @@ SocialBurners.prototype.init = function () {
     this.fetch(document.body, 'html');
 };
 
-SocialBurners.prototype.ready = function () {
+SocialBurners.prototype.ready = () => {
     images.upgradePictures();
     mediator.emit('register:end', 'social-content');
 };
 
-SocialBurners.prototype.error = function () {
+SocialBurners.prototype.error = () => {
     mediator.emit('modules:error', `Failed to load social burner content on page: ${config.page.pageId}common/modules/onwards/related.js`);
     mediator.emit('register:error', 'social-content');
 };

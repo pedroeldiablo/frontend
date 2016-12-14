@@ -13,17 +13,17 @@ import filter from 'lodash/collections/filter';
 import map from 'lodash/collections/map';
 import forEach from 'lodash/collections/forEach';
 import find from 'lodash/collections/find';
-let HIDDEN_CLASS_NAME = 'fc-show-more--hidden',
-    VISIBLE_CLASS_NAME = 'fc-show-more--visible',
-    TEXT_HOOK = 'js-button-text',
-    PREF_NAME = 'section-states',
-    BUTTON_SPINNER_CLASS = 'collection__show-more--loading',
-    ARTICLE_ID_ATTRIBUTE = 'data-id',
-    ITEM_SELECTOR = '.js-fc-item',
-    STATE_DISPLAYED = 'displayed',
-    STATE_HIDDEN = 'hidden',
-    STATE_LOADING = 'loading',
-    REQUEST_TIMEOUT = 5000;
+let HIDDEN_CLASS_NAME = 'fc-show-more--hidden';
+let VISIBLE_CLASS_NAME = 'fc-show-more--visible';
+let TEXT_HOOK = 'js-button-text';
+let PREF_NAME = 'section-states';
+let BUTTON_SPINNER_CLASS = 'collection__show-more--loading';
+let ARTICLE_ID_ATTRIBUTE = 'data-id';
+let ITEM_SELECTOR = '.js-fc-item';
+let STATE_DISPLAYED = 'displayed';
+let STATE_HIDDEN = 'hidden';
+let STATE_LOADING = 'loading';
+let REQUEST_TIMEOUT = 5000;
 
 function setButtonState(button, state) {
     const text = button.text[state];
@@ -87,8 +87,8 @@ function loadShowMore(pageId, containerId) {
 }
 
 function dedupShowMore($container, html) {
-    let seenArticles = itemsByArticleId($container),
-        $html = bonzo.create(html);
+    let seenArticles = itemsByArticleId($container);
+    let $html = bonzo.create(html);
 
     $(ITEM_SELECTOR, $html).each((article) => {
         const $article = bonzo(article);
@@ -106,8 +106,8 @@ function loadShowMoreForContainer(button) {
     });
 
     loadShowMore(config.page.pageId, button.id).then((response) => {
-        let dedupedShowMore,
-            html = response.html.trim();
+        let dedupedShowMore;
+        let html = response.html.trim();
 
         if (html) {
             dedupedShowMore = dedupShowMore(button.$container, html);
@@ -165,10 +165,10 @@ function itemsByArticleId($el) {
 }
 
 function makeButton($container) {
-    let id,
-        state,
-        button,
-        $el = $('.js-show-more-button', $container);
+    let id;
+    let state;
+    let button;
+    let $el = $('.js-show-more-button', $container);
 
     if ($el) {
         id = $container.attr('data-id');
@@ -204,8 +204,8 @@ export default {
     dedupShowMore,
     init() {
         fastdom.read(() => {
-            let containers = qwery('.js-container--fc-show-more').map(bonzo),
-                buttons = filter(map(containers, makeButton));
+            let containers = qwery('.js-container--fc-show-more').map(bonzo);
+            let buttons = filter(map(containers, makeButton));
 
             forEach(buttons, renderToDom);
 

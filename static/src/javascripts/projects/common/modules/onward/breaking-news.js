@@ -20,17 +20,19 @@ import pick from 'lodash/objects/pick';
 let supportedSections = {
         sport: 'sport',
         football: 'sport',
-    },
-    breakingNewsURL = '/news-alert/alerts',
-    page = config.page,
+    };
 
-    // get the users breaking news alert history
-    // {
-    //     alertID: true, <- dismissed/visited
-    //     alertID: false <- seen, but not dismissed/visited
-    // }
-    knownAlertIDsStorageKey = 'gu.breaking-news.hidden',
-    knownAlertIDs;
+let breakingNewsURL = '/news-alert/alerts';
+let page = config.page;
+
+let // get the users breaking news alert history
+// {
+//     alertID: true, <- dismissed/visited
+//     alertID: false <- seen, but not dismissed/visited
+// }
+knownAlertIDsStorageKey = 'gu.breaking-news.hidden';
+
+let knownAlertIDs;
 
 function storeKnownAlertIDs() {
     storage.local.set(knownAlertIDsStorageKey, knownAlertIDs);
@@ -74,8 +76,8 @@ function parseResponse(response) {
 // pull out the alerts from the edition/section buckets that apply to us
 // global > current edition > current section
 function getRelevantAlerts(alerts) {
-    let edition = (page.edition || '').toLowerCase(),
-        section = supportedSections[page.section];
+    let edition = (page.edition || '').toLowerCase();
+    let section = supportedSections[page.section];
 
     return flatten([
         alerts

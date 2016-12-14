@@ -5,15 +5,15 @@
  *   el.addEventListener('keyup', maskInput('', 4)) // cvc
  */
 function maskInput(delim, len) {
-    let tokRegex = new RegExp(`\\d{1,${len}}`, 'g'),
-        validRegex = new RegExp(`\\d|(${delim})|^`, 'g'),
-        delimRegex = new RegExp(delim, 'g'),
-        prevValue = '';
+    let tokRegex = new RegExp(`\\d{1,${len}}`, 'g');
+    let validRegex = new RegExp(`\\d|(${delim})|^`, 'g');
+    let delimRegex = new RegExp(delim, 'g');
+    let prevValue = '';
 
     return function (event) {
         if (event.keyCode !== 8) {
-            let toks = this.value.replace(delimRegex, '').match(tokRegex),
-                value = '';
+            let toks = this.value.replace(delimRegex, '').match(tokRegex);
+            let value = '';
 
             if (toks && this.selectionEnd === this.value.length) {
                 if (this.value.length >= prevValue.length && toks[toks.length - 1].length === len) {

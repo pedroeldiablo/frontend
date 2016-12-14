@@ -12,7 +12,7 @@ import common from './common';
 import sport from './sport';
 import ga from 'common/modules/analytics/google';
 export default function () {
-    const bootstrapContext = function (featureName, bootstrap) {
+    const bootstrapContext = (featureName, bootstrap) => {
         raven.context({
             tags: {
                 feature: featureName,

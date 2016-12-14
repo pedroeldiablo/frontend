@@ -19,9 +19,9 @@ import idApi from 'common/modules/identity/api';
 import assign from 'lodash/objects/assign';
 
 function Formstack(el, formstackId, config) {
-    let self = this,
-        dom = {},
-        formId = formstackId.split('-')[0];
+    let self = this;
+    let dom = {};
+    let formId = formstackId.split('-')[0];
 
     config = assign({
         idClasses: {
@@ -68,7 +68,7 @@ function Formstack(el, formstackId, config) {
         },
     }, config);
 
-    self.init = function () {
+    self.init = () => {
         // User object required to populate fields
         const user = idApi.getUserOrSignIn();
 
@@ -80,11 +80,11 @@ function Formstack(el, formstackId, config) {
         self.sendHeight();
     };
 
-    self.dom = function (user) {
-        let selector,
-            $userId,
-            $email,
-            html;
+    self.dom = user => {
+        let selector;
+        let $userId;
+        let $email;
+        let html;
 
         // Formstack generates some awful HTML, so we'll remove the CSS links,
         // loop their selectors and add our own classes instead
@@ -118,7 +118,7 @@ function Formstack(el, formstackId, config) {
         }, false);
     };
 
-    self.submit = function (event) {
+    self.submit = event => {
         event.preventDefault();
 
         setTimeout(() => {
@@ -144,25 +144,26 @@ function Formstack(el, formstackId, config) {
         }, 100);
     };
 
-    self.scrollToTopOfIframe = function (top) {
+    self.scrollToTopOfIframe = top => {
         self.postMessage('scroll-to', 'scroll-to', 0, top);
     };
 
-    self.unload = function () {
+    self.unload = () => {
         // Listen for navigation to success page
         self.sendHeight(true);
     };
 
-    self.sendHeight = function () {
-        let body = document.body,
-            html = document.documentElement,
-            height = Math.max(body.scrollHeight, body.offsetHeight,
-                html.clientHeight, html.scrollHeight, html.offsetHeight);
+    self.sendHeight = () => {
+        let body = document.body;
+        let html = document.documentElement;
+
+        let height = Math.max(body.scrollHeight, body.offsetHeight,
+            html.clientHeight, html.scrollHeight, html.offsetHeight);
 
         self.postMessage('set-height', height);
     };
 
-    self.postMessage = function (type, value, x, y) {
+    self.postMessage = (type, value, x, y) => {
         const message = {
             type,
             value,

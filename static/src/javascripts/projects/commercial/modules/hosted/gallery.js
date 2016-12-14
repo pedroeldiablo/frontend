@@ -95,11 +95,11 @@ HostedGallery.prototype.initScroll = function () {
 };
 
 HostedGallery.prototype.initSwipe = function () {
-    let threshold,
-        ox,
-        dx,
-        touchMove,
-        updateTime = 20; // time in ms
+    let threshold; // time in ms
+    let ox;
+    let dx;
+    let touchMove;
+    const updateTime = 20;
     this.$imagesContainer.css('width', `${this.$images.length}00%`);
 
     bean.on(this.$galleryEl[0], 'touchstart', (e) => {
@@ -108,14 +108,14 @@ HostedGallery.prototype.initSwipe = function () {
         dx = 0;
     });
 
-    touchMove = function (e) {
+    touchMove = (e) => {
         e.preventDefault();
         if (e.touches.length > 1 || e.scale && e.scale !== 1) {
             return;
         }
         dx = e.touches[0].pageX - ox;
         this.translateContent(this.index, dx, updateTime);
-    }.bind(this);
+    };
 
     bean.on(this.$galleryEl[0], 'touchmove', throttle(touchMove, updateTime, {
         trailing: false,
@@ -152,7 +152,7 @@ HostedGallery.prototype.initSwipe = function () {
     });
 };
 
-HostedGallery.prototype.ctaIndex = function () {
+HostedGallery.prototype.ctaIndex = () => {
     const ctaIndex = config.page.ctaIndex;
     const images = config.page.images;
     return (ctaIndex > 0 && ctaIndex < images.length - 1) ? ctaIndex : undefined;
@@ -163,8 +163,8 @@ HostedGallery.prototype.trigger = function (event, data) {
 };
 
 HostedGallery.prototype.loadSurroundingImages = function (index, count) {
-    let $img,
-        that = this;
+    let $img;
+    const that = this;
     chain([0, 1, 2]).and(
         map,
         i => index + i === 0 ? count - 1 : (index - 1 + i) % count
@@ -186,20 +186,20 @@ HostedGallery.prototype.loadSurroundingImages = function (index, count) {
 };
 
 HostedGallery.prototype.resizeImage = function (imgIndex) {
-    let $imageDiv = this.$images[imgIndex],
-        $galleryFrame = this.$galleryFrame[0],
-        $ctaFloat = this.$ctaFloat,
-        $ojFloat = this.$ojFloat,
-        $meta = this.$meta,
-        $images = this.$images,
-        width = $galleryFrame.clientWidth,
-        height = $galleryFrame.clientHeight,
-        $sizer = $('.js-hosted-gallery-image-sizer', $imageDiv),
-        imgRatio = this.imageRatios[imgIndex],
-        ctaSize = getFrame(0),
-        ctaIndex = this.ctaIndex(),
-        tabletSize = 740,
-        imageSize = getFrame(imgRatio);
+    const $imageDiv = this.$images[imgIndex];
+    const $galleryFrame = this.$galleryFrame[0];
+    const $ctaFloat = this.$ctaFloat;
+    const $ojFloat = this.$ojFloat;
+    const $meta = this.$meta;
+    const $images = this.$images;
+    const width = $galleryFrame.clientWidth;
+    const height = $galleryFrame.clientHeight;
+    const $sizer = $('.js-hosted-gallery-image-sizer', $imageDiv);
+    const imgRatio = this.imageRatios[imgIndex];
+    const ctaSize = getFrame(0);
+    const ctaIndex = this.ctaIndex();
+    const tabletSize = 740;
+    const imageSize = getFrame(imgRatio);
     fastdom.write(() => {
         $sizer.css('width', imageSize.width);
         $sizer.css('height', imageSize.height);
@@ -243,9 +243,9 @@ HostedGallery.prototype.resizeImage = function (imgIndex) {
 };
 
 HostedGallery.prototype.translateContent = function (imgIndex, offset, duration) {
-    let px = -1 * (imgIndex - 1) * this.swipeContainerWidth,
-        galleryEl = this.$imagesContainer[0],
-        $meta = this.$meta;
+    const px = -1 * (imgIndex - 1) * this.swipeContainerWidth;
+    const galleryEl = this.$imagesContainer[0];
+    const $meta = this.$meta;
     galleryEl.style.webkitTransitionDuration = `${duration}ms`;
     galleryEl.style.mozTransitionDuration = `${duration}ms`;
     galleryEl.style.msTransitionDuration = `${duration}ms`;
@@ -372,29 +372,29 @@ HostedGallery.prototype.trackNavBetweenImages = function (data) {
 };
 
 HostedGallery.prototype.onResize = function () {
-    this.resizer = this.resizer || function () {
+    this.resizer = this.resizer || (() => {
         this.loadSurroundingImages(this.index, this.$images.length);
         if (this.useSwipe) {
             this.swipeContainerWidth = this.$galleryFrame.dim().width;
             this.translateContent(this.index, 0, 0);
         }
         this.setPageWidth();
-    }.bind(this);
+    });
     throttle(this.resizer, 200)();
 };
 
 HostedGallery.prototype.setPageWidth = function () {
-    let $imagesContainer = this.$imagesContainer[0],
-        $gallery = this.$galleryEl[0],
-        width = $gallery.clientWidth,
-        height = $imagesContainer.clientHeight,
-        $header = this.$header,
-        $footer = this.$captionContainer,
-        $galleryFrame = this.$galleryFrame,
-        imgRatio = 5 / 3,
-        imageWidth = width,
-        leftRight = 0,
-        that = this;
+    const $imagesContainer = this.$imagesContainer[0];
+    const $gallery = this.$galleryEl[0];
+    const width = $gallery.clientWidth;
+    const height = $imagesContainer.clientHeight;
+    const $header = this.$header;
+    const $footer = this.$captionContainer;
+    const $galleryFrame = this.$galleryFrame;
+    const imgRatio = 5 / 3;
+    let imageWidth = width;
+    let leftRight = 0;
+    const that = this;
     if (imgRatio < width / height) {
         imageWidth = height * imgRatio;
         leftRight = `${(width - imageWidth) / 2}px`;
@@ -448,10 +448,10 @@ HostedGallery.prototype.loadAtIndex = function (i) {
 
 function init() {
     return loadCssPromise.then(() => {
-        let gallery,
-            match,
-            galleryHash = window.location.hash,
-            res;
+        let gallery;
+        let match;
+        const galleryHash = window.location.hash;
+        let res;
 
         gallery = new HostedGallery();
         match = /\?index=(\d+)/.exec(document.location.href);

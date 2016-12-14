@@ -54,13 +54,14 @@ const modules = {
     },
 
     configureSubscribeButton() {
-        let $follow = $('.js-notifications__toggle'),
-            isSubscribed = modules.checkSubscriptions(),
-            handler = isSubscribed ? modules.unSubscribeHandler : modules.subscribeHandler,
-            src = template(followLink, {
-                isSubscribed,
-                icon: svgs(isSubscribed ? 'notificationsOff' : 'notificationsOn'),
-            });
+        let $follow = $('.js-notifications__toggle');
+        let isSubscribed = modules.checkSubscriptions();
+        let handler = isSubscribed ? modules.unSubscribeHandler : modules.subscribeHandler;
+
+        let src = template(followLink, {
+            isSubscribed,
+            icon: svgs(isSubscribed ? 'notificationsOff' : 'notificationsOn'),
+        });
 
         if (!isEmpty($follow)) {
             fastdom.write(() => {
@@ -144,8 +145,8 @@ const modules = {
         const notificationsEndpoint = '/notification/delete';
         return modules.updateSubscription(notificationsEndpoint).then(
             () => {
-                let subscriptions = modules.getSubscriptions(),
-                    newSubscriptions = without(subscriptions, config.page.pageId);
+                let subscriptions = modules.getSubscriptions();
+                let newSubscriptions = without(subscriptions, config.page.pageId);
                 userPrefs.set('subscriptions', uniq(newSubscriptions));
             }
         );

@@ -5,26 +5,26 @@ import config from 'common/utils/config';
 import formatters from 'membership/formatters';
 import stripe from 'membership/stripe';
 
-let PACKAGE_COST = '.js-dig-package-cost',
-    PAYMENT_FORM = '.js-dig-card-details',
-    SUBSCRIBER_ID = '.js-dig-subscriber-id',
-    REMAINING_TRIAL_LENGTH = '.js-dig-remaining-trial-length',
-    REMAINING_TRIAL_LENGTH_CONTAINER = '.js-dig-remaining-trial-length-container',
-    PACKAGE_CURRENT_RENEWAL_DATE = '.js-dig-current-renewal-date',
-    PACKAGE_CURRENT_PERIOD_END = '.js-dig-current-period-end',
-    PACKAGE_CURRENT_PERIOD_START = '.js-dig-current-period-start',
-    PACKAGE_NEXT_PAYMENT_DATE = '.js-dig-next-payment-date',
-    PACKAGE_NEXT_PAYMENT_PRICE = '.js-dig-next-payment-price',
-    PACKAGE_NEXT_PAYMENT_CONTAINER = '.js-dig-next-payment-container',
-    PACKAGE_INTERVAL = '.js-dig-plan-interval',
-    DETAILS_JOIN_DATE = '.js-dig-join-date',
-    NOTIFICATION_CANCEL = '.js-dig-cancel-tier',
-    DIGITALPACK_DETAILS = '.js-dig-details',
-    DIGITALPACK_PRODUCT = '.js-dig-product',
-    UP_SELL = '.js-dig-up-sell',
-    DIG_INFO = '.js-dig-info',
-    LOADER = '.js-dig-loader',
-    IS_HIDDEN_CLASSNAME = 'is-hidden';
+let PACKAGE_COST = '.js-dig-package-cost';
+let PAYMENT_FORM = '.js-dig-card-details';
+let SUBSCRIBER_ID = '.js-dig-subscriber-id';
+let REMAINING_TRIAL_LENGTH = '.js-dig-remaining-trial-length';
+let REMAINING_TRIAL_LENGTH_CONTAINER = '.js-dig-remaining-trial-length-container';
+let PACKAGE_CURRENT_RENEWAL_DATE = '.js-dig-current-renewal-date';
+let PACKAGE_CURRENT_PERIOD_END = '.js-dig-current-period-end';
+let PACKAGE_CURRENT_PERIOD_START = '.js-dig-current-period-start';
+let PACKAGE_NEXT_PAYMENT_DATE = '.js-dig-next-payment-date';
+let PACKAGE_NEXT_PAYMENT_PRICE = '.js-dig-next-payment-price';
+let PACKAGE_NEXT_PAYMENT_CONTAINER = '.js-dig-next-payment-container';
+let PACKAGE_INTERVAL = '.js-dig-plan-interval';
+let DETAILS_JOIN_DATE = '.js-dig-join-date';
+let NOTIFICATION_CANCEL = '.js-dig-cancel-tier';
+let DIGITALPACK_DETAILS = '.js-dig-details';
+let DIGITALPACK_PRODUCT = '.js-dig-product';
+let UP_SELL = '.js-dig-up-sell';
+let DIG_INFO = '.js-dig-info';
+let LOADER = '.js-dig-loader';
+let IS_HIDDEN_CLASSNAME = 'is-hidden';
 
 function fetchUserDetails() {
     ajax({

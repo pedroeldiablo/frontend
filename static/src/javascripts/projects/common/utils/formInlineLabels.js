@@ -10,7 +10,7 @@ import fastdom from 'fastdom';
  * should perform the add or remove class
  */
 function updateClass(type, $el, cssClass, testFunc) {
-    return function () {
+    return () => {
         // If we pass a boolean for test, then check if we should update the class
         const updateClass = (testFunc !== undefined) ? testFunc() : true;
 
@@ -24,11 +24,11 @@ function updateClass(type, $el, cssClass, testFunc) {
 
 export default {
     init(el, opts) {
-        let $el = $(el),
-            $input = $(opts.textInputClass, el),
-            $label = $(opts.labelClass, el),
-            hiddenLabelClass = opts.hiddenLabelClass,
-            labelEnabledClass = opts.labelEnabledClass;
+        let $el = $(el);
+        let $input = $(opts.textInputClass, el);
+        let $label = $(opts.labelClass, el);
+        let hiddenLabelClass = opts.hiddenLabelClass;
+        let labelEnabledClass = opts.labelEnabledClass;
 
         // Add the js only styling class for inline label enabled
         updateClass('add', $el, labelEnabledClass)();

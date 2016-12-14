@@ -8,19 +8,21 @@ import initial from 'lodash/arrays/initial';
 import chain from 'common/utils/chain';
 
 function SearchTool(options) {
-    let $list = null,
-        $input = null,
-        oldQuery = '',
-        newQuery = '',
-        inputTmp = '',
-        keyCodeMap = {
-            13: 'enter',
-            38: 'up',
-            40: 'down',
-        },
-        opts = options || {},
-        $container = opts.container,
-        apiUrl = opts.apiUrl;
+    let $list = null;
+    let $input = null;
+    let oldQuery = '';
+    let newQuery = '';
+    let inputTmp = '';
+
+    let keyCodeMap = {
+        13: 'enter',
+        38: 'up',
+        40: 'down',
+    };
+
+    let opts = options || {};
+    let $container = opts.container;
+    let apiUrl = opts.apiUrl;
 
     return {
         init() {
@@ -45,8 +47,8 @@ function SearchTool(options) {
         },
 
         handleClick(e) {
-            let isInput = $(e.target).hasClass('js-search-tool-input'),
-                isLink = this.isLink(e.target);
+            let isInput = $(e.target).hasClass('js-search-tool-input');
+            let isLink = this.isLink(e.target);
 
             if (isInput) {
                 e.preventDefault();
@@ -70,10 +72,10 @@ function SearchTool(options) {
         },
 
         toggleControls(value) {
-            let $input = $('.js-search-tool-input')[0],
-                $location = $('.js-search-tool'),
-                $close = $('.js-close-location'),
-                $edit = $('.js-edit-location');
+            let $input = $('.js-search-tool-input')[0];
+            let $location = $('.js-search-tool');
+            let $close = $('.js-close-location');
+            let $edit = $('.js-edit-location');
 
             if (value) {
                 inputTmp = $input.value;
@@ -91,9 +93,9 @@ function SearchTool(options) {
         },
 
         pushData() {
-            let $active = $('.active', $list),
-                data = {},
-                store = 'set';
+            let $active = $('.active', $list);
+            let data = {};
+            let store = 'set';
 
             if ($active.length === 0) {
                 if ($input.val() === '') {
@@ -175,8 +177,8 @@ function SearchTool(options) {
         },
 
         move(increment) {
-            let $active = $('.active', $list),
-                id = parseInt($active.attr('id'), 10);
+            let $active = $('.active', $list);
+            let id = parseInt($active.attr('id'), 10);
 
             if (isNaN(id)) {
                 id = -1;
@@ -196,8 +198,8 @@ function SearchTool(options) {
         },
 
         getNewId(id) {
-            let len = $('li', $list).length,
-                newId = id % len;
+            let len = $('li', $list).length;
+            let newId = id % len;
 
             // Make sure that we can hit saved input option which has position -1
             if (newId < -1) {
@@ -216,8 +218,8 @@ function SearchTool(options) {
         },
 
         renderList(results, numOfResults) {
-            let docFragment = document.createDocumentFragment(),
-                resultsToShow = results.length - numOfResults;
+            let docFragment = document.createDocumentFragment();
+            let resultsToShow = results.length - numOfResults;
 
             chain(results).and(initial, resultsToShow).and(forEach, (item, index) => {
                 const li = document.createElement('li');
