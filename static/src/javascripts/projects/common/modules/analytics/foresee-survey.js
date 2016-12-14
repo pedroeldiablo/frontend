@@ -3,7 +3,7 @@ import Cookie from 'common/utils/cookies';
 import detect from 'common/utils/detect';
 
 function openForesee() {
-    xxxrequirexxx(['js!foresee.js']);
+    require(['js!foresee.js']);
 }
 
 function load() {

@@ -52,7 +52,7 @@ var accountProfile = function() {
 
                 var tabs = self.accountProfileForms.querySelector(self.classes.tabs);
 
-                xxxrequirexxx(['bootstraps/enhanced/membership'], function(membershipTab) {
+                require(['bootstraps/enhanced/membership'], function(membershipTab) {
                     membershipTab.init();
                 });
 

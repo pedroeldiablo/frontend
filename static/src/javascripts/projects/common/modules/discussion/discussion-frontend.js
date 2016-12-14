@@ -32,7 +32,7 @@ function load(ab, loader, opts) {
         });
     }
 
-    return xxxrequirexxx('discussion-frontend-preact', function(frontend) {
+    return require('discussion-frontend-preact', function(frontend) {
         // - Inject the net module to work around the lack of a global fetch
         //   It can be removed once all browsers have window.fetch
         // - Well, it turns out that fetchJson uses reqwest which sends X-Requested-With

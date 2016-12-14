@@ -85,7 +85,7 @@ function renderCreativeTemplate(adSlot, iFrame) {
 
     function renderCreative(config) {
         return new Promise(function(resolve) {
-            xxxrequirexxx(['commercial/modules/creatives/' + config.name], function(Creative) {
+            require(['commercial/modules/creatives/' + config.name], function(Creative) {
                 resolve(new Creative(bonzo(adSlot), config.params, config.opts).create());
             });
         });

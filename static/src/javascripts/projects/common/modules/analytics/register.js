@@ -38,7 +38,7 @@ function error(name) {
 }
 
 function sendEvent() {
-    xxxrequirexxx(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], function(ophan) {
         ophan.record({
             register: register
         });

@@ -133,7 +133,7 @@ function constructEventName(eventName, player) {
 function ophanRecord(id, event, player) {
     var ophanPath = isEmbed ? 'ophan/embed' : 'ophan/ng';
     if (id) {
-        xxxrequirexxx([ophanPath], function(ophan) {
+        require([ophanPath], function(ophan) {
             var eventObject = {};
             eventObject[getMediaType(player)] = {
                 id: id,

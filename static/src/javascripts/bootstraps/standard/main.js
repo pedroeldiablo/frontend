@@ -70,7 +70,7 @@ export default function() {
                 return;
             }
 
-            xxxrequirexxx([mainJS], function(interactive) {
+            require([mainJS], function(interactive) {
                 fastdom.defer(function() {
                     robust.catchErrorsAndLog('interactive-bootstrap', function() {
                         interactive.boot(el, document, config, mediator);
@@ -78,7 +78,7 @@ export default function() {
                 });
             });
 
-            xxxrequirexxx(['ophan/ng'], function(ophan) {
+            require(['ophan/ng'], function(ophan) {
                 var a = el.querySelector('a');
                 var href = a && a.href;
 
@@ -162,7 +162,7 @@ export default function() {
         onScroll
     );
 
-    xxxrequirexxx(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], function(ophan) {
         ophan.setEventEmitter(mediator);
     });
 

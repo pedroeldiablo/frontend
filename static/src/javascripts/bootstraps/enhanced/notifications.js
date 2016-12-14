@@ -49,7 +49,7 @@ var modules = {
 
     trackFollowButtonAttention: function(followElement) {
         if (followElement) {
-            xxxrequirexxx(['ophan/ng'], function(ophan) {
+            require(['ophan/ng'], function(ophan) {
                 ophan.trackComponentAttention('web-notifications--follow-button', followElement);
             });
         }

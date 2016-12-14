@@ -117,7 +117,7 @@ export default function() {
     }
 
     function setupComponentAttentionTracking(trackingCode) {
-        xxxrequirexxx(['ophan/ng'], function(ophan) {
+        require(['ophan/ng'], function(ophan) {
             ophan.trackComponentAttention(trackingCode, $recommendedForYouSection[0]);
         });
     }

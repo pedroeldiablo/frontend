@@ -13,7 +13,7 @@ function launchOverlay(event) {
         });
     });
 
-    xxxrequirexxx(['js!https://assets.pinterest.com/js/pinmarklet.js?r=' + new Date().getTime()]);
+    require(['js!https://assets.pinterest.com/js/pinmarklet.js?r=' + new Date().getTime()]);
 }
 
 export default function() {

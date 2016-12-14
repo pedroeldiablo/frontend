@@ -52,7 +52,7 @@ function embed(publickey, widgetName, geo, u, categories) {
             categories: categories,
             dataMode: 'data-display'
         };
-        xxxrequirexxx(['js!//static-au.plista.com/async/' + name + '.js']);
+        require(['js!//static-au.plista.com/async/' + name + '.js']);
     } else {
         lib.widgets.push({
             name: widgetName,

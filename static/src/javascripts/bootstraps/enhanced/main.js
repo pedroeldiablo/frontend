@@ -46,46 +46,46 @@ export default function() {
 
     // Front
     if (config.page.isFront) {
-        xxxrequirexxx(['bootstraps/enhanced/facia'], function(facia) {
+        require(['bootstraps/enhanced/facia'], function(facia) {
             bootstrapContext('facia', facia);
         });
     }
 
     if (config.page.section === 'lifeandstyle' && config.page.series === 'Sudoku') {
-        xxxrequirexxx(['bootstraps/enhanced/sudoku'], function(sudoku) {
+        require(['bootstraps/enhanced/sudoku'], function(sudoku) {
             bootstrapContext('sudoku', sudoku);
         });
     }
 
     if (config.page.contentType === 'Article' && !config.page.isMinuteArticle) {
-        xxxrequirexxx(['bootstraps/enhanced/article', 'bootstraps/enhanced/image-content'], function(article, imageContent) {
+        require(['bootstraps/enhanced/article', 'bootstraps/enhanced/image-content'], function(article, imageContent) {
             bootstrapContext('article', article);
             bootstrapContext('article : image-content', imageContent);
         });
     }
 
     if (config.page.contentType === 'Crossword') {
-        xxxrequirexxx(['bootstraps/enhanced/crosswords'], function(crosswords) {
+        require(['bootstraps/enhanced/crosswords'], function(crosswords) {
             bootstrapContext('crosswords', crosswords);
         });
     }
 
     if (config.page.contentType === 'LiveBlog') {
-        xxxrequirexxx(['bootstraps/enhanced/liveblog', 'bootstraps/enhanced/image-content'], function(liveBlog, imageContent) {
+        require(['bootstraps/enhanced/liveblog', 'bootstraps/enhanced/image-content'], function(liveBlog, imageContent) {
             bootstrapContext('liveBlog', liveBlog);
             bootstrapContext('liveBlog : image-content', imageContent);
         });
     }
 
     if (config.page.isMinuteArticle) {
-        xxxrequirexxx(['bootstraps/enhanced/article-minute', 'bootstraps/enhanced/image-content'], function(articleMinute, imageContent) {
+        require(['bootstraps/enhanced/article-minute', 'bootstraps/enhanced/image-content'], function(articleMinute, imageContent) {
             bootstrapContext('articleMinute', articleMinute);
             bootstrapContext('article : image-content', imageContent);
         });
     }
 
     if (config.isMedia || config.page.contentType === 'Interactive') {
-        xxxrequirexxx(['bootstraps/enhanced/trail'], function(trail) {
+        require(['bootstraps/enhanced/trail'], function(trail) {
             bootstrapContext('media : trail', {
                 init: trail
             });
@@ -93,20 +93,20 @@ export default function() {
     }
 
     if ((config.isMedia || qwery('video, audio').length) && !config.page.isHosted) {
-        xxxrequirexxx(['bootstraps/enhanced/media/main'], function(media) {
+        require(['bootstraps/enhanced/media/main'], function(media) {
             bootstrapContext('media', media);
         });
     }
 
     if (config.page.contentType === 'Gallery') {
-        xxxrequirexxx(['bootstraps/enhanced/gallery', 'bootstraps/enhanced/image-content'], function(gallery, imageContent) {
+        require(['bootstraps/enhanced/gallery', 'bootstraps/enhanced/image-content'], function(gallery, imageContent) {
             bootstrapContext('gallery', gallery);
             bootstrapContext('gallery : image-content', imageContent);
         });
     }
 
     if (config.page.contentType === 'ImageContent') {
-        xxxrequirexxx(['bootstraps/enhanced/image-content', 'bootstraps/enhanced/trail'], function(imageContent, trail) {
+        require(['bootstraps/enhanced/image-content', 'bootstraps/enhanced/trail'], function(imageContent, trail) {
             bootstrapContext('image-content', imageContent);
             bootstrapContext('image-content : trail', {
                 init: trail
@@ -115,7 +115,7 @@ export default function() {
     }
 
     if (config.page.section === 'football') {
-        xxxrequirexxx(['bootstraps/enhanced/football'], function(football) {
+        require(['bootstraps/enhanced/football'], function(football) {
             bootstrapContext('football', football);
         });
     }
@@ -126,19 +126,19 @@ export default function() {
     }
 
     if (config.page.section === 'identity') {
-        xxxrequirexxx(['bootstraps/enhanced/profile'], function(profile) {
+        require(['bootstraps/enhanced/profile'], function(profile) {
             bootstrapContext('profile', profile);
         });
     }
 
     if (config.page.isPreferencesPage) {
-        xxxrequirexxx(['bootstraps/enhanced/preferences'], function(preferences) {
+        require(['bootstraps/enhanced/preferences'], function(preferences) {
             bootstrapContext('preferences', preferences);
         });
     }
 
     if (config.page.section === 'newsletter-signup-page') {
-        xxxrequirexxx(['bootstraps/enhanced/signup'], function(signup) {
+        require(['bootstraps/enhanced/signup'], function(signup) {
             bootstrapContext('signup', signup);
         });
     }
@@ -152,14 +152,14 @@ export default function() {
     }
 
     if (config.page.pageId === 'help/accessibility-help') {
-        xxxrequirexxx(['bootstraps/enhanced/accessibility'], function(accessibility) {
+        require(['bootstraps/enhanced/accessibility'], function(accessibility) {
             bootstrapContext('accessibility', accessibility);
         });
     }
 
     fastdom.read(function() {
         if ($('.youtube-media-atom').length > 0) {
-            xxxrequirexxx(['bootstraps/enhanced/youtube'], function(youtube) {
+            require(['bootstraps/enhanced/youtube'], function(youtube) {
                 bootstrapContext('youtube', youtube);
             });
         }

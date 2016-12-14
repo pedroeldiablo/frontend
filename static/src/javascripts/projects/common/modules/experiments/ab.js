@@ -182,7 +182,7 @@ function trackEvent() {
 }
 
 function recordOphanAbEvent(data) {
-    xxxrequirexxx(['ophan/ng'], function(ophan) {
+    require(['ophan/ng'], function(ophan) {
         ophan.record({
             abTestRegister: data
         });

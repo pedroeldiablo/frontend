@@ -4,7 +4,7 @@ import commercialFeatures from 'common/modules/commercial/commercial-features';
 import dfpEnv from 'commercial/modules/dfp/dfp-env';
 import memoize from 'lodash/functions/memoize';
 var setupSonobi = memoize(function() {
-    return Promise.resolve(xxxrequirexxx(['js!sonobi.js'])).then(catchPolyfillErrors);
+    return Promise.resolve(require(['js!sonobi.js'])).then(catchPolyfillErrors);
 });
 
 // Wrap the native implementation of getOwnPropertyNames in a try-catch. If any polyfill attempts

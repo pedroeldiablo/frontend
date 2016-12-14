@@ -23,7 +23,7 @@ import raven from 'common/utils/raven';
 // curl’s promise API is broken, so we must cast it to a real Promise
 // https://github.com/cujojs/curl/issues/293
 var promiseRequire = function(moduleIds) {
-    return Promise.resolve(xxxrequirexxx(moduleIds));
+    return Promise.resolve(require(moduleIds));
 };
 
 var guardian = window.guardian;

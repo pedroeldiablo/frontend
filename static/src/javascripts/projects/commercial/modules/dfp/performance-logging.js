@@ -103,7 +103,7 @@ function getBaseline(baselineName) {
 
 function reportTrackingData() {
     if (config.tests.commercialClientLogging) {
-        xxxrequirexxx(['ophan/ng'], function(ophan) {
+        require(['ophan/ng'], function(ophan) {
             performanceLog.viewId = ophan.viewId;
 
             beacon.postJson('/commercial-report', JSON.stringify(performanceLog), true);

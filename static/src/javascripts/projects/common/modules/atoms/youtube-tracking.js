@@ -47,7 +47,7 @@ function initYoutubeEvents(videoId) {
     });
 
     function ophanRecord(event) {
-        xxxrequirexxx(['ophan/ng'], function(ophan) {
+        require(['ophan/ng'], function(ophan) {
             var eventObject = {
                 video: {
                     id: 'gu-video-youtube-' + event.mediaId,
