@@ -8,6 +8,7 @@ define([
     'lodash/functions/memoize',
     'lodash/utilities/noop',
     'common/modules/experiments/tests/editorial-email-variants',
+    'common/modules/experiments/tests/guardian-today-email-variants',
     'common/modules/experiments/tests/recommended-for-you',
     'common/modules/experiments/tests/membership-engagement-banner-tests',
     'common/modules/experiments/tests/contributions-epic-always-ask-strategy',
@@ -23,6 +24,7 @@ define([
              memoize,
              noop,
              EditorialEmailVariants,
+             GuardianTodayEmailVariants,
              RecommendedForYou,
              MembershipEngagementBannerTests,
              ContributionsEpicAlwaysAskStrategy,
@@ -32,6 +34,7 @@ define([
     ) {
     var TESTS = [
         new EditorialEmailVariants(),
+        new GuardianTodayEmailVariants(),
         new RecommendedForYou(),
         new ContributionsEpicAlwaysAskStrategy(),
         new ContributionsEpicOnTheMoon(),

@@ -31,6 +31,16 @@ trait ABTestSwitches {
 
   Switch(
     ABTests,
+    "ab-guardian-today-email-variants",
+    "Assign users to variants of The Guardian Today email",
+    owners = Seq(Owner.withGithub("katebee")),
+    safeState = Off,
+    sellByDate = new LocalDate(2017, 1, 18),
+    exposeClientSide = true
+  )
+
+  Switch(
+    ABTests,
     "ab-recommended-for-you-recommendations",
     "Test personalised container on fronts",
     owners = Seq(Owner.withGithub("davidfurey")),

@@ -30,7 +30,7 @@ object EmailSubscriptions {
       description = "Our editors' picks for the day's top news and commentary delivered to your inbox each morning.",
       frequency = "Every day",
       listId = "37",
-      subscribedTo = subscribedListIds.exists{ x => x == "37" },
+      subscribedTo = subscribedListIds.exists{ x => x == "37" || x == "5555" },
       subheading = Some("UK"),
       signupPage = Some("/info/2015/dec/08/daily-email-uk")
     ),

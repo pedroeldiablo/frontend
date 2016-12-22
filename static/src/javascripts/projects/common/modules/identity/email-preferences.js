@@ -160,6 +160,9 @@ define([
                 buttonString += 'removeEmailSubscriptions[]=3806&';
                 buttonString += 'removeEmailSubscriptions[]=3807&';
             }
+            if (config.switches.abGuardianTodayEmailVariants && value === 'unsubscribe-37') {
+                buttonString += 'removeEmailSubscriptions[]=5555&';
+            }
             // end of hacks
         }
         return 'csrfToken=' + encodeURIComponent(csrfToken) + '&' +
