@@ -140,7 +140,9 @@ object GuTargeting {
   implicit val guTargetingFormats: Format[GuTargeting] = Json.format[GuTargeting]
 }
 
-case class GuLineItem(id: Long,
+case class GuLineItem(
+                      orderId: Long,
+                      id: Long,
                       name: String,
                       startTime: DateTime,
                       endTime: Option[DateTime],
@@ -207,6 +209,7 @@ object GuLineItem {
   implicit val lineItemWrites = new Writes[GuLineItem] {
     def writes(lineItem: GuLineItem): JsValue = {
       Json.obj(
+        "orderId" -> lineItem.orderId,
         "id" -> lineItem.id,
         "name" -> lineItem.name,
         "startTime" -> timeFormatter.print(lineItem.startTime),
@@ -223,17 +226,18 @@ object GuLineItem {
   }
 
   implicit val lineItemReads: Reads[GuLineItem] = (
+    (JsPath \ "orderId").read[Long] and
     (JsPath \ "id").read[Long] and
-      (JsPath \ "name").read[String] and
-      (JsPath \ "startTime").read[String].map(timeFormatter.parseDateTime) and
-      (JsPath \ "endTime").readNullable[String].map(_.map(timeFormatter.parseDateTime)) and
-      (JsPath \ "isPageSkin").read[Boolean] and
-      (JsPath \ "sponsor").readNullable[String] and
-      (JsPath \ "status").read[String] and
-      (JsPath \ "costType").read[String] and
-      (JsPath \ "creativePlaceholders").read[Seq[GuCreativePlaceholder]] and
-      (JsPath \ "targeting").read[GuTargeting] and
-      (JsPath \ "lastModified").read[String].map(timeFormatter.parseDateTime)
+    (JsPath \ "name").read[String] and
+    (JsPath \ "startTime").read[String].map(timeFormatter.parseDateTime) and
+    (JsPath \ "endTime").readNullable[String].map(_.map(timeFormatter.parseDateTime)) and
+    (JsPath \ "isPageSkin").read[Boolean] and
+    (JsPath \ "sponsor").readNullable[String] and
+    (JsPath \ "status").read[String] and
+    (JsPath \ "costType").read[String] and
+    (JsPath \ "creativePlaceholders").read[Seq[GuCreativePlaceholder]] and
+    (JsPath \ "targeting").read[GuTargeting] and
+    (JsPath \ "lastModified").read[String].map(timeFormatter.parseDateTime)
     )(GuLineItem.apply _)
 
   def asMap(lineItems: Seq[GuLineItem]) = lineItems.map(item => item.id -> item).toMap

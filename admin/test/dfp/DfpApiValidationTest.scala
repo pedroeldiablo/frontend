@@ -16,6 +16,7 @@ class DfpApiValidationTest extends FlatSpec with Matchers {
     })
 
     GuLineItem(
+      orderId = 0L,
       id = 0L,
       name = "test line item",
       startTime = DateTime.now.withTimeAtStartOfDay,

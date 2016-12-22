@@ -34,6 +34,7 @@ class GuLineItemTest extends FlatSpec with Matchers {
     targeting: GuTargeting = defaultTargeting
   ): GuLineItem = {
     GuLineItem(
+      orderId = 0,
       id = 0,
       name = "name",
       startTime = now,
