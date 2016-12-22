@@ -1,0 +1,25 @@
+@import common.dfp.GuLineItem
+@(orderId: Long, mappings: Seq[(GuLineItem, Seq[Option[String]])], defaultPreviewUrl: String)(implicit request: RequestHeader, context: model.ApplicationContext)
+
+@admin_main("Ad Grabber: Staging", isAuthed = true) {
+
+    <h1>Ad Grabber: Staging</h1>
+
+    <p>Each creative will be loaded on <a>@defaultPreviewUrl</a> by default.
+        The default can be edited for each creative.</p>
+
+    <h3>Line Items and Creatives for Order @orderId</h3>
+
+    @for((lineItem, previewUrls) <- mappings) {
+        <div class="lineitem-previews">
+            <p>@lineItem.name</p>
+            @for(url <- previewUrls) {
+                <label>@url.getOrElse("")"</label>
+                <label><input type="checkbox" value="ignore-creative"> Ignore</label>
+
+            }
+        </div>
+    }
+
+    <button name="grab-ads">Grab <em>ALL</em> the Ads!</button>
+}

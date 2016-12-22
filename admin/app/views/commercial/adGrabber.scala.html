@@ -1,0 +1,13 @@
+@()(implicit request: RequestHeader, context: model.ApplicationContext)
+
+@admin_main("Ad Grabber", isAuthed = true) {
+
+    <h1>Ad Grabber</h1>
+
+    <p>Enter an Order ID in the box below. This will generate a list of creatives to screenshot.</p>
+
+    <form action="adgrabber/staging" method="post">
+        <label>Order ID: <input name="orderId"></label>
+        <input type="submit" value="Submit">
+    </form>
+}

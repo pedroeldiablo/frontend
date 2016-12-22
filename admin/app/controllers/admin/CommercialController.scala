@@ -92,6 +92,35 @@ class CommercialController(implicit context: ApplicationContext) extends Control
     }
   }
 
+  def renderAdGrabber() = Action { implicit request =>
+    Ok(views.html.commercial.adGrabber())
+  }
+
+  def renderAdGrabberStaging() = Action { implicit request =>
+
+    def getRelevantLineItems(orderId: String) =
+      Store.getDfpLineItemsReport().lineItems filter (_.orderId.toString == orderId)
+
+    val defaultPreviewUrl: String = "https://theguardian.com/uk/lifeandstyle"
+
+    val maybeOrderId: Option[String] = request.body.asFormUrlEncoded.get("orderId").headOption
+    val lineItems: Seq[GuLineItem] = maybeOrderId map getRelevantLineItems getOrElse Nil
+
+    val mappings: Seq[(GuLineItem, Seq[Option[String]])] =
+      for {
+        lineItem <- lineItems
+      } yield {
+        val creativeIds: Seq[Long] = DfpApi.getCreativeIds(lineItem.id)
+        val previewUrls = creativeIds.map(id => DfpApi.getPreviewUrl(lineItem.id, id, defaultPreviewUrl))
+        lineItem -> previewUrls
+      }
+
+    lineItems.toList match {
+      case Nil => NotFound
+      case h :: t => Ok(views.html.commercial.adGrabberResults(h.orderId ,mappings, defaultPreviewUrl))
+    }
+  }
+
   def renderBrowserPerformanceDashboard() = Action { implicit request =>
     Ok(views.html.commercial.performance.browserDashboard())
   }
