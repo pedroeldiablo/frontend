@@ -1,22 +1,29 @@
 @import common.dfp.GuLineItem
-@(orderId: Long, mappings: Seq[(GuLineItem, Seq[Option[String]])], defaultPreviewUrl: String)(implicit request: RequestHeader, context: model.ApplicationContext)
+@(orderId: Long, mappings: Seq[(GuLineItem, Seq[Option[String]])], previewPages: List[String])(implicit request: RequestHeader, context: model.ApplicationContext)
+
+@pageOptions = {
+    <select name="subdomains">
+        @for((subdomain, i) <- previewPages.zipWithIndex){
+            <option value="option-@i"@if(i == 0){ selected}>@subdomain</option>
+        }
+    </select>
+}
 
 @admin_main("Ad Grabber: Staging", isAuthed = true) {
 
     <h1>Ad Grabber: Staging</h1>
 
-    <p>Each creative will be loaded on <a>@defaultPreviewUrl</a> by default.
+    <p>Each creative will be loaded on a default page as specified in the drop down menu to the left of each link.
         The default can be edited for each creative.</p>
 
     <h3>Line Items and Creatives for Order @orderId</h3>
 
     @for((lineItem, previewUrls) <- mappings) {
         <div class="lineitem-previews">
-            <p>@lineItem.name</p>
+            <label>@lineItem.name</label>
             @for(url <- previewUrls) {
-                <label>@url.getOrElse("")"</label>
-                <label><input type="checkbox" value="ignore-creative"> Ignore</label>
-
+                @pageOptions
+                <label data-url="@url.getOrElse("")"><input type="checkbox" value="ignore-creative"> Ignore</label>
             }
         </div>
     }

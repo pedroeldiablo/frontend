@@ -101,7 +101,17 @@ class CommercialController(implicit context: ApplicationContext) extends Control
     def getRelevantLineItems(orderId: String) =
       Store.getDfpLineItemsReport().lineItems filter (_.orderId.toString == orderId)
 
-    val defaultPreviewUrl: String = "https://theguardian.com/uk/lifeandstyle"
+    def getPreviewUrlStubs(lineItemId: Long, creativeId: Long): Option[String] = {
+      // the DFP API validates the URL when generating a preview URL; we can change this later
+      val defaultPreviewUrl: String = "https://theguardian.com"
+      val previewLink: Option[String] = DfpApi.getPreviewUrl(lineItemId, creativeId, defaultPreviewUrl)
+      previewLink map (_.replaceAllLiterally(defaultPreviewUrl, "/"))
+    }
+
+
+    val previewPages: List[String] = List("uk/lifeandstyle",
+                                          "uk/books",
+                                          "uk/sport")
 
     val maybeOrderId: Option[String] = request.body.asFormUrlEncoded.get("orderId").headOption
     val lineItems: Seq[GuLineItem] = maybeOrderId map getRelevantLineItems getOrElse Nil
@@ -111,13 +121,13 @@ class CommercialController(implicit context: ApplicationContext) extends Control
         lineItem <- lineItems
       } yield {
         val creativeIds: Seq[Long] = DfpApi.getCreativeIds(lineItem.id)
-        val previewUrls = creativeIds.map(id => DfpApi.getPreviewUrl(lineItem.id, id, defaultPreviewUrl))
-        lineItem -> previewUrls
+        val previewStubs = creativeIds map (getPreviewUrlStubs(lineItem.id, _))
+        lineItem -> previewStubs
       }
 
     lineItems.toList match {
       case Nil => NotFound
-      case h :: t => Ok(views.html.commercial.adGrabberResults(h.orderId ,mappings, defaultPreviewUrl))
+      case h :: t => Ok(views.html.commercial.adGrabberResults(h.orderId ,mappings, previewPages))
     }
   }
 
